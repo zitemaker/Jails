@@ -1,0 +1,11 @@
+name: JailPlugin
+version: '${project.version}'
+main: me.zitemaker.jail.JailPlugin
+api-version: '1.13'
+author: zitemaker
+
+commands:
+  jail:
+    description: Jail management command
+    usage: /jail setflag <name> <position>
+    permission: op

@@ -1,24 +1,30 @@
 package me.zitemaker.jail;
 
+import me.zitemaker.jail.commands.JailCellCommand;
+import me.zitemaker.jail.commands.JailCellTabCompleter;
+import me.zitemaker.jail.commands.JailCommand;
+import me.zitemaker.jail.commands.JailTabCompleter;
+import me.zitemaker.jail.utils.JailUtils;
 import org.bukkit.plugin.java.JavaPlugin;
-import me.zitemaker.jail.commands.SetJailFlagCommand;
 
 public class JailPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
-        // Create the plugin directory if it doesn't exist
-        if (!getDataFolder().exists()) {
-            getDataFolder().mkdirs();
-        }
+        getLogger().info("JailPlugin enabled!");
 
-        // Register the command
-        SetJailFlagCommand setJailFlagCommand = new SetJailFlagCommand(this);
-        getCommand("jail").setExecutor(setJailFlagCommand);
-        getCommand("jail").setTabCompleter(setJailFlagCommand);
+        JailUtils jailUtils = new JailUtils();
+
+        // Register commands
+        getCommand("jail").setExecutor(new JailCommand(jailUtils));
+        getCommand("jailcell").setExecutor(new JailCellCommand(jailUtils));
+
+        // Register tab completers
+        getCommand("jail").setTabCompleter(new JailTabCompleter(jailUtils));
+        getCommand("jailcell").setTabCompleter(new JailCellTabCompleter());
     }
 
     @Override
     public void onDisable() {
-        getLogger().info("JailPlugin has been disabled!");
+        getLogger().info("JailPlugin disabled!");
     }
 }

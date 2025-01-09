@@ -1,0 +1,9 @@
+# blocked commands when jailed
+blockedCommands:
+  - "tpa"
+  - "home"
+  - "spawn"
+  - "team"
+  - "rtp"
+  - "tpr"
+  - "warp"

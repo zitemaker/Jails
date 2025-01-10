@@ -4,8 +4,37 @@ main: me.zitemaker.jail.JailPlugin
 api-version: '1.13'
 author: zitemaker
 
+
 commands:
+  jailset:
+    description: Set a jail location.
   jail:
-    description: Jail management command
-    usage: /jail setflag <name> <position>
-    permission: op
+    description: Jail a player.
+    usage: /jail <player> <jail name> <reason>
+    permission: jails.jail
+  jails:
+    description: List all jail locations.
+    usage: /jails
+    permission: jailplugin.jails
+  unjail:
+    description: Unjail a player.
+    usage: /unjail <player>
+    permission: jailplugin.unjail
+  jailduration:
+    description: View your or a player's jail duration
+    usage: /jailduration <player>
+  tempjail:
+    description: Temporarily jail a player.
+    usage: /tempjail <player> <jail name> <duration> <reason>
+    permission: jails.tempjail
+
+  deljail:
+    description: Deletes a jail
+    usage: /deljail <jail name>
+    permission: jailplugin.deljail
+
+  jailed:
+    description: Manage jailed players.
+    usage: /jailed list
+    permission: jail.list
+    permission-message: You do not have permission to use this command.

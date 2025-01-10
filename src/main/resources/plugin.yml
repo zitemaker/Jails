@@ -15,11 +15,11 @@ commands:
   jails:
     description: List all jail locations.
     usage: /jails
-    permission: jailplugin.jails
+    permission: jails.jails
   unjail:
     description: Unjail a player.
     usage: /unjail <player>
-    permission: jailplugin.unjail
+    permission: jails.unjail
   jailduration:
     description: View your or a player's jail duration
     usage: /jailduration <player>
@@ -36,5 +36,9 @@ commands:
   jailed:
     description: Manage jailed players.
     usage: /jailed list
-    permission: jail.list
+    permission: jails.list
     permission-message: You do not have permission to use this command.
+  jailspawn:
+    description: Select whether a jailed player will get sent to spawn or their original location after getting unjailed
+    usage: /jailspawn <player> <world_spawn/original_location>
+    permission: jails.spawn

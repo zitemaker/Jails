@@ -2,6 +2,7 @@ package me.zitemaker.jail.listeners;
 
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -66,14 +67,60 @@ public class JailListeners implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-        String basePath = playerUUID.toString() + ".original";
 
-        if (plugin.getJailedPlayersConfig().contains(basePath)) {
-            plugin.teleportToOriginalLocation(player, basePath);
-            plugin.getJailedPlayersConfig().set(playerUUID.toString(), null);
-            plugin.saveJailedPlayersConfig();
+
+        if (plugin.isPlayerJailed(playerUUID)) {
+            FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
+            String jailName = jailedPlayersConfig.getString(playerUUID.toString() + ".jailName");
+
+            if (jailName == null) {
+                player.sendMessage(ChatColor.RED + "Jail data missing! Contact an admin.");
+                return;
+            }
+
+            Location jailLocation = plugin.getJail(jailName);
+            if (jailLocation == null) {
+                player.sendMessage(ChatColor.RED + "Jail location not found! Contact an admin.");
+                return;
+            }
+
+
+            if (jailedPlayersConfig.getBoolean(playerUUID.toString() + ".unjailed", false)) {
+                String spawnOption = jailedPlayersConfig.getString(playerUUID.toString() + ".spawnOption", "original_location");
+
+
+                if (spawnOption.equals("world_spawn")) {
+                    Location worldSpawn = player.getWorld().getSpawnLocation();
+                    player.teleport(worldSpawn);
+                } else if (spawnOption.equals("original_location")) {
+
+                    plugin.teleportToOriginalLocation(player, playerUUID.toString() + ".original");
+                }
+
+                jailedPlayersConfig.set(playerUUID.toString(), null);
+                plugin.saveJailedPlayersConfig();
+                player.sendMessage(ChatColor.GREEN + "You were unjailed.");
+                return;
+            }
+
+            long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
+            if (endTime == -1) {
+
+                player.teleport(jailLocation);
+                player.sendMessage(ChatColor.RED + "You have been permanently jailed by: " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Appeal in our discord server.");
+            } else if (System.currentTimeMillis() >= endTime) {
+
+                plugin.unjailPlayer(playerUUID);
+                player.sendMessage(ChatColor.GREEN + "Your jail time has ended. Welcome back!");
+            } else {
+
+                player.teleport(jailLocation);
+                long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
+                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Duration: " + endTime + " seconds. Appeal in our discord.");
+            }
         }
     }
+
 
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {

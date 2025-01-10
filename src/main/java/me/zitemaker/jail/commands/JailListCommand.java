@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -42,7 +43,6 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
 
         Player player = (Player) sender;
 
-        // Permission check
         if (!player.hasPermission("jail.list")) {
             player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return true;
@@ -53,13 +53,13 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
             return true;
         }
 
-        // Rest of the code remains unchanged
+
         FileConfiguration jailedConfig = plugin.getJailedPlayersConfig();
         List<String> jailedKeys = new ArrayList<>(jailedConfig.getKeys(false));
 
         Inventory jailList = Bukkit.createInventory(null, 54, ChatColor.RED + "Jail List");
 
-        // Add jailed players to the GUI
+
         for (String key : jailedKeys) {
             UUID playerUUID = UUID.fromString(key);
             String playerName = Bukkit.getOfflinePlayer(playerUUID).getName();
@@ -68,7 +68,7 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
             long endTime = jailedConfig.getLong(key + ".endTime", -1);
             String duration = endTime == -1 ? "Permanent" : formatDuration(endTime - System.currentTimeMillis());
 
-            // Create player head
+
             ItemStack head = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta meta = (SkullMeta) head.getItemMeta();
             if (meta != null) {
@@ -90,8 +90,9 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
             jailList.addItem(head);
         }
 
-        // Fill remaining slots with red glowing ink sacs
-        ItemStack filler = new ItemStack(Material.GLOW_INK_SAC);
+
+
+        ItemStack filler = new ItemStack(Material.AIR);
         ItemMeta fillerMeta = filler.getItemMeta();
         if (fillerMeta != null) {
             fillerMeta.setDisplayName(ChatColor.RED + "");
@@ -112,24 +113,21 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
         if (!ChatColor.stripColor(event.getView().getTitle()).equals("Jail List")) return;
 
         event.setCancelled(true);
+
         if (!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();
         ItemStack clickedItem = event.getCurrentItem();
+
 
         if (clickedItem == null || clickedItem.getType() != Material.PLAYER_HEAD) return;
 
         SkullMeta meta = (SkullMeta) clickedItem.getItemMeta();
         if (meta == null || meta.getOwningPlayer() == null) return;
 
-        Player target = Bukkit.getPlayer(meta.getOwningPlayer().getUniqueId());
-        if (target == null) {
-            player.sendMessage(ChatColor.RED + "The player is offline.");
-            return;
-        }
 
         if (event.isLeftClick()) {
-            // Teleport to jail location
+
             String jailName = ChatColor.stripColor(meta.getLore().get(2).split(":")[1].trim());
             Location jailLocation = plugin.getJail(jailName);
             if (jailLocation != null) {
@@ -139,12 +137,13 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
                 player.sendMessage(ChatColor.RED + "Jail location not found.");
             }
         } else if (event.isRightClick()) {
-            // Unjail the player
-            UUID targetUUID = target.getUniqueId();
+
+            UUID targetUUID = meta.getOwningPlayer().getUniqueId();
             plugin.unjailPlayer(targetUUID);
-            player.sendMessage(ChatColor.GREEN + "You have set " + target.getName() + " free.");
+            player.sendMessage(ChatColor.GREEN + "You have set " + Bukkit.getOfflinePlayer(targetUUID).getName() + " free.");
         }
     }
+
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

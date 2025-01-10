@@ -39,8 +39,12 @@ public class JailDurationCommand implements CommandExecutor {
         }
 
         long endTime = config.getLong(target.getUniqueId() + ".endTime");
+        if(endTime == -1){
+            sender.sendMessage(ChatColor.RED + target.getName() + " is permanently jailed!");
+            return true;
+        }
         if (System.currentTimeMillis() > endTime) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " is no longer jailed.");
+            sender.sendMessage(ChatColor.GREEN + target.getName() + " is no longer jailed.");
             return true;
         }
 

@@ -3,10 +3,10 @@ package me.zitemaker.jail.commands;
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -30,20 +30,25 @@ public class UnjailCommand implements CommandExecutor {
             return true;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
-        if (target == null || !target.isOnline()) {
-            sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+
+        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
+
+        if (target == null || !target.hasPlayedBefore()) {
+            sender.sendMessage(ChatColor.RED + "Player not found or has never joined the server.");
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
+
         if (!plugin.isPlayerJailed(targetUUID)) {
             sender.sendMessage(ChatColor.YELLOW + target.getName() + " is not jailed.");
             return true;
         }
 
+
         plugin.unjailPlayer(targetUUID);
 
+        sender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
         Bukkit.broadcastMessage(ChatColor.GREEN + target.getName() + " has been unjailed.");
         return true;
     }

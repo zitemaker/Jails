@@ -48,8 +48,10 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jailspawn").setTabCompleter(new JailSpawnTabCompleter());
         getCommand("unjail").setExecutor(new UnjailCommand(this));
         getCommand("jailduration").setExecutor(new JailDurationCommand(this));
-        getCommand("jailed").setExecutor(new JailListCommand(this));
-        getCommand("jailed").setTabCompleter(new JailListCommand(this));
+
+        JailListCommand jailListCommand = new JailListCommand(this);
+        getCommand("jailed").setExecutor(jailListCommand);
+        getCommand("jailed").setTabCompleter(jailListCommand);
 
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
@@ -141,6 +143,8 @@ public class JailPlugin extends JavaPlugin {
         jailedPlayersConfig.set(basePath + ".reason", reason);
         jailedPlayersConfig.set(basePath + ".jailer", jailer);
 
+        setPlayerSpawnOption(playerUUID, "world_spawn");
+
         saveJailedPlayersConfig();
 
         Location jailLocation = getJail(jailName);
@@ -151,14 +155,18 @@ public class JailPlugin extends JavaPlugin {
         }
     }
 
+
     public void unjailPlayer(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
+        String spawnOption = getPlayerSpawnOption(playerUUID);
+
         if (player == null) {
-            getLogger().info("Player is offline. Their spawn preference will be applied upon login.");
+            jailedPlayersConfig.set(playerUUID.toString() + ".unjailed", true);
+            saveJailedPlayersConfig();
+            getLogger().info("Offline player has been marked as unjailed.");
             return;
         }
 
-        String spawnOption = playerSpawnPreferences.getOrDefault(playerUUID, "original_location");
         if (spawnOption.equals("world_spawn")) {
             Location worldSpawn = player.getWorld().getSpawnLocation();
             player.teleport(worldSpawn);
@@ -166,9 +174,14 @@ public class JailPlugin extends JavaPlugin {
             teleportToOriginalLocation(player, playerUUID.toString() + ".original");
         }
 
+
         jailedPlayersConfig.set(playerUUID.toString(), null);
         saveJailedPlayersConfig();
+        getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
     }
+
+
+
 
     public void teleportToOriginalLocation(Player player, String basePath) {
         String worldName = jailedPlayersConfig.getString(basePath + ".world");
@@ -189,12 +202,14 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void setPlayerSpawnOption(UUID playerUUID, String option) {
-        playerSpawnPreferences.put(playerUUID, option);
+        jailedPlayersConfig.set(playerUUID.toString() + ".spawnOption", option);
+        saveJailedPlayersConfig();
     }
 
     public String getPlayerSpawnOption(UUID playerUUID) {
-        return playerSpawnPreferences.getOrDefault(playerUUID, "original_location");
+        return jailedPlayersConfig.getString(playerUUID.toString() + ".spawnOption", "original_location");
     }
+
 
     public boolean isPlayerJailed(UUID playerUUID) {
         return jailedPlayersConfig.contains(playerUUID.toString());

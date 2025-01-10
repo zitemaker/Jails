@@ -33,19 +33,33 @@ public class JailDurationCommand implements CommandExecutor {
         }
 
         FileConfiguration config = plugin.getJailedPlayersConfig();
-        if (!config.contains(target.getUniqueId().toString())) {
+        String playerUUID = target.getUniqueId().toString();
+
+        if (!config.contains(playerUUID)) {
             sender.sendMessage(ChatColor.RED + target.getName() + " is not jailed.");
             return true;
         }
 
-        long endTime = config.getLong(target.getUniqueId() + ".endTime");
-        if (System.currentTimeMillis() > endTime) {
+        long endTime = config.getLong(playerUUID + ".endTime", -1);
+
+        if (endTime == -1) {
+            sender.sendMessage(ChatColor.RED + target.getName() + " is permanently jailed!");
+            return true;
+        }
+
+        long currentTime = System.currentTimeMillis();
+
+        if (currentTime > endTime) {
             sender.sendMessage(ChatColor.RED + target.getName() + " is no longer jailed.");
             return true;
         }
 
-        long remainingTime = (endTime - System.currentTimeMillis()) / 1000;
-        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + remainingTime + " seconds remaining in jail.");
+        long remainingTime = (endTime - currentTime) / 1000;
+        long hours = remainingTime / 3600;
+        long minutes = (remainingTime % 3600) / 60;
+        long seconds = remainingTime % 60;
+
+        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + hours + "h " + minutes + "m " + seconds + "s remaining in jail.");
         return true;
     }
 }

@@ -259,7 +259,6 @@ public class JailPlugin extends JavaPlugin {
     public void scheduleUnjail(Player player, long duration) {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (isPlayerJailed(player.getUniqueId())) {
-                unjailPlayer(player.getUniqueId());
                 Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has been unjailed.");
             }
         }, duration / 50);

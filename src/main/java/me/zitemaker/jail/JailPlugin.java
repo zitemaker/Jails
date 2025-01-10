@@ -65,7 +65,7 @@ public class JailPlugin extends JavaPlugin {
         getLogger().info("JailPlugin has been disabled!");
     }
 
-    // --- Jail Locations ---
+    // ---- Jail Locations ----
     public void addJail(String name, Location location) {
         jailLocationsConfig.set(name + ".world", location.getWorld().getName());
         jailLocationsConfig.set(name + ".x", location.getX());

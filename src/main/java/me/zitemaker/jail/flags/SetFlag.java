@@ -82,7 +82,7 @@ public class SetFlag implements CommandExecutor {
 
         try {
             flagsConfig.save(flagsFile);
-            player.sendMessage(ChatColor.GREEN + "Flag '" + flagName + "' has been saved in flags.yml!");
+            player.sendMessage(ChatColor.GREEN + "Flag '" + flagName + "' has been set successfully!");
         } catch (IOException e) {
             player.sendMessage(ChatColor.RED + "An error occurred while saving the flag!");
             e.printStackTrace();

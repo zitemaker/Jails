@@ -33,11 +33,16 @@ public class JailListeners implements Listener {
         return plugin.getJailedPlayersConfig().contains(playerUUID.toString());
     }
 
+    private boolean isActionAllowed(String actionKey) {
+        FileConfiguration config = plugin.getConfig();
+        return config.getBoolean("jail-restrictions." + actionKey, true);
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
 
-        if (isPlayerJailed(player)) {
+        if (isPlayerJailed(player) && isActionAllowed("block-break")) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GOLD + "You cannot break blocks while in jail!");
         }
@@ -47,7 +52,7 @@ public class JailListeners implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
 
-        if (isPlayerJailed(player)) {
+        if (isPlayerJailed(player) && isActionAllowed("block-place")) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GOLD + "You cannot place blocks while in jail!");
         }
@@ -57,7 +62,7 @@ public class JailListeners implements Listener {
     public void onHit(EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
 
-        if (damager instanceof Player player && isPlayerJailed(player)) {
+        if (damager instanceof Player player && isPlayerJailed(player) && isActionAllowed("attack")) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.GOLD + "You cannot attack others while in jail!");
         }
@@ -67,7 +72,6 @@ public class JailListeners implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UUID playerUUID = player.getUniqueId();
-
 
         if (plugin.isPlayerJailed(playerUUID)) {
             FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
@@ -84,16 +88,13 @@ public class JailListeners implements Listener {
                 return;
             }
 
-
             if (jailedPlayersConfig.getBoolean(playerUUID.toString() + ".unjailed", false)) {
                 String spawnOption = jailedPlayersConfig.getString(playerUUID.toString() + ".spawnOption", "original_location");
-
 
                 if (spawnOption.equals("world_spawn")) {
                     Location worldSpawn = player.getWorld().getSpawnLocation();
                     player.teleport(worldSpawn);
                 } else if (spawnOption.equals("original_location")) {
-
                     plugin.teleportToOriginalLocation(player, playerUUID.toString() + ".original");
                 }
 
@@ -105,28 +106,24 @@ public class JailListeners implements Listener {
 
             long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
             if (endTime == -1) {
-
                 player.teleport(jailLocation);
                 player.sendMessage(ChatColor.RED + "You have been permanently jailed by: " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Appeal in our discord server.");
             } else if (System.currentTimeMillis() >= endTime) {
-
                 plugin.unjailPlayer(playerUUID);
                 player.sendMessage(ChatColor.GREEN + "Your jail time has ended. Welcome back!");
             } else {
-
                 player.teleport(jailLocation);
                 long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
-                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Duration: " + endTime + " seconds. Appeal in our discord.");
+                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Duration: " + timeLeft + " seconds. Appeal in our discord.");
             }
         }
     }
-
 
     @EventHandler
     public void onEntitySpawn(EntitySpawnEvent event) {
         Entity entity = event.getEntity();
 
-        if (entity instanceof Vehicle && (entity instanceof org.bukkit.entity.Boat || entity instanceof org.bukkit.entity.Minecart)) {
+        if (entity instanceof Vehicle && isActionAllowed("vehicle-ride")) {
             if (entity instanceof Player player && isPlayerJailed(player)) {
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "You cannot ride vehicles while in jail!");
@@ -140,7 +137,7 @@ public class JailListeners implements Listener {
         ItemStack item = event.getItem();
 
         if (isPlayerJailed(player)) {
-            if (item != null && item.getType() == Material.ENDER_PEARL) {
+            if (item != null && item.getType() == Material.ENDER_PEARL && isActionAllowed("ender-pearl")) {
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.GOLD + "You cannot use ender pearls while in jail!");
             }

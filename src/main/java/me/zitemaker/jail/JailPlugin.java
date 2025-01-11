@@ -1,8 +1,11 @@
 package me.zitemaker.jail;
 
 import me.zitemaker.jail.commands.*;
+import me.zitemaker.jail.flags.FlagList;
+import me.zitemaker.jail.flags.SetFlag;
 import me.zitemaker.jail.listeners.ChatListener;
 import me.zitemaker.jail.listeners.CommandBlocker;
+import me.zitemaker.jail.listeners.FlagBoundaryListener;
 import me.zitemaker.jail.listeners.JailListeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,6 +51,10 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jailspawn").setTabCompleter(new JailSpawnTabCompleter());
         getCommand("unjail").setExecutor(new UnjailCommand(this));
         getCommand("jailduration").setExecutor(new JailDurationCommand(this));
+        getCommand("jailsetflag").setExecutor(new SetFlag(this));
+        getCommand("jaildelflag").setExecutor(new DelJailCommand(this));
+        getCommand("jailflaglist").setExecutor(new FlagList(this));
+        getCommand("handcuff").setExecutor(new Handcuff(this));
 
         JailListCommand jailListCommand = new JailListCommand(this);
         getCommand("jailed").setExecutor(jailListCommand);
@@ -56,6 +63,7 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
+        getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
     }
 
     @Override

@@ -38,7 +38,28 @@ commands:
     usage: /jailed list
     permission: jails.list
     permission-message: You do not have permission to use this command.
+
   jailspawn:
     description: Select whether a jailed player will get sent to spawn or their original location after getting unjailed
-    usage: /jailspawn <player> <world_spawn/original_location>
+    usage: /jailspawn <player> <world_spawn | original_location>
     permission: jails.spawn
+
+  jailsetflag:
+    description: Set a jail flag using WorldEdit positions.
+    usage: /jailsetflag
+    permission: jails.setflag
+
+  jaildelflag:
+    description: Delete a flag for a jail area.
+    usage: /jaildelflag <flagName>
+    permission: jails.delflag
+
+  jailflaglist:
+    description: Open a GUI to list all flags.
+    usage: /jailflaglist
+    permission: jails.flaglist
+
+  handcuff:
+    description: Handcuff a player to restrict their movement.
+    usage: /handcuff <player>
+    permission: jails.handcuff

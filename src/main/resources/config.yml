@@ -1,4 +1,4 @@
-# blocked commands when jailed
+# Blocked commands when jailed
 blockedCommands:
   - "tpa"
   - "home"
@@ -7,3 +7,12 @@ blockedCommands:
   - "rtp"
   - "tpr"
   - "warp"
+
+# Jail restrictions for actions
+# Set to true to allow the action while jailed, false to block the action.
+jail-restrictions:
+  block-break: false # If false, players cannot break blocks while jailed.
+  block-place: false # If false, players cannot place blocks while jailed.
+  attack: false      # If false, players cannot attack entities while jailed.
+  vehicle-ride: false # If false, players cannot ride vehicles (e.g., boats, minecarts) while jailed.
+  ender-pearl: false  # If false, players cannot use ender pearls while jailed.

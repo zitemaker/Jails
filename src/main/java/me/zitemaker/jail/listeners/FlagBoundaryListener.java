@@ -68,14 +68,14 @@ public class FlagBoundaryListener implements Listener {
                     double py = player.getLocation().getY();
                     double pz = player.getLocation().getZ();
 
-                    if (px >= x1 && px <= x2 && py >= y1 && py <= y2 && pz >= z1 && pz <= z2) {
+                    if (!(px >= x1 && px <= x2 && py >= y1 && py <= y2 && pz >= z1 && pz <= z2)) {
+                        Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] A Criminal has recently attempted JailBreak!");
+                        return;
                     }
                 }
             } catch (NumberFormatException e) {
                 plugin.getLogger().severe("Invalid coordinates for flag: " + flagName);
             }
         }
-
-        Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] A Criminal has recently attempted JailBreak!");
     }
 }

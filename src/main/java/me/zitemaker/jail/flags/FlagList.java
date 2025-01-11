@@ -68,6 +68,8 @@ public class FlagList implements CommandExecutor, Listener {
 
             if (worldName == null || pos1 == null || pos2 == null) continue;
 
+            plugin.getLogger().info("Fetching world: " + worldName);
+
             Material material;
             switch (worldName.toLowerCase()) {
                 case "world":
@@ -80,7 +82,8 @@ public class FlagList implements CommandExecutor, Listener {
                     material = Material.END_STONE;
                     break;
                 default:
-                    material = Material.BARRIER; // Fallback for unknown worlds
+                    material = Material.BARRIER;
+                    break;
             }
 
             ItemStack item = new ItemStack(material);

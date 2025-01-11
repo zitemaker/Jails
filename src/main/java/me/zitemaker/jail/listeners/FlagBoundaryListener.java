@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.io.File;
 
-public class FlagBoundaryListener implements Listener {
+public class  FlagBoundaryListener implements Listener {
 
     private final JailPlugin plugin;
     private final File flagsFile;
@@ -40,6 +40,10 @@ public class FlagBoundaryListener implements Listener {
         Player player = event.getPlayer();
 
         if (!player.hasPermission("jail.role.jailed")) {
+            return;
+        }
+
+        if (flagsConfig.getKeys(false).isEmpty()){
             return;
         }
 

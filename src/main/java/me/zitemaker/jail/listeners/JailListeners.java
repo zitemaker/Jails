@@ -107,14 +107,14 @@ public class JailListeners implements Listener {
             long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
             if (endTime == -1) {
                 player.teleport(jailLocation);
-                player.sendMessage(ChatColor.RED + "You have been permanently jailed by: " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Appeal in our discord server.");
+                player.sendMessage(ChatColor.RED + "You have been permanently jailed by: " + ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason") + ". Appeal in our discord server.");
             } else if (System.currentTimeMillis() >= endTime) {
                 plugin.unjailPlayer(playerUUID);
                 player.sendMessage(ChatColor.GREEN + "Your jail time has ended. Welcome back!");
             } else {
                 player.teleport(jailLocation);
                 long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
-                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString("jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString("reason") + ". Duration: " + timeLeft + " seconds. Appeal in our discord.");
+                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason") + ". Duration: " + timeLeft + " seconds. Appeal in our discord.");
             }
         }
     }

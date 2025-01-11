@@ -3,20 +3,29 @@ package me.zitemaker.jail.commands;
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Vector;
 
-public class Handcuff implements CommandExecutor {
+import java.util.HashSet;
+import java.util.Set;
+
+public class Handcuff implements CommandExecutor, Listener {
 
     private final JailPlugin plugin;
+    private final Set<Player> handcuffedPlayers = new HashSet<>();
 
     public Handcuff(JailPlugin plugin) {
         this.plugin = plugin;
         plugin.getCommand("handcuff").setExecutor(this);
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
@@ -44,12 +53,23 @@ public class Handcuff implements CommandExecutor {
             return true;
         }
 
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20 * 60, 1)); // Slowness II for 60 seconds
-        target.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, 20 * 60, 2)); // Turtle Master for 60 seconds
+        if (handcuffedPlayers.add(target)) {
 
-        target.sendMessage(ChatColor.RED + "You have been handcuffed by " + handcuffer.getName() + "!");
-        handcuffer.sendMessage(ChatColor.GREEN + "You have handcuffed " + target.getName() + "!");
+            target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.01);
+
+            handcuffer.sendMessage(ChatColor.GREEN + target.getName() + " has been handcuffed!");
+            target.sendMessage(ChatColor.RED + "You have been handcuffed by " + handcuffer.getName() + "!");
+        } else {
+
+            target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2);
+            handcuffedPlayers.remove(target);
+
+            handcuffer.sendMessage(ChatColor.YELLOW + target.getName() + " has been freed from handcuffs!");
+            target.sendMessage(ChatColor.YELLOW + "You have been freed by " + handcuffer.getName() + "!");
+        }
 
         return true;
     }
+
+
 }

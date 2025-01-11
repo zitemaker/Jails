@@ -9,19 +9,22 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class JailsCommand implements CommandExecutor {
+public class JailsCommand implements CommandExecutor, Listener {
 
     private final JailPlugin plugin;
 
     public JailsCommand(JailPlugin plugin) {
         this.plugin = plugin;
+        Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
@@ -83,7 +86,20 @@ public class JailsCommand implements CommandExecutor {
         return true;
     }
 
-    public static void handleInventoryClick(Player player, ItemStack clickedItem, JailPlugin plugin) {
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+
+        if (!event.getView().getTitle().equals(ChatColor.RED + "Jails")) {
+            return;
+        }
+
+
+        event.setCancelled(true);
+
+        if (!(event.getWhoClicked() instanceof Player)) return;
+        Player player = (Player) event.getWhoClicked();
+
+        ItemStack clickedItem = event.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR) {
             return;
         }
@@ -94,13 +110,20 @@ public class JailsCommand implements CommandExecutor {
         }
 
         String displayName = ChatColor.stripColor(meta.getDisplayName());
+        System.out.println("DEBUG: Display Name = " + displayName);
+
         if (displayName.startsWith("Name: ")) {
             String jailName = displayName.substring(6).trim();
             Location location = plugin.getJails().get(jailName);
 
+            System.out.println("DEBUG: Jail Name = " + jailName);
             if (location != null) {
+                System.out.println("DEBUG: Jail Location = " + location);
                 player.teleport(location);
                 player.sendMessage(ChatColor.GREEN + "Teleported to jail: " + ChatColor.GOLD + jailName);
+            } else {
+                System.out.println("DEBUG: Location is null for jail name: " + jailName);
+                player.sendMessage(ChatColor.RED + "Jail location not found!");
             }
         }
     }

@@ -112,19 +112,22 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
     public void onInventoryClick(InventoryClickEvent event) {
         if (!ChatColor.stripColor(event.getView().getTitle()).equals("Jail List")) return;
 
-        event.setCancelled(true);
+        if (event.getAction().toString().contains("DROP") || event.getAction().toString().contains("PICKUP") || event.getAction().toString().contains("SWAP")) {
+            event.setCancelled(true);
+            return;
+        }
+
+        event.setCancelled(true); 
 
         if (!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();
         ItemStack clickedItem = event.getCurrentItem();
 
-
         if (clickedItem == null || clickedItem.getType() != Material.PLAYER_HEAD) return;
 
         SkullMeta meta = (SkullMeta) clickedItem.getItemMeta();
         if (meta == null || meta.getOwningPlayer() == null) return;
-
 
         if (event.isLeftClick()) {
 

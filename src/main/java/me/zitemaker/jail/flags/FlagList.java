@@ -61,14 +61,16 @@ public class FlagList implements CommandExecutor, Listener {
     private void openFlagListGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, 54, ChatColor.YELLOW + "Flags List");
 
+        plugin.getLogger().info("Flag list size: " + flagsConfig.getKeys(false).size());
+
         for (String flagName : flagsConfig.getKeys(false)) {
             String worldName = flagsConfig.getString(flagName + ".world");
             String pos1 = flagsConfig.getString(flagName + ".pos1");
             String pos2 = flagsConfig.getString(flagName + ".pos2");
 
-            if (worldName == null || pos1 == null || pos2 == null) continue;
+            plugin.getLogger().info("Flag: " + flagName + " World: " + worldName + " Pos1: " + pos1 + " Pos2: " + pos2);
 
-            plugin.getLogger().info("Fetching world: " + worldName);
+            if (worldName == null || pos1 == null || pos2 == null) continue;
 
             Material material;
             switch (worldName.toLowerCase()) {
@@ -92,8 +94,8 @@ public class FlagList implements CommandExecutor, Listener {
                 meta.setDisplayName(ChatColor.YELLOW + flagName);
                 List<String> lore = new ArrayList<>();
                 lore.add(ChatColor.YELLOW + "Coords:");
-                lore.add(ChatColor.YELLOW + pos1);
-                lore.add(ChatColor.YELLOW + pos2);
+                lore.add(ChatColor.GOLD + pos1);
+                lore.add(ChatColor.GOLD + pos2);
                 lore.add("");
                 lore.add(ChatColor.GREEN + "Left-click to teleport");
                 meta.setLore(lore);

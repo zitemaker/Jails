@@ -64,3 +64,8 @@ commands:
     description: Handcuff a player to restrict their movement.
     usage: /handcuff <player>
     permission: jails.handcuff
+
+  handcuffremove:
+    description: Remove handcuffs from a player.
+    usage: /handcuffremove <player>
+    permission: jails.handcuffremove

@@ -93,6 +93,10 @@ public class JailsCommand implements CommandExecutor, Listener {
             return;
         }
 
+        if (event.getAction().toString().contains("DROP") || event.getAction().toString().contains("PICKUP") || event.getAction().toString().contains("SWAP")) {
+            event.setCancelled(true);
+            return;
+        }
 
         event.setCancelled(true);
 

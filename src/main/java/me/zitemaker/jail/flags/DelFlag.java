@@ -48,12 +48,12 @@ public class DelFlag implements CommandExecutor, TabCompleter {
 
         String flagName = args[0];
 
+        flagsConfig.setDefaults(YamlConfiguration.loadConfiguration(flagsFile));
         if (!flagsConfig.contains(flagName)) {
             sender.sendMessage(ChatColor.RED + "The flag '" + flagName + "' does not exist!");
             return true;
         }
 
-        // Remove the flag from the configuration
         flagsConfig.set(flagName, null);
 
         try {
@@ -70,7 +70,7 @@ public class DelFlag implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            // Suggest flag names
+            flagsConfig.setDefaults(YamlConfiguration.loadConfiguration(flagsFile));
             return new ArrayList<>(flagsConfig.getKeys(false));
         }
 

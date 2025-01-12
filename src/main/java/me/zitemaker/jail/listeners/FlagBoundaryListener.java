@@ -3,35 +3,28 @@ package me.zitemaker.jail.listeners;
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class  FlagBoundaryListener implements Listener {
+public class FlagBoundaryListener implements Listener {
 
     private final JailPlugin plugin;
-    private final File flagsFile;
-    private final FileConfiguration flagsConfig;
+    private final Map<UUID, Long> alertCooldown = new HashMap<>();
+    private static final long COOLDOWN_TIME = 5000; // 5 seconds cooldown
 
     public FlagBoundaryListener(JailPlugin plugin) {
         this.plugin = plugin;
-
-        this.flagsFile = new File(plugin.getDataFolder(), "flags.yml");
-        if (!flagsFile.exists()) {
-            try {
-                flagsFile.createNewFile();
-            } catch (Exception e) {
-                plugin.getLogger().severe("Could not create flags.yml!");
-                e.printStackTrace();
-            }
-        }
-        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
-
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -39,46 +32,75 @@ public class  FlagBoundaryListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        if (!player.hasPermission("jail.role.jailed")) {
+        // Debug message to check if event is firing
+        plugin.getLogger().info("Player " + player.getName() + " moved");
+
+        if (!plugin.isPlayerJailed(player.getUniqueId())) {
             return;
         }
 
-        if (flagsConfig.getKeys(false).isEmpty()){
+        // Debug message to check if player is jailed
+        plugin.getLogger().info("Player " + player.getName() + " is jailed");
+
+        FileConfiguration jailConfig = plugin.getJailedPlayersConfig();
+        String jailName = jailConfig.getString(player.getUniqueId().toString() + ".jailName");
+
+        if (jailName == null) {
+            plugin.getLogger().warning("No jail name found for player " + player.getName());
             return;
         }
 
-        for (String flagName : flagsConfig.getKeys(false)) {
-            String worldName = flagsConfig.getString(flagName + ".world");
-            String pos1 = flagsConfig.getString(flagName + ".pos1");
-            String pos2 = flagsConfig.getString(flagName + ".pos2");
+        // Get jail location and bounds
+        Location jailLoc = plugin.getJail(jailName);
+        if (jailLoc == null) {
+            plugin.getLogger().warning("No jail location found for jail " + jailName);
+            return;
+        }
 
-            if (worldName == null || pos1 == null || pos2 == null) continue;
+        // Define jail bounds (for example, 10 blocks in each direction from jail point)
+        int radius = 10;
+        double minX = jailLoc.getX() - radius;
+        double maxX = jailLoc.getX() + radius;
+        double minY = jailLoc.getY() - radius;
+        double maxY = jailLoc.getY() + radius;
+        double minZ = jailLoc.getZ() - radius;
+        double maxZ = jailLoc.getZ() + radius;
 
-            String[] pos1Coords = pos1.split(",");
-            String[] pos2Coords = pos2.split(",");
-            if (pos1Coords.length != 3 || pos2Coords.length != 3) continue;
+        Location playerLoc = player.getLocation();
 
-            try {
-                double x1 = Math.min(Double.parseDouble(pos1Coords[0]), Double.parseDouble(pos2Coords[0]));
-                double y1 = Math.min(Double.parseDouble(pos1Coords[1]), Double.parseDouble(pos2Coords[1]));
-                double z1 = Math.min(Double.parseDouble(pos1Coords[2]), Double.parseDouble(pos2Coords[2]));
+        // Check if player is outside bounds
+        if (playerLoc.getX() < minX || playerLoc.getX() > maxX ||
+                playerLoc.getY() < minY || playerLoc.getY() > maxY ||
+                playerLoc.getZ() < minZ || playerLoc.getZ() > maxZ ||
+                !playerLoc.getWorld().equals(jailLoc.getWorld())) {
 
-                double x2 = Math.max(Double.parseDouble(pos1Coords[0]), Double.parseDouble(pos2Coords[0]));
-                double y2 = Math.max(Double.parseDouble(pos1Coords[1]), Double.parseDouble(pos2Coords[1]));
-                double z2 = Math.max(Double.parseDouble(pos1Coords[2]), Double.parseDouble(pos2Coords[2]));
+            // Debug message
+            plugin.getLogger().info("Player " + player.getName() + " is outside jail bounds");
 
-                if (player.getWorld().getName().equals(worldName)) {
-                    double px = player.getLocation().getX();
-                    double py = player.getLocation().getY();
-                    double pz = player.getLocation().getZ();
+            // Check cooldown
+            long currentTime = System.currentTimeMillis();
+            if (!alertCooldown.containsKey(player.getUniqueId()) ||
+                    currentTime - alertCooldown.get(player.getUniqueId()) > COOLDOWN_TIME) {
 
-                    if (!(px >= x1 && px <= x2 && py >= y1 && py <= y2 && pz >= z1 && pz <= z2)) {
-                        Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] A Criminal has recently attempted JailBreak!");
-                        return;
+                // Broadcast escape message
+                Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] " + player.getName() +
+                        " has attempted to escape from jail!");
+
+                // Teleport back to jail
+                player.teleport(jailLoc);
+                player.sendMessage(ChatColor.RED + "You cannot escape from jail!");
+
+                // Set cooldown
+                alertCooldown.put(player.getUniqueId(), currentTime);
+
+                // Schedule removal message
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] " + player.getName() +
+                                " has been caught and returned to jail!");
                     }
-                }
-            } catch (NumberFormatException e) {
-                plugin.getLogger().severe("Invalid coordinates for flag: " + flagName);
+                }.runTaskLater(plugin, 100L); // 5 seconds
             }
         }
     }

@@ -13,9 +13,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
@@ -28,43 +29,57 @@ public class JailListeners implements Listener {
         this.plugin = plugin;
     }
 
-    private boolean isPlayerJailed(Player player) {
-        UUID playerUUID = player.getUniqueId();
-        return plugin.getJailedPlayersConfig().contains(playerUUID.toString());
-    }
-
-    private boolean isActionAllowed(String actionKey) {
-        FileConfiguration config = plugin.getConfig();
-        return config.getBoolean("jail-restrictions." + actionKey, true);
-    }
-
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-
-        if (isPlayerJailed(player) && isActionAllowed("block-break")) {
+        if (plugin.isPlayerJailed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GOLD + "You cannot break blocks while in jail!");
+            player.sendMessage(ChatColor.RED + "You cannot break blocks while in jail!");
         }
     }
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-
-        if (isPlayerJailed(player) && isActionAllowed("block-place")) {
+        if (plugin.isPlayerJailed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GOLD + "You cannot place blocks while in jail!");
+            player.sendMessage(ChatColor.RED + "You cannot place blocks while in jail!");
         }
     }
 
     @EventHandler
-    public void onHit(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
+    public void onEntityDamage(EntityDamageByEntityEvent event) {
+        if (!(event.getDamager() instanceof Player)) return;
 
-        if (damager instanceof Player player && isPlayerJailed(player) && isActionAllowed("attack")) {
+        Player player = (Player) event.getDamager();
+        if (plugin.isPlayerJailed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.GOLD + "You cannot attack others while in jail!");
+            player.sendMessage(ChatColor.RED + "You cannot attack while in jail!");
+        }
+    }
+
+    @EventHandler
+    public void onVehicleEnter(VehicleEnterEvent event) {
+        if (!(event.getEntered() instanceof Player)) return;
+
+        Player player = (Player) event.getEntered();
+        if (plugin.isPlayerJailed(player.getUniqueId())) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
+        }
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        if (plugin.isPlayerJailed(player.getUniqueId())) {
+            String jailName = plugin.getJailedPlayersConfig().getString(player.getUniqueId().toString() + ".jailName");
+            if (jailName != null) {
+                Location jailLoc = plugin.getJail(jailName);
+                if (jailLoc != null) {
+                    event.setRespawnLocation(jailLoc);
+                }
+            }
         }
     }
 
@@ -88,45 +103,21 @@ public class JailListeners implements Listener {
                 return;
             }
 
-            if (jailedPlayersConfig.getBoolean(playerUUID.toString() + ".unjailed", false)) {
-                String spawnOption = jailedPlayersConfig.getString(playerUUID.toString() + ".spawnOption", "original_location");
-
-                if (spawnOption.equals("world_spawn")) {
-                    Location worldSpawn = player.getWorld().getSpawnLocation();
-                    player.teleport(worldSpawn);
-                } else if (spawnOption.equals("original_location")) {
-                    plugin.teleportToOriginalLocation(player, playerUUID.toString() + ".original");
-                }
-
-                jailedPlayersConfig.set(playerUUID.toString(), null);
-                plugin.saveJailedPlayersConfig();
-                player.sendMessage(ChatColor.GREEN + "You were unjailed.");
-                return;
-            }
-
             long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
             if (endTime == -1) {
                 player.teleport(jailLocation);
-                player.sendMessage(ChatColor.RED + "You have been permanently jailed by: " + ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason") + ". Appeal in our discord server.");
+                player.sendMessage(ChatColor.RED + "You are permanently jailed by: " +
+                        ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") +
+                        ChatColor.RED + ". Reason: " +
+                        ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason"));
             } else if (System.currentTimeMillis() >= endTime) {
                 plugin.unjailPlayer(playerUUID);
-                player.sendMessage(ChatColor.GREEN + "Your jail time has ended. Welcome back!");
+                player.sendMessage(ChatColor.GREEN + "Your jail time has ended. You are now free!");
             } else {
                 player.teleport(jailLocation);
-                long timeLeft = (endTime - System.currentTimeMillis()) / 1000;
-                player.sendMessage(ChatColor.RED + "You have been temporarily jailed by " + ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") + ". Reason: " + ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason") + ". Duration: " + timeLeft + " seconds. Appeal in our discord.");
-            }
-        }
-    }
-
-    @EventHandler
-    public void onEntitySpawn(EntitySpawnEvent event) {
-        Entity entity = event.getEntity();
-
-        if (entity instanceof Vehicle && isActionAllowed("vehicle-ride")) {
-            if (entity instanceof Player player && isPlayerJailed(player)) {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "You cannot ride vehicles while in jail!");
+                long timeLeftMillis = endTime - System.currentTimeMillis();
+                String formattedTime = formatTimeLeft(timeLeftMillis);
+                player.sendMessage(ChatColor.RED + "You are jailed for " + formattedTime);
             }
         }
     }
@@ -136,11 +127,24 @@ public class JailListeners implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (isPlayerJailed(player)) {
-            if (item != null && item.getType() == Material.ENDER_PEARL && isActionAllowed("ender-pearl")) {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.GOLD + "You cannot use ender pearls while in jail!");
-            }
+        if (plugin.isPlayerJailed(player.getUniqueId()) && item != null &&
+                item.getType() == Material.ENDER_PEARL) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You cannot use ender pearls while in jail!");
         }
+    }
+
+    private String formatTimeLeft(long millis) {
+        long seconds = millis / 1000;
+        if (seconds < 60) return seconds + " second" + (seconds == 1 ? "" : "s");
+
+        long minutes = seconds / 60;
+        if (minutes < 60) return minutes + " minute" + (minutes == 1 ? "" : "s");
+
+        long hours = minutes / 60;
+        if (hours < 24) return hours + " hour" + (hours == 1 ? "" : "s");
+
+        long days = hours / 24;
+        return days + " day" + (days == 1 ? "" : "s");
     }
 }

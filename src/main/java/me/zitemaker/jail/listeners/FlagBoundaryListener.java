@@ -21,7 +21,7 @@ public class FlagBoundaryListener implements Listener {
 
     private final JailPlugin plugin;
     private final Map<UUID, Long> alertCooldown = new HashMap<>();
-    private static final long COOLDOWN_TIME = 5000; // 5 seconds cooldown
+    private static final long COOLDOWN_TIME = 5000;
 
     public FlagBoundaryListener(JailPlugin plugin) {
         this.plugin = plugin;
@@ -32,14 +32,12 @@ public class FlagBoundaryListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        // Debug message to check if event is firing
         plugin.getLogger().info("Player " + player.getName() + " moved");
 
         if (!plugin.isPlayerJailed(player.getUniqueId())) {
             return;
         }
 
-        // Debug message to check if player is jailed
         plugin.getLogger().info("Player " + player.getName() + " is jailed");
 
         FileConfiguration jailConfig = plugin.getJailedPlayersConfig();
@@ -50,14 +48,12 @@ public class FlagBoundaryListener implements Listener {
             return;
         }
 
-        // Get jail location and bounds
         Location jailLoc = plugin.getJail(jailName);
         if (jailLoc == null) {
             plugin.getLogger().warning("No jail location found for jail " + jailName);
             return;
         }
 
-        // Define jail bounds (for example, 10 blocks in each direction from jail point)
         int radius = 10;
         double minX = jailLoc.getX() - radius;
         double maxX = jailLoc.getX() + radius;
@@ -68,39 +64,32 @@ public class FlagBoundaryListener implements Listener {
 
         Location playerLoc = player.getLocation();
 
-        // Check if player is outside bounds
         if (playerLoc.getX() < minX || playerLoc.getX() > maxX ||
                 playerLoc.getY() < minY || playerLoc.getY() > maxY ||
                 playerLoc.getZ() < minZ || playerLoc.getZ() > maxZ ||
                 !playerLoc.getWorld().equals(jailLoc.getWorld())) {
 
-            // Debug message
             plugin.getLogger().info("Player " + player.getName() + " is outside jail bounds");
 
-            // Check cooldown
             long currentTime = System.currentTimeMillis();
             if (!alertCooldown.containsKey(player.getUniqueId()) ||
                     currentTime - alertCooldown.get(player.getUniqueId()) > COOLDOWN_TIME) {
 
-                // Broadcast escape message
                 Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] " + player.getName() +
                         " has attempted to escape from jail!");
 
-                // Teleport back to jail
                 player.teleport(jailLoc);
                 player.sendMessage(ChatColor.RED + "You cannot escape from jail!");
 
-                // Set cooldown
                 alertCooldown.put(player.getUniqueId(), currentTime);
 
-                // Schedule removal message
                 new BukkitRunnable() {
                     @Override
                     public void run() {
                         Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] " + player.getName() +
                                 " has been caught and returned to jail!");
                     }
-                }.runTaskLater(plugin, 100L); // 5 seconds
+                }.runTaskLater(plugin, 100L);
             }
         }
     }

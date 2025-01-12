@@ -19,31 +19,59 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class FlagList implements CommandExecutor, Listener {
 
     private final JailPlugin plugin;
     private final File flagsFile;
-    private final FileConfiguration flagsConfig;
+    private FileConfiguration flagsConfig;
 
     public FlagList(JailPlugin plugin) {
         this.plugin = plugin;
-
         this.flagsFile = new File(plugin.getDataFolder(), "flags.yml");
-        if (!flagsFile.exists()) {
-            try {
-                flagsFile.createNewFile();
-            } catch (Exception e) {
-                plugin.getLogger().severe("Could not create flags.yml!");
-                e.printStackTrace();
-            }
-        }
-        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
+
+        initializeFlagsFile();
 
         plugin.getCommand("jailflaglist").setExecutor(this);
         Bukkit.getPluginManager().registerEvents(this, plugin);
+    }
+
+    private void initializeFlagsFile() {
+        if (!flagsFile.exists()) {
+            plugin.getLogger().info("flags.yml does not exist, creating new file...");
+            try {
+                plugin.getDataFolder().mkdirs();
+                flagsFile.createNewFile();
+                plugin.getLogger().info("Successfully created flags.yml");
+            } catch (IOException e) {
+                plugin.getLogger().severe("Failed to create flags.yml!");
+                e.printStackTrace();
+            }
+        }
+
+        reloadFlagsConfig();
+    }
+
+    public void reloadFlagsConfig() {
+        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
+        plugin.getLogger().info("Loaded flags.yml with " + flagsConfig.getKeys(false).size() + " flags");
+
+        Set<String> flags = flagsConfig.getKeys(false);
+        if (flags.isEmpty()) {
+            plugin.getLogger().warning("No flags found in flags.yml");
+        } else {
+            plugin.getLogger().info("Found flags:");
+            for (String flag : flags) {
+                plugin.getLogger().info("- " + flag + ":");
+                plugin.getLogger().info("  World: " + flagsConfig.getString(flag + ".world"));
+                plugin.getLogger().info("  Pos1: " + flagsConfig.getString(flag + ".pos1"));
+                plugin.getLogger().info("  Pos2: " + flagsConfig.getString(flag + ".pos2"));
+            }
+        }
     }
 
     @Override
@@ -54,6 +82,8 @@ public class FlagList implements CommandExecutor, Listener {
         }
 
         Player player = (Player) sender;
+
+        reloadFlagsConfig();
         openFlagListGUI(player);
         return true;
     }
@@ -61,51 +91,66 @@ public class FlagList implements CommandExecutor, Listener {
     private void openFlagListGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, 54, ChatColor.YELLOW + "Flags List");
 
-        plugin.getLogger().info("Flag list size: " + flagsConfig.getKeys(false).size());
+        Set<String> flagKeys = flagsConfig.getKeys(false);
+        plugin.getLogger().info("Opening GUI with " + flagKeys.size() + " flags");
 
-        for (String flagName : flagsConfig.getKeys(false)) {
+        for (String flagName : flagKeys) {
             String worldName = flagsConfig.getString(flagName + ".world");
             String pos1 = flagsConfig.getString(flagName + ".pos1");
             String pos2 = flagsConfig.getString(flagName + ".pos2");
 
-            plugin.getLogger().info("Flag: " + flagName + " World: " + worldName + " Pos1: " + pos1 + " Pos2: " + pos2);
-
-            if (worldName == null || pos1 == null || pos2 == null) continue;
-
-            Material material;
-            switch (worldName.toLowerCase()) {
-                case "world":
-                    material = Material.GRASS_BLOCK;
-                    break;
-                case "world_nether":
-                    material = Material.NETHERRACK;
-                    break;
-                case "world_the_end":
-                    material = Material.END_STONE;
-                    break;
-                default:
-                    material = Material.BARRIER;
-                    break;
+            if (worldName == null || pos1 == null || pos2 == null) {
+                plugin.getLogger().warning("Invalid flag data for " + flagName);
+                plugin.getLogger().warning("World: " + worldName + ", Pos1: " + pos1 + ", Pos2: " + pos2);
+                continue;
             }
 
-            ItemStack item = new ItemStack(material);
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(ChatColor.YELLOW + flagName);
-                List<String> lore = new ArrayList<>();
-                lore.add(ChatColor.YELLOW + "Coords:");
-                lore.add(ChatColor.GOLD + pos1);
-                lore.add(ChatColor.GOLD + pos2);
-                lore.add("");
-                lore.add(ChatColor.GREEN + "Left-click to teleport");
-                meta.setLore(lore);
-                item.setItemMeta(meta);
-            }
+            Material material = getMaterialForWorld(worldName);
+            ItemStack item = createFlagItem(flagName, worldName, pos1, pos2, material);
 
-            gui.addItem(item);
+            if (item != null) {
+                gui.addItem(item);
+                plugin.getLogger().info("Added flag item to GUI: " + flagName);
+            }
         }
 
         player.openInventory(gui);
+    }
+
+    private Material getMaterialForWorld(String worldName) {
+        switch (worldName.toLowerCase()) {
+            case "world":
+                return Material.GRASS_BLOCK;
+            case "world_nether":
+                return Material.NETHERRACK;
+            case "world_the_end":
+                return Material.END_STONE;
+            default:
+                return Material.BARRIER;
+        }
+    }
+
+    private ItemStack createFlagItem(String flagName, String worldName, String pos1, String pos2, Material material) {
+        ItemStack item = new ItemStack(material);
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null) {
+            plugin.getLogger().warning("Failed to create ItemMeta for flag: " + flagName);
+            return null;
+        }
+
+        meta.setDisplayName(ChatColor.YELLOW + flagName);
+        List<String> lore = new ArrayList<>();
+        lore.add(ChatColor.YELLOW + "World: " + ChatColor.WHITE + worldName);
+        lore.add(ChatColor.YELLOW + "Coords:");
+        lore.add(ChatColor.GOLD + "Pos1: " + pos1);
+        lore.add(ChatColor.GOLD + "Pos2: " + pos2);
+        lore.add("");
+        lore.add(ChatColor.GREEN + "Left-click to teleport");
+        meta.setLore(lore);
+        item.setItemMeta(meta);
+
+        return item;
     }
 
     @EventHandler
@@ -126,23 +171,38 @@ public class FlagList implements CommandExecutor, Listener {
         String worldName = flagsConfig.getString(flagName + ".world");
         String pos1 = flagsConfig.getString(flagName + ".pos1");
 
-        if (worldName == null || pos1 == null) return;
+        if (worldName == null || pos1 == null) {
+            player.sendMessage(ChatColor.RED + "Could not find flag data for: " + flagName);
+            return;
+        }
 
+        handleFlagTeleport(player, flagName, worldName, pos1);
+    }
+
+    private void handleFlagTeleport(Player player, String flagName, String worldName, String pos1) {
         String[] coords = pos1.split(",");
-        if (coords.length != 3) return;
+        if (coords.length != 3) {
+            player.sendMessage(ChatColor.RED + "Invalid coordinate format for flag: " + flagName);
+            return;
+        }
 
         try {
             World world = Bukkit.getWorld(worldName);
+            if (world == null) {
+                player.sendMessage(ChatColor.RED + "World not found: " + worldName);
+                return;
+            }
+
             double x = Double.parseDouble(coords[0]);
             double y = Double.parseDouble(coords[1]);
             double z = Double.parseDouble(coords[2]);
 
-            if (event.isLeftClick() && world != null) {
-                player.teleport(world.getBlockAt((int) x, (int) y, (int) z).getLocation());
-                player.sendMessage(ChatColor.GREEN + "Teleported to flag: " + flagName);
-            }
+            player.teleport(world.getBlockAt((int) x, (int) y, (int) z).getLocation());
+            player.sendMessage(ChatColor.GREEN + "Teleported to flag: " + flagName);
+
         } catch (NumberFormatException e) {
             player.sendMessage(ChatColor.RED + "Invalid coordinates for flag: " + flagName);
+            plugin.getLogger().warning("Invalid coordinates for flag " + flagName + ": " + pos1);
         }
     }
 }

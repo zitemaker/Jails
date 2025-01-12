@@ -77,24 +77,23 @@ public class Handcuff implements CommandExecutor, Listener {
         if (handcuffedPlayers.add(target)) {
             target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.01);
 
-            // Apply Slowness IV with infinite duration
+
             target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 3, true, false));
 
-            // Save to YAML file
-            handcuffedPlayersConfig.set("handcuffed." + target.getUniqueId(), target.getName());
+
+            handcuffedPlayersConfig.set("handcuffed." + target.getUniqueId(), true);
             saveHandcuffedPlayersConfig();
 
             handcuffer.sendMessage(ChatColor.GREEN + target.getName() + " has been handcuffed!");
             target.sendMessage(ChatColor.RED + "You have been handcuffed by " + handcuffer.getName() + "!");
         } else {
-            target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2);
 
-            // Remove the Slowness effect
+
             target.removePotionEffect(PotionEffectType.SLOW);
 
             handcuffedPlayers.remove(target);
 
-            // Remove from YAML file
+
             handcuffedPlayersConfig.set("handcuffed." + target.getUniqueId(), null);
             saveHandcuffedPlayersConfig();
 

@@ -32,13 +32,12 @@ public class FlagBoundaryListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
 
-        plugin.getLogger().info("Player " + player.getName() + " moved");
+
 
         if (!plugin.isPlayerJailed(player.getUniqueId())) {
             return;
         }
 
-        plugin.getLogger().info("Player " + player.getName() + " is jailed");
 
         FileConfiguration jailConfig = plugin.getJailedPlayersConfig();
         String jailName = jailConfig.getString(player.getUniqueId().toString() + ".jailName");

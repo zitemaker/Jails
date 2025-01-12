@@ -58,15 +58,15 @@ public class HandcuffRemove implements CommandExecutor {
             return true;
         }
 
-        if (!handcuffedPlayersConfig.contains("handcuffed." + target.getUniqueId())) {
+        if (!handcuffedPlayersConfig.getBoolean("handcuffed." + target.getUniqueId())) {
             remover.sendMessage(ChatColor.RED + target.getName() + " is not handcuffed!");
             return true;
         }
 
         target.removePotionEffect(PotionEffectType.SLOW);
-        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.2);
 
         handcuffedPlayersConfig.set("handcuffed." + target.getUniqueId(), null);
+        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
         saveHandcuffedPlayersConfig();
 
         remover.sendMessage(ChatColor.GREEN + target.getName() + " has been removed from the handcuffed list.");

@@ -1,6 +1,6 @@
 <h1>JailsFree</h1> 
 
-Meteors, Chaos, and Loot – Let the Fun Begin!
+Ban too harsh? Is kick useless? Jail them!!
 
 ---
 

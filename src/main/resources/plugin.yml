@@ -1,0 +1,27 @@
+name: JailPlugin
+version: '1.0.0'
+main: com.zitemaker.jails.JailsPlugin
+api-version: '1.13'
+author: zitemaker
+
+
+commands:
+  jailset:
+    description: Set a jail location.
+  jail:
+    description: Jail a player.
+    usage: /jail <player> <jail name> <reason>
+    permission: jails.jail
+  jails:
+    description: List all jail locations.
+    usage: /jails
+    permission: jails.jails
+  unjail:
+    description: Unjail a player.
+    usage: /unjail <player>
+    permission: jails.unjail
+
+  deljail:
+    description: Deletes a jail
+    usage: /deljail <jail name>
+    permission: jailplugin.deljail

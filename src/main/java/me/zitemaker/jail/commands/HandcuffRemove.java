@@ -15,25 +15,19 @@ import org.bukkit.attribute.Attribute;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class HandcuffRemove implements CommandExecutor {
 
     private final JailPlugin plugin;
-    private final File handcuffedPlayersFile;
-    private final FileConfiguration handcuffedPlayersConfig;
+
 
     public HandcuffRemove(JailPlugin plugin) {
         this.plugin = plugin;
 
-        handcuffedPlayersFile = new File(plugin.getDataFolder(), "handcuffed_players.yml");
-        if (!handcuffedPlayersFile.exists()) {
-            try {
-                handcuffedPlayersFile.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        handcuffedPlayersConfig = YamlConfiguration.loadConfiguration(handcuffedPlayersFile);
+
+
+
 
         plugin.getCommand("handcuffremove").setExecutor(this);
     }
@@ -58,16 +52,20 @@ public class HandcuffRemove implements CommandExecutor {
             return true;
         }
 
-        if (!handcuffedPlayersConfig.getBoolean("handcuffed." + target.getUniqueId())) {
+        UUID targetUUID = target.getUniqueId();
+
+
+        if (!plugin.isPlayerHandcuffed(targetUUID)) {
             remover.sendMessage(ChatColor.RED + target.getName() + " is not handcuffed!");
             return true;
         }
 
-        target.removePotionEffect(PotionEffectType.SLOW);
 
-        handcuffedPlayersConfig.set("handcuffed." + target.getUniqueId(), null);
-        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0);
-        saveHandcuffedPlayersConfig();
+        target.removePotionEffect(PotionEffectType.SLOW);
+        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+
+        plugin.unHandcuffPlayer(targetUUID);
+
 
         remover.sendMessage(ChatColor.GREEN + target.getName() + " has been removed from the handcuffed list.");
         target.sendMessage(ChatColor.GREEN + "You have been removed from the handcuffed list.");
@@ -75,11 +73,5 @@ public class HandcuffRemove implements CommandExecutor {
         return true;
     }
 
-    private void saveHandcuffedPlayersConfig() {
-        try {
-            handcuffedPlayersConfig.save(handcuffedPlayersFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+
 }

@@ -6,10 +6,14 @@ import me.zitemaker.jail.listeners.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +27,9 @@ public class JailPlugin extends JavaPlugin {
     private FileConfiguration jailLocationsConfig;
     public List<String> blockedCommands;
 
+    private File handcuffedPlayersFile;
+    private FileConfiguration handcuffedPlayersConfig;
+
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
 
     @Override
@@ -32,6 +39,7 @@ public class JailPlugin extends JavaPlugin {
         createFiles();
         loadJails();
         loadJailedPlayers();
+        loadHandcuffedPlayers();
 
         blockedCommands = getConfig().getStringList("blockedCommands");
 
@@ -67,6 +75,7 @@ public class JailPlugin extends JavaPlugin {
     public void onDisable() {
         saveJailedPlayersConfig();
         saveJailLocationsConfig();
+        saveHandcuffedPlayersConfig();
         getLogger().info("JailPlugin has been disabled!");
     }
 
@@ -129,6 +138,65 @@ public class JailPlugin extends JavaPlugin {
             getLogger().severe("Could not save jail_locations.yml!");
         }
     }
+
+    // --- Handcuffed Players ---
+    public void handcuffPlayer(Player player) {
+        UUID playerUUID = player.getUniqueId();
+        String basePath = playerUUID.toString();
+        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.05);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
+
+
+
+
+
+        handcuffedPlayersConfig.set(basePath + ".handcuffed", true);
+        saveHandcuffedPlayersConfig();
+
+        getLogger().info("Player " + player.getName() + " has been handcuffed.");
+    }
+
+    public void unHandcuffPlayer(UUID playerUUID) {
+        if (!isPlayerHandcuffed(playerUUID)) {
+            getLogger().warning("Player with UUID " + playerUUID + " is not handcuffed.");
+            return;
+        }
+
+        Player target = Bukkit.getPlayer(playerUUID);
+
+        target.removePotionEffect(PotionEffectType.DARKNESS);
+        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+
+        handcuffedPlayersConfig.set(playerUUID.toString(), null);
+        saveHandcuffedPlayersConfig();
+
+        getLogger().info("Player with UUID " + playerUUID + " has been unhandcuffed.");
+    }
+
+
+    public FileConfiguration getHandcuffedPlayersConfig() {
+        return handcuffedPlayersConfig;
+    }
+
+    public void saveHandcuffedPlayersConfig() {
+        try {
+            handcuffedPlayersConfig.save(handcuffedPlayersFile);
+        } catch (IOException e) {
+            getLogger().severe("Could not save handcuffed_players.yml!");
+        }
+    }
+
+    public boolean isPlayerHandcuffed(UUID playerUUID) {
+        return handcuffedPlayersConfig.contains(playerUUID.toString());
+    }
+
+
+    public void loadHandcuffedPlayers() {
+        for (String key : handcuffedPlayersConfig.getKeys(false)) {
+            getLogger().info("Loaded jailed player: " + key);
+        }
+    }
+
 
     // --- Jailed Players ---
     public void jailPlayer(Player player, String jailName, long endTime, String reason, String jailer) {
@@ -255,6 +323,16 @@ public class JailPlugin extends JavaPlugin {
             saveResource("jail_locations.yml", false);
         }
         jailLocationsConfig = YamlConfiguration.loadConfiguration(jailLocationsFile);
+        handcuffedPlayersFile = new File(getDataFolder(), "handcuffed_players.yml");
+        if (!handcuffedPlayersFile.exists()) {
+            try {
+                handcuffedPlayersFile.createNewFile();
+            } catch (IOException e) {
+                getLogger().severe("Could not create handcuffed_players.yml!");
+            }
+        }
+        handcuffedPlayersConfig = YamlConfiguration.loadConfiguration(handcuffedPlayersFile);
+
     }
 
     // --- Utilities ---

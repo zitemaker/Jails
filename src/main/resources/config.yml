@@ -1,3 +1,13 @@
+# JailsFree Plugin Config
+############################################################################
+#                                                                          #
+#                              JailsFree                                   #
+#                                                                          #
+# Made by: ZiteMaker                                                       #
+# Bug Reports: https://github.com/zitemaker/Jails/issues                   #
+# Source Code: https://github.com/zitemaker/Jails                          #
+#                                                                          #
+############################################################################
 # Blocked commands when jailed
 blockedCommands:
   - "tpa"

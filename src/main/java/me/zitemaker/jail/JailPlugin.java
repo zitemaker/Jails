@@ -56,7 +56,7 @@ public class JailPlugin extends JavaPlugin {
         getCommand("unjail").setExecutor(new UnjailCommand(this));
         getCommand("jailduration").setExecutor(new JailDurationCommand(this));
         getCommand("jailsetflag").setExecutor(new SetFlag(this));
-        getCommand("jaildelflag").setExecutor(new DelJailCommand(this));
+        getCommand("jaildelflag").setExecutor(new DelFlag(this));
         getCommand("jailflaglist").setExecutor(new FlagList(this));
         getCommand("handcuff").setExecutor(new Handcuff(this));
         getCommand("handcuffremove").setExecutor(new HandcuffRemove(this));
@@ -245,6 +245,9 @@ public class JailPlugin extends JavaPlugin {
             player.teleport(worldSpawn);
         } else if (spawnOption.equals("original_location")) {
             teleportToOriginalLocation(player, playerUUID.toString() + ".original");
+        }else{
+            Location worldSpawn = player.getWorld().getSpawnLocation();
+            player.teleport(worldSpawn);
         }
 
 

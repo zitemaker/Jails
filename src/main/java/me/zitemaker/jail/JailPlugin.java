@@ -3,6 +3,17 @@ package me.zitemaker.jail;
 import me.zitemaker.jail.commands.*;
 import me.zitemaker.jail.flags.*;
 import me.zitemaker.jail.listeners.*;
+import net.skinsrestorer.api.SkinsRestorerProvider;
+import net.skinsrestorer.api.connections.MineSkinAPI;
+import net.skinsrestorer.api.connections.MojangAPI;
+import net.skinsrestorer.api.event.EventBus;
+import net.skinsrestorer.api.exception.DataRequestException;
+import net.skinsrestorer.api.property.InputDataResult;
+import net.skinsrestorer.api.property.SkinApplier;
+import net.skinsrestorer.api.property.SkinProperty;
+import net.skinsrestorer.api.storage.CacheStorage;
+import net.skinsrestorer.api.storage.PlayerStorage;
+import net.skinsrestorer.api.storage.SkinStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,6 +25,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import net.skinsrestorer.api.SkinsRestorer;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +43,7 @@ public class JailPlugin extends JavaPlugin {
     private FileConfiguration handcuffedPlayersConfig;
 
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
+    private SkinsRestorer skinsRestorerAPI;
 
     @Override
     public void onEnable() {
@@ -42,6 +55,7 @@ public class JailPlugin extends JavaPlugin {
         loadHandcuffedPlayers();
 
         blockedCommands = getConfig().getStringList("blockedCommands");
+        this.skinsRestorerAPI = SkinsRestorerProvider.get();
 
         getCommand("jailset").setExecutor(new JailSetCommand(this));
         getCommand("jail").setExecutor(new JailCommand(this));
@@ -198,10 +212,11 @@ public class JailPlugin extends JavaPlugin {
     }
 
 
-    // --- Jailed Players ---
+
     public void jailPlayer(Player player, String jailName, long endTime, String reason, String jailer) {
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
+
 
         Location originalLocation = player.getLocation();
         jailedPlayersConfig.set(basePath + ".original.world", originalLocation.getWorld().getName());
@@ -211,14 +226,24 @@ public class JailPlugin extends JavaPlugin {
         jailedPlayersConfig.set(basePath + ".original.yaw", originalLocation.getYaw());
         jailedPlayersConfig.set(basePath + ".original.pitch", originalLocation.getPitch());
 
+
         jailedPlayersConfig.set(basePath + ".jailName", jailName);
         jailedPlayersConfig.set(basePath + ".endTime", endTime);
         jailedPlayersConfig.set(basePath + ".reason", reason);
         jailedPlayersConfig.set(basePath + ".jailer", jailer);
 
         setPlayerSpawnOption(playerUUID, "world_spawn");
-
         saveJailedPlayersConfig();
+
+        try {
+
+            String targetSkin = "SirMothsho";
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
+            getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+        }
+
 
         Location jailLocation = getJail(jailName);
         if (jailLocation != null) {
@@ -227,6 +252,7 @@ public class JailPlugin extends JavaPlugin {
             getLogger().warning("Jail location for " + jailName + " not found.");
         }
     }
+
 
 
     public void unjailPlayer(UUID playerUUID) {
@@ -240,12 +266,21 @@ public class JailPlugin extends JavaPlugin {
             return;
         }
 
-        if (spawnOption.equals("world_spawn")) {
+        try {
+
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
+            getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+        }
+
+
+        if ("world_spawn".equals(spawnOption)) {
             Location worldSpawn = player.getWorld().getSpawnLocation();
             player.teleport(worldSpawn);
-        } else if (spawnOption.equals("original_location")) {
+        } else if ("original_location".equals(spawnOption)) {
             teleportToOriginalLocation(player, playerUUID.toString() + ".original");
-        }else{
+        } else {
             Location worldSpawn = player.getWorld().getSpawnLocation();
             player.teleport(worldSpawn);
         }
@@ -255,6 +290,9 @@ public class JailPlugin extends JavaPlugin {
         saveJailedPlayersConfig();
         getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
     }
+
+
+
 
 
 

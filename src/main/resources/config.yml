@@ -1,3 +1,16 @@
+#Jailed Players Inventory
+jail:
+  jailbreak-tp: true  # if true, Teleports players back to jail; if false, displays a warning message.
+  keep-inventory: false  # if false, Gives the player a set of items; if true, keeps the original inventory.
+  jail-items:           # items given to jailed players when keep-inventory is false
+    - item: BAKED_POTATO
+      amount: 32
+    - item: WATER_BUCKET
+      amount: 1
+    - item: BREAD
+      amount: 16
+    # more items can be added
+
 # Blocked commands when jailed
 blockedCommands:
   - "tpa"

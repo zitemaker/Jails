@@ -5,9 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -32,7 +30,8 @@ public class JailListeners implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.block-break", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot break blocks while in jail!");
         }
@@ -41,7 +40,8 @@ public class JailListeners implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.block-place", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot place blocks while in jail!");
         }
@@ -52,7 +52,8 @@ public class JailListeners implements Listener {
         if (!(event.getDamager() instanceof Player)) return;
 
         Player player = (Player) event.getDamager();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.attack", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot attack while in jail!");
         }
@@ -63,7 +64,8 @@ public class JailListeners implements Listener {
         if (!(event.getEntered() instanceof Player)) return;
 
         Player player = (Player) event.getEntered();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
         }
@@ -127,8 +129,10 @@ public class JailListeners implements Listener {
         Player player = event.getPlayer();
         ItemStack item = event.getItem();
 
-        if (plugin.isPlayerJailed(player.getUniqueId()) && item != null &&
-                item.getType() == Material.ENDER_PEARL) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                item != null &&
+                item.getType() == Material.ENDER_PEARL &&
+                !plugin.getConfig().getBoolean("jail-restrictions.ender-pearl", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot use ender pearls while in jail!");
         }

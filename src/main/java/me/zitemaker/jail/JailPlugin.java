@@ -26,6 +26,8 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import net.skinsrestorer.api.SkinsRestorer;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.Material;
 
 import java.io.File;
 import java.io.IOException;
@@ -160,10 +162,6 @@ public class JailPlugin extends JavaPlugin {
         player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.05);
         player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
 
-
-
-
-
         handcuffedPlayersConfig.set(basePath + ".handcuffed", true);
         saveHandcuffedPlayersConfig();
 
@@ -204,19 +202,15 @@ public class JailPlugin extends JavaPlugin {
         return handcuffedPlayersConfig.contains(playerUUID.toString());
     }
 
-
     public void loadHandcuffedPlayers() {
         for (String key : handcuffedPlayersConfig.getKeys(false)) {
             getLogger().info("Loaded jailed player: " + key);
         }
     }
 
-
-
     public void jailPlayer(Player player, String jailName, long endTime, String reason, String jailer) {
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
-
 
         Location originalLocation = player.getLocation();
         jailedPlayersConfig.set(basePath + ".original.world", originalLocation.getWorld().getName());
@@ -226,7 +220,6 @@ public class JailPlugin extends JavaPlugin {
         jailedPlayersConfig.set(basePath + ".original.yaw", originalLocation.getYaw());
         jailedPlayersConfig.set(basePath + ".original.pitch", originalLocation.getPitch());
 
-
         jailedPlayersConfig.set(basePath + ".jailName", jailName);
         jailedPlayersConfig.set(basePath + ".endTime", endTime);
         jailedPlayersConfig.set(basePath + ".reason", reason);
@@ -234,6 +227,34 @@ public class JailPlugin extends JavaPlugin {
 
         setPlayerSpawnOption(playerUUID, "world_spawn");
         saveJailedPlayersConfig();
+
+        boolean keepInventory = getConfig().getBoolean("jail.keep-inventory");
+        if (!keepInventory) {
+            jailedPlayersConfig.set(basePath + ".inventory", player.getInventory().getContents());
+            player.getInventory().clear();
+
+            List<Map<?, ?>> jailItems = getConfig().getMapList("jail.jail-items");
+            for (Map<?, ?> itemData : jailItems) {
+                try {
+                    String itemName = itemData.get("item").toString();
+                    int amount = Integer.parseInt(itemData.get("amount").toString());
+
+                    Material material = Material.valueOf(itemName.toUpperCase());
+                    ItemStack item = new ItemStack(material, amount);
+
+                    HashMap<Integer, ItemStack> overflow = player.getInventory().addItem(item);
+                    if (!overflow.isEmpty()) {
+                        for (ItemStack overflowItem : overflow.values()) {
+                            player.getWorld().dropItemNaturally(player.getLocation(), overflowItem);
+                        }
+                    }
+                } catch (IllegalArgumentException e) {
+                    getLogger().warning("Invalid item in config: " + itemData.get("item"));
+                } catch (Exception e) {
+                    getLogger().warning("Error giving jail items: " + e.getMessage());
+                }
+            }
+        }
 
         try {
 
@@ -251,9 +272,8 @@ public class JailPlugin extends JavaPlugin {
         } else {
             getLogger().warning("Jail location for " + jailName + " not found.");
         }
+        Bukkit.getPluginManager().callEvent(new PlayerJailEvent(player));
     }
-
-
 
     public void unjailPlayer(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
@@ -264,6 +284,18 @@ public class JailPlugin extends JavaPlugin {
             saveJailedPlayersConfig();
             getLogger().info("Offline player has been marked as unjailed.");
             return;
+        }
+
+        boolean keepInventory = getConfig().getBoolean("jail.keep-inventory");
+        if (!keepInventory) {
+            Object savedInventoryObj = jailedPlayersConfig.get(playerUUID.toString() + ".inventory");
+            if (savedInventoryObj instanceof ItemStack[]) {
+                player.getInventory().setContents((ItemStack[]) savedInventoryObj);
+            } else if (savedInventoryObj instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<ItemStack> savedInventory = (List<ItemStack>) savedInventoryObj;
+                player.getInventory().setContents(savedInventory.toArray(new ItemStack[0]));
+            }
         }
 
         try {
@@ -291,12 +323,6 @@ public class JailPlugin extends JavaPlugin {
         getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
     }
 
-
-
-
-
-
-
     public void teleportToOriginalLocation(Player player, String basePath) {
         String worldName = jailedPlayersConfig.getString(basePath + ".world");
         if (worldName == null || Bukkit.getWorld(worldName) == null) {
@@ -323,7 +349,6 @@ public class JailPlugin extends JavaPlugin {
     public String getPlayerSpawnOption(UUID playerUUID) {
         return jailedPlayersConfig.getString(playerUUID.toString() + ".spawnOption", "original_location");
     }
-
 
     public boolean isPlayerJailed(UUID playerUUID) {
         return jailedPlayersConfig.contains(playerUUID.toString());
@@ -374,6 +399,10 @@ public class JailPlugin extends JavaPlugin {
         }
         handcuffedPlayersConfig = YamlConfiguration.loadConfiguration(handcuffedPlayersFile);
 
+    }
+
+    public FileConfiguration getFlagsConfig() {
+        return YamlConfiguration.loadConfiguration(new File(getDataFolder(), "flags.yml"));
     }
 
     // --- Utilities ---

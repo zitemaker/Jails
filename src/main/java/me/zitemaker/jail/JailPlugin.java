@@ -76,6 +76,7 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jailflaglist").setExecutor(new FlagList(this));
         getCommand("handcuff").setExecutor(new Handcuff(this));
         getCommand("handcuffremove").setExecutor(new HandcuffRemove(this));
+        getCommand("jailsreload").setExecutor(new ConfigReload(this));
 
         JailListCommand jailListCommand = new JailListCommand(this);
         getCommand("jailed").setExecutor(jailListCommand);

@@ -69,3 +69,8 @@ commands:
     description: Remove handcuffs from a player.
     usage: /handcuffremove <player>
     permission: jails.handcuffremove
+
+  jailsreload:
+    description: Reloads the Jails config file
+    usage: /jailsreload
+    permission: jails.reload

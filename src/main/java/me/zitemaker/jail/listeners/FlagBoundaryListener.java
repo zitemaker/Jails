@@ -116,12 +116,12 @@ public class FlagBoundaryListener implements Listener {
             String originalSpawnOption = plugin.getJailedPlayersConfig().getString(
                     playerUUID.toString() + ".spawnOption");
 
-            //plugin.getJailedPlayersConfig().set(playerUUID.toString() + ".spawnOption", "none");
-            //plugin.saveJailedPlayersConfig();
+            plugin.getJailedPlayersConfig().set(playerUUID.toString() + ".spawnOption", "none");
+            plugin.saveJailedPlayersConfig();
 
-            //plugin.unjailPlayer(playerUUID);
+            plugin.unjailPlayer(playerUUID);
 
-            //player.teleport(escapeLocation);
+            player.teleport(escapeLocation);
 
             Bukkit.broadcastMessage(ChatColor.RED + "[ALERT] " + player.getName() +
                     " has escaped from jail!");

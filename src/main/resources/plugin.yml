@@ -1,4 +1,4 @@
-name: JailPlugin
+name: Jails
 version: '1.0.0'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.13'
@@ -9,6 +9,8 @@ softdepend: [WorldEdit, SkinsRestorer]
 commands:
   jailset:
     description: Set a jail location.
+    usage: /jailset <name>
+    permission: jails.jailset
   jail:
     description: Jail a player.
     usage: /jail <player> <jail name> <reason>

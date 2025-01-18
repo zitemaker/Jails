@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -57,7 +58,7 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
         FileConfiguration jailedConfig = plugin.getJailedPlayersConfig();
         List<String> jailedKeys = new ArrayList<>(jailedConfig.getKeys(false));
 
-        Inventory jailList = Bukkit.createInventory(null, 54, ChatColor.RED + "Jail List");
+        Inventory jailList = Bukkit.createInventory(null, 54, "Jailed Prisoners List");
 
 
         for (String key : jailedKeys) {
@@ -110,14 +111,9 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (!ChatColor.stripColor(event.getView().getTitle()).equals("Jail List")) return;
+        if (!ChatColor.stripColor(event.getView().getTitle()).equals("Jailed Prisoners List")) return;
 
-        if (event.getAction().toString().contains("DROP") || event.getAction().toString().contains("PICKUP") || event.getAction().toString().contains("SWAP")) {
-            event.setCancelled(true);
-            return;
-        }
-
-        event.setCancelled(true); 
+        event.setCancelled(true);
 
         if (!(event.getWhoClicked() instanceof Player)) return;
 
@@ -129,8 +125,7 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
         SkullMeta meta = (SkullMeta) clickedItem.getItemMeta();
         if (meta == null || meta.getOwningPlayer() == null) return;
 
-        if (event.isLeftClick()) {
-
+        if (event.getClick() == ClickType.LEFT) {
             String jailName = ChatColor.stripColor(meta.getLore().get(2).split(":")[1].trim());
             Location jailLocation = plugin.getJail(jailName);
             if (jailLocation != null) {
@@ -139,13 +134,13 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
             } else {
                 player.sendMessage(ChatColor.RED + "Jail location not found.");
             }
-        } else if (event.isRightClick()) {
-
+        } else if (event.getClick() == ClickType.RIGHT) {
             UUID targetUUID = meta.getOwningPlayer().getUniqueId();
             plugin.unjailPlayer(targetUUID);
             player.sendMessage(ChatColor.GREEN + "You have set " + Bukkit.getOfflinePlayer(targetUUID).getName() + " free.");
         }
     }
+
 
 
     @Override

@@ -138,6 +138,18 @@ public class JailListeners implements Listener {
         }
     }
 
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        if(plugin.isPlayerJailed(player.getUniqueId())){
+            FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
+            String jailName = jailedPlayersConfig.getString(player.getUniqueId().toString() + ".jailName");
+            Location jailLocation = plugin.getJail(jailName);
+            player.teleport(jailLocation);
+
+        }
+    }
+
     private String formatTimeLeft(long millis) {
         long seconds = millis / 1000;
         if (seconds < 60) return seconds + " second" + (seconds == 1 ? "" : "s");

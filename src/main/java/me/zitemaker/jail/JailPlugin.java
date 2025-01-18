@@ -22,10 +22,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import net.skinsrestorer.api.SkinsRestorer;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Material;
 
@@ -45,11 +43,11 @@ public class JailPlugin extends JavaPlugin {
     private FileConfiguration handcuffedPlayersConfig;
 
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
-    private SkinsRestorer skinsRestorerAPI;
+
 
     @Override
     public void onEnable() {
-        getLogger().info("JailPlugin has been enabled");
+        getLogger().info("Jails has been enabled!");
         saveDefaultConfig();
         createFiles();
         loadJails();
@@ -57,7 +55,6 @@ public class JailPlugin extends JavaPlugin {
         loadHandcuffedPlayers();
 
         blockedCommands = getConfig().getStringList("blockedCommands");
-        this.skinsRestorerAPI = SkinsRestorerProvider.get();
 
         getCommand("jailset").setExecutor(new JailSetCommand(this));
         getCommand("jail").setExecutor(new JailCommand(this));
@@ -93,7 +90,7 @@ public class JailPlugin extends JavaPlugin {
         saveJailedPlayersConfig();
         saveJailLocationsConfig();
         saveHandcuffedPlayersConfig();
-        getLogger().info("JailPlugin has been disabled!");
+        getLogger().info("Jails has been disabled!");
     }
 
     // ------ Jail Locations ------

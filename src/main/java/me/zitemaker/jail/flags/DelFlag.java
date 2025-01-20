@@ -19,7 +19,7 @@ public class DelFlag implements CommandExecutor, TabCompleter {
 
     private final JailPlugin plugin;
     private final File flagsFile;
-    private final FileConfiguration flagsConfig;
+    private FileConfiguration flagsConfig;
 
     public DelFlag(JailPlugin plugin) {
         this.plugin = plugin;
@@ -33,10 +33,14 @@ public class DelFlag implements CommandExecutor, TabCompleter {
                 e.printStackTrace();
             }
         }
-        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
+        reloadFlagsConfig();
 
         plugin.getCommand("jaildelflag").setExecutor(this);
         plugin.getCommand("jaildelflag").setTabCompleter(this);
+    }
+
+    private void reloadFlagsConfig() {
+        flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
     }
 
     @Override
@@ -48,12 +52,13 @@ public class DelFlag implements CommandExecutor, TabCompleter {
 
         String flagName = args[0];
 
-        flagsConfig.setDefaults(YamlConfiguration.loadConfiguration(flagsFile));
+        reloadFlagsConfig();
         if (!flagsConfig.contains(flagName)) {
             sender.sendMessage(ChatColor.RED + "The flag '" + flagName + "' does not exist!");
             return true;
         }
 
+        // Remove the specific flag
         flagsConfig.set(flagName, null);
 
         try {
@@ -70,7 +75,7 @@ public class DelFlag implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            flagsConfig.setDefaults(YamlConfiguration.loadConfiguration(flagsFile));
+            reloadFlagsConfig();
             return new ArrayList<>(flagsConfig.getKeys(false));
         }
 

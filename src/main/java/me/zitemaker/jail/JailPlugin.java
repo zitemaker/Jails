@@ -207,6 +207,24 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void jailPlayer(Player player, String jailName, long endTime, String reason, String jailer) {
+        Location jailLocation = getJail(jailName);
+
+        if (jailLocation != null && !isLocationInAnyFlag(jailLocation)) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] " +
+                    ChatColor.GOLD + "Prison Security Warning: " + ChatColor.RED +
+                    "Player " + ChatColor.YELLOW + player.getName() + ChatColor.RED +
+                    " is being jailed in '" + ChatColor.YELLOW + jailName + ChatColor.RED +
+                    "' which is not within any security zone (flag)!");
+
+            for (Player staff : Bukkit.getOnlinePlayers()) {
+                if (staff.hasPermission("jailplugin.admin")) {
+                    staff.sendMessage(ChatColor.RED + "[SECURITY ALERT] " +
+                            ChatColor.GOLD + "Warning: " + ChatColor.RED +
+                            "Jail '" + jailName + "' is not secured within a flag zone!");
+                }
+            }
+        }
+
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
 
@@ -255,7 +273,6 @@ public class JailPlugin extends JavaPlugin {
         }
 
         try {
-
             String targetSkin = "SirMothsho";
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
             getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
@@ -263,14 +280,49 @@ public class JailPlugin extends JavaPlugin {
             getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
         }
 
-
-        Location jailLocation = getJail(jailName);
         if (jailLocation != null) {
             player.teleport(jailLocation);
         } else {
             getLogger().warning("Jail location for " + jailName + " not found.");
         }
         Bukkit.getPluginManager().callEvent(new PlayerJailEvent(player));
+    }
+
+    public boolean isLocationInAnyFlag(Location location) {
+        FileConfiguration flagsConfig = getFlagsConfig();
+
+        for (String flagName : flagsConfig.getKeys(false)) {
+            String worldName = flagsConfig.getString(flagName + ".world");
+            if (worldName == null) continue;
+
+            String pos1String = flagsConfig.getString(flagName + ".pos1");
+            String pos2String = flagsConfig.getString(flagName + ".pos2");
+            if (pos1String == null || pos2String == null) continue;
+
+            try {
+                String[] pos1 = pos1String.split(",");
+                String[] pos2 = pos2String.split(",");
+
+                if (!location.getWorld().getName().equals(worldName)) continue;
+
+                int minX = Math.min(Integer.parseInt(pos1[0]), Integer.parseInt(pos2[0]));
+                int minY = Math.min(Integer.parseInt(pos1[1]), Integer.parseInt(pos2[1]));
+                int minZ = Math.min(Integer.parseInt(pos1[2]), Integer.parseInt(pos2[2]));
+                int maxX = Math.max(Integer.parseInt(pos1[0]), Integer.parseInt(pos2[0]));
+                int maxY = Math.max(Integer.parseInt(pos1[1]), Integer.parseInt(pos2[1]));
+                int maxZ = Math.max(Integer.parseInt(pos1[2]), Integer.parseInt(pos2[2]));
+
+                if (location.getX() >= minX && location.getX() <= maxX &&
+                        location.getY() >= minY && location.getY() <= maxY &&
+                        location.getZ() >= minZ && location.getZ() <= maxZ) {
+                    return true;
+                }
+            } catch (Exception e) {
+                getLogger().warning("Invalid flag coordinates for flag '" + flagName + "': " + e.getMessage());
+                continue;
+            }
+        }
+        return false;
     }
 
     public void unjailPlayer(UUID playerUUID) {
@@ -319,6 +371,41 @@ public class JailPlugin extends JavaPlugin {
         jailedPlayersConfig.set(playerUUID.toString(), null);
         saveJailedPlayersConfig();
         getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
+    }
+
+    public void playerEscape(UUID playerUUID) {
+        Player player = Bukkit.getPlayer(playerUUID);
+        String spawnOption = getPlayerSpawnOption(playerUUID);
+
+        if (player == null) {
+            jailedPlayersConfig.set(playerUUID.toString() + ".unjailed", true);
+            saveJailedPlayersConfig();
+            getLogger().info("Offline player has escaped.");
+            return;
+        }
+
+        boolean keepInventory = getConfig().getBoolean("jail.keep-inventory");
+        if (!keepInventory) {
+            Object savedInventoryObj = jailedPlayersConfig.get(playerUUID.toString() + ".inventory");
+            if (savedInventoryObj instanceof ItemStack[]) {
+                player.getInventory().setContents((ItemStack[]) savedInventoryObj);
+            } else if (savedInventoryObj instanceof List) {
+                @SuppressWarnings("unchecked")
+                List<ItemStack> savedInventory = (List<ItemStack>) savedInventoryObj;
+                player.getInventory().setContents(savedInventory.toArray(new ItemStack[0]));
+            }
+        }
+
+        try {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
+            getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
+        } catch (Exception e) {
+            getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+        }
+
+        jailedPlayersConfig.set(playerUUID.toString(), null);
+        saveJailedPlayersConfig();
+        getLogger().info("Player " + player.getName() + " has escaped from jail.");
     }
 
     public void teleportToOriginalLocation(Player player, String basePath) {

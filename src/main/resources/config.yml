@@ -1,5 +1,40 @@
+############################################################################
+#                                                                          #
+#                          Jails Configuration                             #
+#                                                                          #
+############################################################################
+#                                                                          #
+# Development Team: zitemaker                                              #
+# Authors: [FahianR, AdolfHustler, ArthropodR]                             #
+# Website: zitemaker.com                                                   #
+# Bug Reports: https://github.com/zitemaker/Jail/issues                    #
+# Source Code: https://github.com/zitemaker/Jail                           #
+#                                                                          #
+############################################################################
+
+prefix: "&7[&eJails&7]"
+language: english
+
+# General settings
+general-settings:
+  broadcast-on-jail: true # Notify all players when someone is jailed
+  broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
+  default-unjail-location: WORLD_SPAWN
+  punish_on_escape: true                # Whether players are punished for escaping jail
+  escape_punishment: KILL               # KILL, TELEPORT_BACK, or BAN
+  escape-punishment-message: "{prefix} &cYou were killed for trying to escape jail!"
+
+# Handcuff settings
+handcuff-settings:
+  restrict_movement: true        # Whether to restrict handcuffed player's movement
+  slow_movement: true            # Make handcuffed players slower
+  disable_items: true            # Prevent using items while handcuffed
+  broadcast-on-handcuff: true # Notify all players when someone is handcuffed
+  broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
+
 # Blocked commands when jailed
-blockedCommands:
+# Players will not be able to use the following commands while jailed
+blocked-commands:
   - "tpa"
   - "home"
   - "spawn"
@@ -8,11 +43,15 @@ blockedCommands:
   - "tpr"
   - "warp"
 
-# Jail restrictions for actions
-# Set to true to allow the action while jailed, false to block the action.
+command-blocked-message: "&cYou cannot use this command while jailed!"
+
+# Define restrictions for players who are in jail
+# Set to 'false' if you want to restrict certain actions from the list below
 jail-restrictions:
-  block-break: false # If false, players cannot break blocks while jailed.
-  block-place: false # If false, players cannot place blocks while jailed.
-  attack: false      # If false, players cannot attack entities while jailed.
+  block-break: false  # If false, players cannot break blocks while jailed.
+  block-place: false  # If false, players cannot place blocks while jailed.
+  attack: false       # If false, players cannot attack entities while jailed.
   vehicle-ride: false # If false, players cannot ride vehicles (e.g., boats, minecarts) while jailed.
+  entity-ride: false  # If false, players cannot mount any entities (e.g. horses, llamas, players, camels) while jailed.
+  block-mount: false  # If false, players cannot mount on any blocks while jailed.
   ender-pearl: false  # If false, players cannot use ender pearls while jailed.

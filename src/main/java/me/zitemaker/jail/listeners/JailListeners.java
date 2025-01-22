@@ -4,22 +4,18 @@ import me.zitemaker.jail.JailPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
-import org.w3c.dom.Entity;
 
 import java.util.UUID;
 
@@ -33,12 +29,9 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.block-break")) {
-            return;
-        }
-
         Player player = event.getPlayer();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.block-break", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot break blocks while in jail!");
         }
@@ -46,12 +39,9 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.block-place")) {
-            return;
-        }
-
         Player player = event.getPlayer();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.block-place", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot place blocks while in jail!");
         }
@@ -59,14 +49,11 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (plugin.getConfig().getBoolean("attack")) {
-            return;
-        }
-
         if (!(event.getDamager() instanceof Player)) return;
 
         Player player = (Player) event.getDamager();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.attack", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot attack while in jail!");
         }
@@ -74,62 +61,13 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride")) {
-            return;
-        }
-
         if (!(event.getEntered() instanceof Player)) return;
 
         Player player = (Player) event.getEntered();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                !plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride", false)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
-        }
-    }
-
-    @EventHandler
-    public void onEntityMount(EntityMountEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride")) {
-            return;
-        }
-
-        Player player = (Player) event.getEntity();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
-            if (event.getMount() instanceof Entity) {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBlockMount(EntityMountEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride")) {
-            return;
-        }
-
-        Player player = (Player) event.getEntity();
-        if (plugin.isPlayerJailed(player.getUniqueId())) {
-            if (event.getMount() instanceof Block) {
-                event.setCancelled(true);
-                player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPlayerUse(PlayerInteractEvent event) {
-        if (plugin.getConfig().getBoolean("jail-restrictions.ender-pearl")) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        ItemStack item = event.getItem();
-
-        if (plugin.isPlayerJailed(player.getUniqueId()) && item != null &&
-                item.getType() == Material.ENDER_PEARL) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot use ender pearls while in jail!");
         }
     }
 
@@ -183,6 +121,32 @@ public class JailListeners implements Listener {
                 String formattedTime = formatTimeLeft(timeLeftMillis);
                 player.sendMessage(ChatColor.RED + "You are jailed for " + formattedTime);
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerUse(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = event.getItem();
+
+        if (plugin.isPlayerJailed(player.getUniqueId()) &&
+                item != null &&
+                item.getType() == Material.ENDER_PEARL &&
+                !plugin.getConfig().getBoolean("jail-restrictions.ender-pearl", false)) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "You cannot use ender pearls while in jail!");
+        }
+    }
+
+    @EventHandler
+    public void onRespawn(PlayerRespawnEvent event){
+        Player player = event.getPlayer();
+        if(plugin.isPlayerJailed(player.getUniqueId())){
+            FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
+            String jailName = jailedPlayersConfig.getString(player.getUniqueId().toString() + ".jailName");
+            Location jailLocation = plugin.getJail(jailName);
+            player.teleport(jailLocation);
+
         }
     }
 

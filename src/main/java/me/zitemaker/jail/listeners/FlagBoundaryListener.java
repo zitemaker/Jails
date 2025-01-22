@@ -17,9 +17,8 @@ public class FlagBoundaryListener implements Listener {
     private final JailPlugin plugin;
     private final Map<UUID, Long> alertCooldown = new HashMap<>();
     private final Set<UUID> alreadyAlerted = new HashSet<>();
-    private final Map<String, Long> jailWarningCooldown = new HashMap<>();
+    private final Set<String> notifiedInsecureJails = new HashSet<>();
     private static final long COOLDOWN_TIME = 5000;
-    private static final long JAIL_WARNING_COOLDOWN = 300000;
 
     public FlagBoundaryListener(JailPlugin plugin) {
         this.plugin = plugin;
@@ -32,64 +31,59 @@ public class FlagBoundaryListener implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         if (!plugin.isPlayerJailed(playerUUID)) {
-            alreadyAlerted.remove(playerUUID);
             alertCooldown.remove(playerUUID);
+            alreadyAlerted.remove(playerUUID);
             return;
         }
 
         String jailName = plugin.getJailedPlayersConfig().getString(playerUUID.toString() + ".jailName");
         if (jailName != null) {
             Location jailLocation = plugin.getJail(jailName);
-            if (jailLocation != null && !plugin.isLocationInAnyFlag(jailLocation)) {
-                long currentTime = System.currentTimeMillis();
-                if (!jailWarningCooldown.containsKey(jailName) ||
-                        currentTime - jailWarningCooldown.get(jailName) > JAIL_WARNING_COOLDOWN) {
+            if (jailLocation != null) {
+                notifyInsecureJail(jailName, jailLocation, player);
+            }
+        }
 
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] " +
-                            ChatColor.GOLD + "Prison Security Alert: " + ChatColor.RED +
-                            "Prisoner " + ChatColor.YELLOW + player.getName() + ChatColor.RED +
-                            " is being held in jail '" + ChatColor.YELLOW + jailName + ChatColor.RED +
-                            "' which is not within any security zone (flag)! Immediate action required!");
+        handleBoundaryCheck(player, playerUUID);
+    }
 
-                    for (Player staff : Bukkit.getOnlinePlayers()) {
-                        if (staff.hasPermission("jailplugin.admin")) {
-                            staff.sendMessage(ChatColor.RED + "[SECURITY WARNING] " +
-                                    ChatColor.GOLD + "Alert: " + ChatColor.RED +
-                                    "Jail '" + jailName + "' containing prisoner " + player.getName() +
-                                    " is not within a secured zone!");
-                        }
-                    }
-                    jailWarningCooldown.put(jailName, currentTime);
+    private void notifyInsecureJail(String jailName, Location jailLocation, Player setter) {
+        if (!plugin.isLocationInAnyFlag(jailLocation) && !notifiedInsecureJails.contains(jailName)) {
+            notifiedInsecureJails.add(jailName);
+
+            setter.sendMessage(ChatColor.RED + "[SECURITY ALERT] The jail '" + jailName +
+                    "' is not within a secure flag zone!");
+
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] Jail '" + jailName +
+                    "' is not secured within a flagged zone! Immediate attention required.");
+        }
+    }
+
+    private void handleBoundaryCheck(Player player, UUID playerUUID) {
+        FileConfiguration flagsConfig = plugin.getFlagsConfig();
+        String assignedFlag = plugin.getJailedPlayersConfig().getString(playerUUID.toString() + ".assignedFlag");
+        boolean isInsideAssignedFlag = false;
+
+        if (assignedFlag != null && isPlayerInsideFlag(player.getLocation(), flagsConfig, assignedFlag)) {
+            isInsideAssignedFlag = true;
+        } else {
+            for (String flagName : flagsConfig.getKeys(false)) {
+                if (isPlayerInsideFlag(player.getLocation(), flagsConfig, flagName)) {
+                    isInsideAssignedFlag = true;
+                    plugin.getJailedPlayersConfig().set(playerUUID.toString() + ".assignedFlag", flagName);
+                    plugin.saveJailedPlayersConfig();
+                    break;
                 }
             }
         }
 
-        FileConfiguration flagsConfig = plugin.getFlagsConfig();
-        boolean isOutsideBoundary = true;
-        String assignedFlag = null;
-
-        for (String flagName : flagsConfig.getKeys(false)) {
-            if (isPlayerInsideFlag(player.getLocation(), flagsConfig, flagName)) {
-                isOutsideBoundary = false;
-                assignedFlag = flagName;
-                break;
+        if (!isInsideAssignedFlag) {
+            boolean shouldTeleport = plugin.getConfig().getBoolean("jail.jailbreak-tp", true);
+            if (shouldTeleport) {
+                handleTeleportBack(player, playerUUID);
+            } else {
+                handleEscape(player, playerUUID);
             }
-        }
-
-        if (!isOutsideBoundary) {
-            alreadyAlerted.remove(playerUUID);
-            alertCooldown.remove(playerUUID);
-            plugin.getJailedPlayersConfig().set(playerUUID.toString() + ".assignedFlag", assignedFlag);
-            plugin.saveJailedPlayersConfig();
-            return;
-        }
-
-        boolean shouldTeleport = plugin.getConfig().getBoolean("jail.jailbreak-tp", true);
-
-        if (shouldTeleport) {
-            handleTeleportBack(player, playerUUID);
-        } else {
-            handleEscape(player, playerUUID);
         }
     }
 
@@ -123,24 +117,20 @@ public class FlagBoundaryListener implements Listener {
 
     private void handleTeleportBack(Player player, UUID playerUUID) {
         long currentTime = System.currentTimeMillis();
-        if (!alertCooldown.containsKey(playerUUID) ||
-                currentTime - alertCooldown.get(playerUUID) > COOLDOWN_TIME) {
-
+        if (!alertCooldown.containsKey(playerUUID) || currentTime - alertCooldown.get(playerUUID) > COOLDOWN_TIME) {
             String jailName = plugin.getJailedPlayersConfig().getString(playerUUID.toString() + ".jailName");
-            if (jailName != null) {
-                Location jailLocation = plugin.getJail(jailName);
-                if (jailLocation != null && plugin.isLocationInAnyFlag(jailLocation)) {
-                    player.teleport(jailLocation);
-                    player.sendMessage(ChatColor.RED + "You have been returned to your jail cell!");
-                    Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " + ChatColor.GOLD + player.getName() +
-                            ChatColor.RED + " attempted to escape from jail and has been returned.");
-                } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[CRITICAL ERROR] " +
-                            ChatColor.GOLD + "Security Breach: " + ChatColor.RED +
-                            "Cannot return prisoner " + player.getName() + " to jail '" + jailName +
-                            "' as it's not within a secure zone!");
-                }
+            Location jailLocation = jailName != null ? plugin.getJail(jailName) : null;
+
+            if (jailLocation != null && plugin.isLocationInAnyFlag(jailLocation)) {
+                player.teleport(jailLocation);
+                player.sendMessage(ChatColor.RED + "You have been returned to your jail cell!");
+                Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " +
+                        ChatColor.GOLD + player.getName() + ChatColor.RED + " attempted to escape and was returned.");
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[CRITICAL ERROR] Cannot return prisoner " +
+                        player.getName() + " to jail '" + jailName + "' as it's not within a secure zone!");
             }
+
             alertCooldown.put(playerUUID, currentTime);
         }
     }

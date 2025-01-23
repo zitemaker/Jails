@@ -18,30 +18,18 @@ import java.util.List;
 public class DelFlag implements CommandExecutor, TabCompleter {
 
     private final JailPlugin plugin;
-    private final File flagsFile;
     private FileConfiguration flagsConfig;
 
     public DelFlag(JailPlugin plugin) {
         this.plugin = plugin;
+        this.flagsConfig = plugin.getFlagsConfig();
 
-        this.flagsFile = new File(plugin.getDataFolder(), "flags.yml");
-        if (!flagsFile.exists()) {
-            try {
-                flagsFile.createNewFile();
-            } catch (IOException e) {
-                plugin.getLogger().severe("Could not create flags.yml!");
-                e.printStackTrace();
-            }
-        }
-        reloadFlagsConfig();
+        plugin.reloadFlagsConfig();
 
         plugin.getCommand("jaildelflag").setExecutor(this);
         plugin.getCommand("jaildelflag").setTabCompleter(this);
     }
 
-    private void reloadFlagsConfig() {
-        flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -52,7 +40,10 @@ public class DelFlag implements CommandExecutor, TabCompleter {
 
         String flagName = args[0];
 
-        reloadFlagsConfig();
+
+        plugin.reloadFlagsConfig();
+        FileConfiguration flagsConfig = plugin.getFlagsConfig();
+
         if (!flagsConfig.contains(flagName)) {
             sender.sendMessage(ChatColor.RED + "The flag '" + flagName + "' does not exist!");
             return true;
@@ -62,9 +53,9 @@ public class DelFlag implements CommandExecutor, TabCompleter {
         flagsConfig.set(flagName, null);
 
         try {
-            flagsConfig.save(flagsFile);
+            plugin.saveFlagsConfig();
             sender.sendMessage(ChatColor.GREEN + "Flag '" + flagName + "' has been deleted!");
-        } catch (IOException e) {
+        } catch (Exception e) {
             sender.sendMessage(ChatColor.RED + "An error occurred while deleting the flag!");
             e.printStackTrace();
         }
@@ -72,10 +63,13 @@ public class DelFlag implements CommandExecutor, TabCompleter {
         return true;
     }
 
+
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         if (args.length == 1) {
-            reloadFlagsConfig();
+            plugin.reloadFlagsConfig();
+
+            FileConfiguration flagsConfig = plugin.getFlagsConfig();
             return new ArrayList<>(flagsConfig.getKeys(false));
         }
 

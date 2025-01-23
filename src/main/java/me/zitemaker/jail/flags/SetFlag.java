@@ -10,31 +10,14 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.IOException;
 
 public class SetFlag implements CommandExecutor {
 
     private final JailPlugin plugin;
-    private final File flagsFile;
-    private final FileConfiguration flagsConfig;
 
     public SetFlag(JailPlugin plugin) {
         this.plugin = plugin;
-
-        this.flagsFile = new File(plugin.getDataFolder(), "flags.yml");
-        if (!flagsFile.exists()) {
-            try {
-                flagsFile.createNewFile();
-            } catch (IOException e) {
-                plugin.getLogger().severe("Could not create flags.yml!");
-                e.printStackTrace();
-            }
-        }
-        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
 
         plugin.getCommand("jailsetflag").setExecutor(this);
     }
@@ -76,16 +59,22 @@ public class SetFlag implements CommandExecutor {
         BlockVector3 min = selection.getMinimumPoint();
         BlockVector3 max = selection.getMaximumPoint();
 
+
+        plugin.reloadFlagsConfig();
+        FileConfiguration flagsConfig = plugin.getFlagsConfig();
+
+
         flagsConfig.set(flagName + ".world", player.getWorld().getName());
         flagsConfig.set(flagName + ".pos1", min.getBlockX() + "," + min.getBlockY() + "," + min.getBlockZ());
         flagsConfig.set(flagName + ".pos2", max.getBlockX() + "," + max.getBlockY() + "," + max.getBlockZ());
 
         try {
-            flagsConfig.save(flagsFile);
+
+            plugin.saveFlagsConfig();
             player.sendMessage(ChatColor.GREEN + "Flag '" + flagName + "' has been set successfully!");
-        } catch (IOException e) {
-            player.sendMessage(ChatColor.RED + "An error occurred while saving the flag!");
-            e.printStackTrace();
+        } catch (Exception e) {
+            plugin.getLogger().severe("Could not set flag: " + e);
+            player.sendMessage(ChatColor.RED + "An error occurred while saving the flag. Check console for details.");
         }
 
         return true;

@@ -27,52 +27,18 @@ import java.util.Set;
 public class FlagList implements CommandExecutor, Listener {
 
     private final JailPlugin plugin;
-    private final File flagsFile;
     private FileConfiguration flagsConfig;
 
     public FlagList(JailPlugin plugin) {
         this.plugin = plugin;
-        this.flagsFile = new File(plugin.getDataFolder(), "flags.yml");
+        this.flagsConfig = plugin.getFlagsConfig();
 
-        initializeFlagsFile();
+        plugin.initializeFlagsFile();
 
         plugin.getCommand("jailflaglist").setExecutor(this);
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
-    private void initializeFlagsFile() {
-        if (!flagsFile.exists()) {
-            plugin.getLogger().info("flags.yml does not exist, creating new file...");
-            try {
-                plugin.getDataFolder().mkdirs();
-                flagsFile.createNewFile();
-                plugin.getLogger().info("Successfully created flags.yml");
-            } catch (IOException e) {
-                plugin.getLogger().severe("Failed to create flags.yml!");
-                e.printStackTrace();
-            }
-        }
-
-        reloadFlagsConfig();
-    }
-
-    public void reloadFlagsConfig() {
-        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
-        plugin.getLogger().info("Loaded flags.yml with " + flagsConfig.getKeys(false).size() + " flags");
-
-        Set<String> flags = flagsConfig.getKeys(false);
-        if (flags.isEmpty()) {
-            plugin.getLogger().warning("No flags found in flags.yml");
-        } else {
-            plugin.getLogger().info("Found flags:");
-            for (String flag : flags) {
-                plugin.getLogger().info("- " + flag + ":");
-                plugin.getLogger().info("  World: " + flagsConfig.getString(flag + ".world"));
-                plugin.getLogger().info("  Pos1: " + flagsConfig.getString(flag + ".pos1"));
-                plugin.getLogger().info("  Pos2: " + flagsConfig.getString(flag + ".pos2"));
-            }
-        }
-    }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -83,14 +49,19 @@ public class FlagList implements CommandExecutor, Listener {
 
         Player player = (Player) sender;
 
-        reloadFlagsConfig();
+
+        plugin.reloadFlagsConfig();
+        this.flagsConfig = plugin.getFlagsConfig();
+
         openFlagListGUI(player);
         return true;
     }
 
     private void openFlagListGUI(Player player) {
-        Inventory gui = Bukkit.createInventory(null, 54, ChatColor.YELLOW + "Flags List");
 
+        this.flagsConfig = plugin.getFlagsConfig();
+
+        Inventory gui = Bukkit.createInventory(null, 54, ChatColor.YELLOW + "Flags List");
         Set<String> flagKeys = flagsConfig.getKeys(false);
         plugin.getLogger().info("Opening GUI with " + flagKeys.size() + " flags");
 
@@ -116,6 +87,7 @@ public class FlagList implements CommandExecutor, Listener {
 
         player.openInventory(gui);
     }
+
 
     private Material getMaterialForWorld(String worldName) {
         switch (worldName.toLowerCase()) {

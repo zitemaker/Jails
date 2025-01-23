@@ -27,11 +27,16 @@ public class JailPlugin extends JavaPlugin {
     private File jailLocationsFile;
     private FileConfiguration jailLocationsConfig;
     public List<String> blockedCommands;
-
+    private final Map<UUID, Long> alertCooldown = new HashMap<>();
     private File handcuffedPlayersFile;
     private FileConfiguration handcuffedPlayersConfig;
+    private static final long COOLDOWN_TIME = 5000;
+    private File flagsFile;
+    private FileConfiguration flagsConfig;
 
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
+    private final Set<UUID> alreadyAlerted = new HashSet<>();
+    private final Set<String> notifiedInsecureJails = new HashSet<>();
     public final String prefix = getConfig().getString("prefix", "&7[&eJails&7]");
 
 
@@ -43,6 +48,8 @@ public class JailPlugin extends JavaPlugin {
         loadJails();
         loadJailedPlayers();
         loadHandcuffedPlayers();
+        initializeFlagsFile();
+        reloadFlagsConfig();
 
         blockedCommands = getConfig().getStringList("blockedCommands");
 
@@ -72,7 +79,7 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
-        //getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
+        getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
     }
 
     @Override
@@ -463,6 +470,91 @@ public class JailPlugin extends JavaPlugin {
         }
     }
 
+    // --- Flags ---
+
+    public boolean isPlayerInsideFlag(Location location, FileConfiguration flagsConfig, String flagName) {
+        String worldName = flagsConfig.getString(flagName + ".world");
+        String pos1String = flagsConfig.getString(flagName + ".pos1");
+        String pos2String = flagsConfig.getString(flagName + ".pos2");
+
+        if (worldName == null || pos1String == null || pos2String == null) return false;
+        if (!location.getWorld().getName().equals(worldName)) return false;
+
+        try {
+            String[] pos1 = pos1String.split(",");
+            String[] pos2 = pos2String.split(",");
+
+            int minX = Math.min(Integer.parseInt(pos1[0]), Integer.parseInt(pos2[0]));
+            int minY = Math.min(Integer.parseInt(pos1[1]), Integer.parseInt(pos2[1]));
+            int minZ = Math.min(Integer.parseInt(pos1[2]), Integer.parseInt(pos2[2]));
+            int maxX = Math.max(Integer.parseInt(pos1[0]), Integer.parseInt(pos2[0]));
+            int maxY = Math.max(Integer.parseInt(pos1[1]), Integer.parseInt(pos2[1]));
+            int maxZ = Math.max(Integer.parseInt(pos1[2]), Integer.parseInt(pos2[2]));
+
+            return location.getX() >= minX && location.getX() <= maxX &&
+                    location.getY() >= minY && location.getY() <= maxY &&
+                    location.getZ() >= minZ && location.getZ() <= maxZ;
+        } catch (Exception e) {
+            getLogger().warning("Invalid flag coordinates for flag '" + flagName + "': " + e.getMessage());
+            return false;
+        }
+    }
+
+    public void handleTeleportBack(Player player, UUID playerUUID) {
+        long currentTime = System.currentTimeMillis();
+        if (!alertCooldown.containsKey(playerUUID) || currentTime - alertCooldown.get(playerUUID) > COOLDOWN_TIME) {
+            String jailName = getJailedPlayersConfig().getString(playerUUID.toString() + ".jailName");
+            Location jailLocation = jailName != null ? getJail(jailName) : null;
+
+            if (jailLocation != null && isLocationInAnyFlag(jailLocation)) {
+                player.teleport(jailLocation);
+                player.sendMessage(ChatColor.RED + "You have been returned to your jail cell!");
+                Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " +
+                        ChatColor.GOLD + player.getName() + ChatColor.RED + " attempted to escape and was returned.");
+            } else {
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[CRITICAL ERROR] Cannot return prisoner " +
+                        player.getName() + " to jail '" + jailName + "' as it's not within a secure zone!");
+            }
+
+            alertCooldown.put(playerUUID, currentTime);
+        }
+    }
+
+
+    // --- Flags ---
+
+    public void handleEscape(Player player, UUID playerUUID) {
+        if (!alreadyAlerted.contains(playerUUID)) {
+            String jailName = getJailedPlayersConfig().getString(playerUUID.toString() + ".jailName");
+            if (jailName != null) {
+                Location jailLocation = getJail(jailName);
+                if (jailLocation != null && isLocationInAnyFlag(jailLocation)) {
+                    Location escapeLocation = player.getLocation();
+
+                    String originalSpawnOption = getJailedPlayersConfig().getString(
+                            playerUUID.toString() + ".spawnOption");
+
+                    getJailedPlayersConfig().set(playerUUID.toString() + ".spawnOption", "none");
+                    saveJailedPlayersConfig();
+
+                    playerEscape(playerUUID);
+
+                    player.teleport(escapeLocation);
+
+                    Bukkit.broadcastMessage(ChatColor.RED + "[Alert] " + ChatColor.GOLD + player.getName() +
+                            ChatColor.RED + " has escaped from jail! Security breach detected!");
+
+                    alreadyAlerted.add(playerUUID);
+                } else {
+                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] " +
+                            ChatColor.GOLD + "Critical Alert: " + ChatColor.RED +
+                            "Prisoner " + player.getName() + " attempted escape from unsecured jail '" +
+                            jailName + "'! Immediate action required!");
+                }
+            }
+        }
+    }
+
     // --- File Management ---
     private void createFiles() {
         jailedPlayersFile = new File(getDataFolder(), "jailed_players.yml");
@@ -486,10 +578,103 @@ public class JailPlugin extends JavaPlugin {
         }
         handcuffedPlayersConfig = YamlConfiguration.loadConfiguration(handcuffedPlayersFile);
 
+        flagsFile = new File(getDataFolder(), "flags.yml");
+        if(!flagsFile.exists()){
+            try{
+                flagsFile.createNewFile();
+            } catch (IOException e){
+                getLogger().severe("Could not create handcuffed_players.yml");
+            }
+
+        }
+        flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
+
+    }
+    public void handleBoundaryCheck(Player player, UUID playerUUID) {
+        FileConfiguration flagsConfig = getFlagsConfig();
+        String assignedFlag = getJailedPlayersConfig().getString(playerUUID.toString() + ".assignedFlag");
+        boolean isInsideAssignedFlag = false;
+
+        if (assignedFlag != null && isPlayerInsideFlag(player.getLocation(), flagsConfig, assignedFlag)) {
+            isInsideAssignedFlag = true;
+        } else {
+            for (String flagName : flagsConfig.getKeys(false)) {
+                if (isPlayerInsideFlag(player.getLocation(), flagsConfig, flagName)) {
+                    isInsideAssignedFlag = true;
+                    getJailedPlayersConfig().set(playerUUID.toString() + ".assignedFlag", flagName);
+                    saveJailedPlayersConfig();
+                    break;
+                }
+            }
+        }
+
+        if (!isInsideAssignedFlag) {
+            boolean shouldTeleport = getConfig().getBoolean("jail.jailbreak-tp", true);
+            if (shouldTeleport) {
+                handleTeleportBack(player, playerUUID);
+            } else {
+                handleEscape(player, playerUUID);
+            }
+        }
+    }
+
+    public void notifyInsecureJail(String jailName, Location jailLocation, Player setter) {
+        if (!isLocationInAnyFlag(jailLocation) && !notifiedInsecureJails.contains(jailName)) {
+            notifiedInsecureJails.add(jailName);
+
+            setter.sendMessage(ChatColor.RED + "[SECURITY ALERT] The jail '" + jailName +
+                    "' is not within a secure flag zone!");
+
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] Jail '" + jailName +
+                    "' is not secured within a flagged zone! Immediate attention required.");
+        }
     }
 
     public FileConfiguration getFlagsConfig() {
-        return YamlConfiguration.loadConfiguration(new File(getDataFolder(), "flags.yml"));
+        return flagsConfig;
+    }
+
+
+    public void saveFlagsConfig() {
+        try {
+            flagsConfig.save(flagsFile);
+        } catch (IOException e) {
+            getLogger().severe("Could not save flags.yml!");
+        }
+    }
+
+    public void initializeFlagsFile() {
+        if (!flagsFile.exists()) {
+            getLogger().info("flags.yml does not exist, creating new file...");
+            try {
+                getDataFolder().mkdirs();
+                flagsFile.createNewFile();
+                getLogger().info("Successfully created flags.yml");
+            } catch (IOException e) {
+                getLogger().severe("Failed to create flags.yml!");
+                e.printStackTrace();
+            }
+        }
+
+        reloadFlagsConfig();
+    }
+
+    public void reloadFlagsConfig() {
+        this.flagsConfig = YamlConfiguration.loadConfiguration(flagsFile);
+        getLogger().info("Loaded flags.yml with " + flagsConfig.getKeys(false).size() + " flags");
+
+        Set<String> flags = flagsConfig.getKeys(false);
+        if (flags.isEmpty()) {
+            getLogger().warning("No flags found in flags.yml");
+        } else {
+            getLogger().info("Found flags:");
+            for (String flag : flags) {
+                getLogger().info("- " + flag + ":");
+                getLogger().info("  World: " + flagsConfig.getString(flag + ".world"));
+                getLogger().info("  Pos1: " + flagsConfig.getString(flag + ".pos1"));
+                getLogger().info("  Pos2: " + flagsConfig.getString(flag + ".pos2"));
+            }
+        }
     }
 
     // --- Utilities ---

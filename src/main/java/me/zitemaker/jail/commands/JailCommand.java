@@ -58,7 +58,6 @@ public class JailCommand implements CommandExecutor {
         plugin.jailPlayer(target, jailName, -1, reason, sender.getName());
 
         String prefix = plugin.getPrefix();
-        plugin.getLogger().info(prefix);
 
         String messageTemplate = plugin.getConfig().getString("general.jail-broadcast-message",
                 "{prefix} &c{player} has been jailed permanently by {jailer}. Reason: {reason}!");

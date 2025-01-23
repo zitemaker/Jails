@@ -3,9 +3,7 @@ package me.zitemaker.jail;
 import me.zitemaker.jail.commands.*;
 import me.zitemaker.jail.flags.*;
 import me.zitemaker.jail.listeners.*;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.Material;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +35,7 @@ public class JailPlugin extends JavaPlugin {
     private final Set<UUID> alreadyAlerted = new HashSet<>();
     private final Set<String> notifiedInsecureJails = new HashSet<>();
     public final String prefix = getConfig().getString("prefix", "&7[&eJails&7]");
-
+    public final boolean alertMessages = getConfig().getBoolean("jail-settings.enable-escape-alerts");
 
     @Override
     public void onEnable() {
@@ -382,7 +379,7 @@ public class JailPlugin extends JavaPlugin {
         getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
     }
 
-    public void playerEscape(UUID playerUUID) {
+    /*public void playerEscape(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
         String spawnOption = getPlayerSpawnOption(playerUUID);
 
@@ -416,6 +413,7 @@ public class JailPlugin extends JavaPlugin {
         saveJailedPlayersConfig();
         getLogger().info("Player " + player.getName() + " has escaped from jail.");
     }
+     */
 
     public void teleportToOriginalLocation(Player player, String basePath) {
         String worldName = jailedPlayersConfig.getString(basePath + ".world");
@@ -509,6 +507,7 @@ public class JailPlugin extends JavaPlugin {
             if (jailLocation != null && isLocationInAnyFlag(jailLocation)) {
                 player.teleport(jailLocation);
                 player.sendMessage(ChatColor.RED + "You have been returned to your jail cell!");
+
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " +
                         ChatColor.GOLD + player.getName() + ChatColor.RED + " attempted to escape and was returned.");
             } else {
@@ -537,14 +536,61 @@ public class JailPlugin extends JavaPlugin {
                     getJailedPlayersConfig().set(playerUUID.toString() + ".spawnOption", "none");
                     saveJailedPlayersConfig();
 
-                    playerEscape(playerUUID);
 
-                    player.teleport(escapeLocation);
+
+                    boolean punishmentFeature = getConfig().getBoolean("jail-settings.punish-on-escape");
+
+                    if (getConfig().getBoolean("jail-settings.punish-on-escape")) {
+                        String punishment = getConfig().getString("jail-settings.escape-punishment");
+                        switch (punishment) {
+                            case "KILL":
+                                player.setHealth(0.0);
+                                String killMessageTemplate = getConfig().getString("jail-settings.escape-punishment-message",
+                                        "{prefix} &cYou were punished for trying to escape jail!");
+                                String killPunishmentMessage = killMessageTemplate.replace("{prefix}", getPrefix());
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&', killPunishmentMessage));
+                                break;
+
+                            case "TELEPORT_BACK":
+                                /*if (jailLocation != null && isLocationInAnyFlag(jailLocation)) {
+                                    player.teleport(jailLocation);
+                                    player.sendMessage(ChatColor.YELLOW + "You were teleported back for trying to escape from jail.");
+                                    alreadyAlerted.remove(playerUUID);
+                                }
+                                 */
+                                handleTeleportBack(player, playerUUID);
+
+                                break;
+
+                            case "BAN":
+                                String banMessageTemplate = getConfig().getString("jail-settings.escape-punishment-message",
+                                        "{prefix} &cYou were punished for trying to escape jail!");
+                                String banDurationConfig = getConfig().getString("jail-settings.ban-duration", "1d");
+
+
+                                long banDurationMillis = parseDuration(banDurationConfig);
+                                Date banExpiry = banDurationMillis > 0 ? new Date(System.currentTimeMillis() + banDurationMillis) : null;
+
+                                String banPunishmentMessage = banMessageTemplate.replace("{prefix}", getPrefix());
+                                Bukkit.getBanList(BanList.Type.NAME).addBan(player.getName(),
+                                        ChatColor.translateAlternateColorCodes('&', banPunishmentMessage),
+                                        banExpiry,
+                                        "CONSOLE");
+
+                                player.kickPlayer(ChatColor.translateAlternateColorCodes('&', banPunishmentMessage));
+                                break;
+
+                            default:
+                                Bukkit.getLogger().warning("Unknown punishment type in config: " + punishment);
+                                break;
+                        }
+                    }
+
 
                     Bukkit.broadcastMessage(ChatColor.RED + "[Alert] " + ChatColor.GOLD + player.getName() +
                             ChatColor.RED + " has escaped from jail! Security breach detected!");
 
-                    alreadyAlerted.add(playerUUID);
+
                 } else {
                     Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] " +
                             ChatColor.GOLD + "Critical Alert: " + ChatColor.RED +
@@ -554,6 +600,7 @@ public class JailPlugin extends JavaPlugin {
             }
         }
     }
+
 
     // --- File Management ---
     private void createFiles() {
@@ -610,11 +657,14 @@ public class JailPlugin extends JavaPlugin {
 
         if (!isInsideAssignedFlag) {
             boolean shouldTeleport = getConfig().getBoolean("jail.jailbreak-tp", true);
-            if (shouldTeleport) {
+            handleEscape(player, playerUUID);
+            /*if (shouldTeleport) {
                 handleTeleportBack(player, playerUUID);
             } else {
                 handleEscape(player, playerUUID);
             }
+
+             */
         }
     }
 
@@ -698,6 +748,7 @@ public class JailPlugin extends JavaPlugin {
         return time;
     }
 
+
     public void scheduleUnjail(Player player, long duration) {
         String prefix = getPrefix();
         Bukkit.getScheduler().runTaskLater(this, () -> {
@@ -745,5 +796,13 @@ public class JailPlugin extends JavaPlugin {
 
         long days = hours / 24;
         return days + " day" + (days == 1 ? "" : "s");
+    }
+
+    public Set<UUID> getAlreadyAlerted(){
+        return alreadyAlerted;
+    }
+
+    public Map<UUID, Long>getAlertCooldown(){
+        return alertCooldown;
     }
 }

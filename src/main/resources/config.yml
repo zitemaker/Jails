@@ -35,9 +35,11 @@ jail-settings:
     - item: BREAD
       amount: 16
   punish-on-escape: true # whether a player should get punished or not if they escape jail. you need to define the jail area for this. if set to false, it will only show alerts.
-  escape_punishment: KILL               # KILL, TELEPORT_BACK, or BAN
-  escape-punishment-message: "{prefix} &cYou were killed for trying to escape jail!"
-  change-skin: # whether the player's skin should change when they get jailed (you need the SkinsRestorer plugin installed on your server for this)
+  escape-punishment: KILL # KILL, TELEPORT_BACK, or BAN. Default is TELEPORT_BACK.
+  ban-duration: 1d # Accepted formats: 1s/1m/1d/1w
+  escape-punishment-message: "{prefix} &cYou were punished for trying to escape jail!"
+  enable-escape-alerts: true
+  change-skin: true # whether the player's skin should change when they get jailed (you need the SkinsRestorer plugin installed on your server for this)
   skin-username: SirMothsho # whose skin to use when a player gets jailed
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat
   jailed-role: "Jailed" # the text to show next to a player's name when they're jailed

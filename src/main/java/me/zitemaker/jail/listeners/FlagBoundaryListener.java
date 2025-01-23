@@ -8,20 +8,25 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 import java.util.*;
 
 public class FlagBoundaryListener implements Listener {
 
     private final JailPlugin plugin;
-    private final Map<UUID, Long> alertCooldown = new HashMap<>();
-    private final Set<UUID> alreadyAlerted = new HashSet<>();
+    private final Map<UUID, Long> alertCooldown;
+    private final Set<UUID> alreadyAlerted;
     private final Set<String> notifiedInsecureJails = new HashSet<>();
     private static final long COOLDOWN_TIME = 5000;
 
     public FlagBoundaryListener(JailPlugin plugin) {
         this.plugin = plugin;
+        this.alertCooldown = plugin.getAlertCooldown();
+        this.alreadyAlerted = plugin.getAlreadyAlerted();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -46,6 +51,32 @@ public class FlagBoundaryListener implements Listener {
 
         plugin.handleBoundaryCheck(player, playerUUID);
     }
+
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+
+
+        if (alreadyAlerted.contains(playerUUID)) {
+            alreadyAlerted.remove(playerUUID);
+        }
+    }
+
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
+
+
+        if (alreadyAlerted.contains(playerUUID)) {
+            alreadyAlerted.remove(playerUUID);
+        }
+    }
+
+
 
 
 

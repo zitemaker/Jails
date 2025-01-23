@@ -1,6 +1,7 @@
 package me.zitemaker.jail.listeners;
 
 import me.zitemaker.jail.JailPlugin;
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -16,13 +17,15 @@ public class ChatListener implements Listener {
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
-        String format = event.getFormat();
-
 
         if (plugin.isPlayerJailed(player.getUniqueId())) {
+            if (plugin.getConfig().getBoolean("jail-settings.enable-jailed-role")) {
+                String jailedRole = plugin.getConfig().getString("jail-settings.jailed-role", "§c[Jailed]§r");
+                jailedRole = ChatColor.translateAlternateColorCodes('&', jailedRole);
 
-            String jailedName = "§c[Jailed]§r " + player.getName();
-            event.setFormat(jailedName + ": " + event.getMessage());
+                event.setFormat(jailedRole + " " + "%1$s: %2$s");
+            }
         }
     }
+
 }

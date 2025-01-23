@@ -118,8 +118,8 @@ public class JailListeners implements Listener {
             } else {
                 player.teleport(jailLocation);
                 long timeLeftMillis = endTime - System.currentTimeMillis();
-                String formattedTime = formatTimeLeft(timeLeftMillis);
-                player.sendMessage(ChatColor.RED + "You are jailed for " + formattedTime);
+                String formattedTime = plugin.formatTimeLeft(timeLeftMillis);
+                player.sendMessage(ChatColor.RED + "You are temporarily jailed for " + formattedTime);
             }
         }
     }
@@ -150,17 +150,5 @@ public class JailListeners implements Listener {
         }
     }
 
-    private String formatTimeLeft(long millis) {
-        long seconds = millis / 1000;
-        if (seconds < 60) return seconds + " second" + (seconds == 1 ? "" : "s");
 
-        long minutes = seconds / 60;
-        if (minutes < 60) return minutes + " minute" + (minutes == 1 ? "" : "s");
-
-        long hours = minutes / 60;
-        if (hours < 24) return hours + " hour" + (hours == 1 ? "" : "s");
-
-        long days = hours / 24;
-        return days + " day" + (days == 1 ? "" : "s");
-    }
 }

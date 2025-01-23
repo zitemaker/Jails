@@ -1,40 +1,51 @@
 ############################################################################
 #                                                                          #
-#                          Jails Configuration                             #
+#                        Jails Configuration                               #
 #                                                                          #
 ############################################################################
 #                                                                          #
 # Development Team: zitemaker                                              #
-# Authors: [FahianR, AdolfHustler, ArthropodR]                             #
-# Website: zitemaker.com                                                   #
+# Authors: [adolfhustler, ArthropodR]                                      #
 # Bug Reports: https://github.com/zitemaker/Jail/issues                    #
 # Source Code: https://github.com/zitemaker/Jail                           #
-#                                                                          #
 ############################################################################
 
 prefix: "&7[&eJails&7]"
 language: english
 
 # General settings
-general-settings:
-  broadcast-on-jail: true               # Notify all players when someone is jailed
-  broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
+general:
+  # Notify all server players when a player is jailed
+  broadcast-on-jail: true
+  jail-broadcast-message: "{prefix} &6{player} has been jailed for {duration}. Reason: {reason}!"
+  # Notify all server players when a player is unjailed
+  broadcast-on-unjail: true
+  unjail-broadcast-message: "{prefix} &a{player} has been unjailed."
+
+  # Where should a player be teleported to when they get unjailed (WORLD_SPAWN/ORIGINAL_lOCATION) WORLD_SPAWN will teleport them to the world spawn and ORIGINAL_LOCATION will teleport them to the location they were at when they got jailed.
   default-unjail-location: WORLD_SPAWN
 
 jail-settings:
-  keep-inventory: # should players keep their items when jailed or will they be given a set of items
+  keep-inventory: false # should players keep their items when jailed or will they be given a set of items
+  jail-items: # items given to jailed players when keep-inventory is false. keep this empty if you dont wanna give those poor guys anything
+    - item: BAKED_POTATO
+      amount: 32
+    - item: WATER_BUCKET
+      amount: 1
+    - item: BREAD
+      amount: 16
   punish-on-escape: true # whether a player should get punished or not if they escape jail. you need to define the jail area for this. if set to false, it will only show alerts.
   escape_punishment: KILL               # KILL, TELEPORT_BACK, or BAN
   escape-punishment-message: "{prefix} &cYou were killed for trying to escape jail!"
   change-skin: # whether the player's skin should change when they get jailed (you need the SkinsRestorer plugin installed on your server for this)
-  skin-username: SirMothsho # who's skin to use when a player gets jailed
-  enable-jailed-role: # whether players should have a "Jailed" text next to their name when they send anything in chat
+  skin-username: SirMothsho # whose skin to use when a player gets jailed
+  enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat
   jailed-role: "Jailed" # the text to show next to a player's name when they're jailed
 
 # Handcuff settings
 handcuff-settings:
-  restrict_movement: true        # Whether to restrict handcuffed player's movement
   slow_movement: true            # Make handcuffed players slower
+  blindness: true                # Give handcuffed players the blindness effect
   disable_items: true            # Prevent using items while handcuffed
   broadcast-on-handcuff: true    # Notify all players when someone is handcuffed
   broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
@@ -62,4 +73,4 @@ jail-restrictions:
   entity-ride: false    # If false, players cannot mount any entities (e.g. horses, llamas, players, camels) while jailed.
   block-mount: false    # If false, players cannot mount on any blocks while jailed.
   ender-pearl: false    # If false, players cannot use ender pearls while jailed.
-  allow-movement: false # should players be able to move when jailed
+  allow-movement: false # If false, players cannot move while jailed.

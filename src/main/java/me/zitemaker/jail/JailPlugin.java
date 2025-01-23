@@ -3,17 +3,6 @@ package me.zitemaker.jail;
 import me.zitemaker.jail.commands.*;
 import me.zitemaker.jail.flags.*;
 import me.zitemaker.jail.listeners.*;
-import net.skinsrestorer.api.SkinsRestorerProvider;
-import net.skinsrestorer.api.connections.MineSkinAPI;
-import net.skinsrestorer.api.connections.MojangAPI;
-import net.skinsrestorer.api.event.EventBus;
-import net.skinsrestorer.api.exception.DataRequestException;
-import net.skinsrestorer.api.property.InputDataResult;
-import net.skinsrestorer.api.property.SkinApplier;
-import net.skinsrestorer.api.property.SkinProperty;
-import net.skinsrestorer.api.storage.CacheStorage;
-import net.skinsrestorer.api.storage.PlayerStorage;
-import net.skinsrestorer.api.storage.SkinStorage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -43,6 +32,7 @@ public class JailPlugin extends JavaPlugin {
     private FileConfiguration handcuffedPlayersConfig;
 
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
+    public final String prefix = getConfig().getString("prefix", "&7[&eJails&7]");
 
 
     @Override
@@ -82,7 +72,7 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
-        getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
+        //getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
     }
 
     @Override
@@ -241,15 +231,27 @@ public class JailPlugin extends JavaPlugin {
         jailedPlayersConfig.set(basePath + ".reason", reason);
         jailedPlayersConfig.set(basePath + ".jailer", jailer);
 
-        setPlayerSpawnOption(playerUUID, "world_spawn");
-        saveJailedPlayersConfig();
+        switch(getConfig().getString("general.default-unjail-location")){
 
-        boolean keepInventory = getConfig().getBoolean("jail.keep-inventory");
+            case "WORLD_SPAWN":
+                setPlayerSpawnOption(playerUUID, "world_spawn");
+                break;
+
+            case "ORIGINAL_LOCATION":
+                setPlayerSpawnOption(playerUUID, "original_location");
+                break;
+
+            default:
+                setPlayerSpawnOption(playerUUID, "world_spawn");
+                break;
+        }
+
+        boolean keepInventory = getConfig().getBoolean("jail-settings.keep-inventory");
         if (!keepInventory) {
             jailedPlayersConfig.set(basePath + ".inventory", player.getInventory().getContents());
             player.getInventory().clear();
 
-            List<Map<?, ?>> jailItems = getConfig().getMapList("jail.jail-items");
+            List<Map<?, ?>> jailItems = getConfig().getMapList("jail-settings.jail-items");
             for (Map<?, ?> itemData : jailItems) {
                 try {
                     String itemName = itemData.get("item").toString();
@@ -270,14 +272,14 @@ public class JailPlugin extends JavaPlugin {
                     getLogger().warning("Error giving jail items: " + e.getMessage());
                 }
             }
+            saveJailedPlayersConfig();
         }
 
         try {
             String targetSkin = "SirMothsho";
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
-            getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
         } catch (Exception e) {
-            getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+            getLogger().severe("Failed to set skin for " + player.getName() + ": " + e.getMessage());
         }
 
         if (jailLocation != null) {
@@ -336,7 +338,7 @@ public class JailPlugin extends JavaPlugin {
             return;
         }
 
-        boolean keepInventory = getConfig().getBoolean("jail.keep-inventory");
+        boolean keepInventory = getConfig().getBoolean("jail-settings.keep-inventory");
         if (!keepInventory) {
             Object savedInventoryObj = jailedPlayersConfig.get(playerUUID.toString() + ".inventory");
             if (savedInventoryObj instanceof ItemStack[]) {
@@ -512,14 +514,51 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void scheduleUnjail(Player player, long duration) {
+        String prefix = getPrefix();
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if(player.isOnline()){
                 unjailPlayer(player.getUniqueId());
-                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has been unjailed.");
+                String messageTemplate = getConfig().getString("general.unjail-broadcast-message",
+                        "{prefix} &c{player} has been unjailed.");
+
+                String broadcastMessage = messageTemplate
+                        .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
+                        .replace("{player}", player.getName());
+
+                if(getConfig().getBoolean("general.broadcast-on-unjail")){
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+                }
             }
             else if (isPlayerJailed(player.getUniqueId())) {
-                Bukkit.broadcastMessage(ChatColor.GREEN + player.getName() + " has been unjailed.");
+                String messageTemplate = getConfig().getString("general.unjail-broadcast-message",
+                        "{prefix} &c{player} has been unjailed.");
+
+                String broadcastMessage = messageTemplate
+                        .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
+                        .replace("{player}", player.getName());
+
+                if(getConfig().getBoolean("general.broadcast-on-unjail")){
+                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+                }
             }
         }, duration / 50);
+    }
+
+    public String getPrefix(){
+        return prefix;
+    }
+
+    public String formatTimeLeft(long millis) {
+        long seconds = millis / 1000;
+        if (seconds < 60) return seconds + " second" + (seconds == 1 ? "" : "s");
+
+        long minutes = seconds / 60;
+        if (minutes < 60) return minutes + " minute" + (minutes == 1 ? "" : "s");
+
+        long hours = minutes / 60;
+        if (hours < 24) return hours + " hour" + (hours == 1 ? "" : "s");
+
+        long days = hours / 24;
+        return days + " day" + (days == 1 ? "" : "s");
     }
 }

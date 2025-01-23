@@ -48,8 +48,22 @@ public class UnjailCommand implements CommandExecutor {
 
         plugin.unjailPlayer(targetUUID);
 
-        sender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
-        Bukkit.broadcastMessage(ChatColor.GREEN + target.getName() + " has been unjailed.");
+        String prefix = plugin.getPrefix();
+
+        String messageTemplate = plugin.getConfig().getString("general.unjail-broadcast-message",
+                "{prefix} &c{player} has been unjailed.");
+
+        String broadcastMessage = messageTemplate
+                .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
+                .replace("{player}", target.getName());
+
+
+
+        if(plugin.getConfig().getBoolean("general.broadcast-on-unjail")){
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+        } else {
+            sender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+        }
         return true;
     }
 }

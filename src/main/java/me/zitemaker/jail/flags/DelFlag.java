@@ -58,7 +58,7 @@ public class DelFlag implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        // Remove the specific flag
+
         flagsConfig.set(flagName, null);
 
         try {

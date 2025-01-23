@@ -37,6 +37,12 @@ public class JailCommand implements CommandExecutor {
             return false;
         }
 
+        if(plugin.isPlayerJailed(target.getUniqueId())){
+            sender.sendMessage(ChatColor.RED + target.getName() + " is already jailed!");
+            return false;
+        }
+
+
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
             sender.sendMessage(ChatColor.RED + "Jail not found. Available jails:");
@@ -51,9 +57,25 @@ public class JailCommand implements CommandExecutor {
         Location jailLocation = plugin.getJails().get(jailName);
         plugin.jailPlayer(target, jailName, -1, reason, sender.getName());
 
-        String broadcastMessage = ChatColor.RED + target.getName() + " has been jailed by " + sender.getName() +
-                " permanently. Reason: " + reason;
-        Bukkit.broadcastMessage(broadcastMessage);
+        String prefix = plugin.getPrefix();
+        plugin.getLogger().info(prefix);
+
+        String messageTemplate = plugin.getConfig().getString("general.jail-broadcast-message",
+                "{prefix} &c{player} has been jailed permanently by {jailer}. Reason: {reason}!");
+
+
+        String broadcastMessage = messageTemplate
+                .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
+                .replace("{player}", target.getName())
+                .replace("{duration}", "a permanent duration")
+                .replace("{jailer}", sender.getName())
+                .replace("{reason}", reason);
+
+
+
+        if(plugin.getConfig().getBoolean("general.broadcast-on-jail")){
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+        }
 
         target.sendMessage(ChatColor.RED + "You have been jailed permanently by " + sender.getName() +
                 ". Reason: " + reason);

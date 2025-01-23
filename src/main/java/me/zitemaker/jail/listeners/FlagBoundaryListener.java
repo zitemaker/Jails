@@ -21,7 +21,7 @@ public class FlagBoundaryListener implements Listener {
     private final Map<UUID, Long> alertCooldown;
     private final Set<UUID> alreadyAlerted;
     private final Set<String> notifiedInsecureJails = new HashSet<>();
-    private static final long COOLDOWN_TIME = 5000;
+
 
     public FlagBoundaryListener(JailPlugin plugin) {
         this.plugin = plugin;

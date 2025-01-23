@@ -592,10 +592,6 @@ public class JailPlugin extends JavaPlugin {
 
 
                 } else {
-                    Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] " +
-                            ChatColor.GOLD + "Critical Alert: " + ChatColor.RED +
-                            "Prisoner " + player.getName() + " attempted escape from unsecured jail '" +
-                            jailName + "'! Immediate action required!");
                 }
             }
         }
@@ -675,8 +671,8 @@ public class JailPlugin extends JavaPlugin {
             setter.sendMessage(ChatColor.RED + "[SECURITY ALERT] The jail '" + jailName +
                     "' is not within a secure flag zone!");
 
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY BREACH] Jail '" + jailName +
-                    "' is not secured within a flagged zone! Immediate attention required.");
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY ALERT] Jail '" + jailName +
+                    "' is not secured within a flagged zone! Prisoner escapes won't be detected!");
         }
     }
 

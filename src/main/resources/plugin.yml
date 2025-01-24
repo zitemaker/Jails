@@ -76,3 +76,8 @@ commands:
     description: Reloads the Jails config file
     usage: /jailsreload
     permission: jails.reload
+
+  jailshelp:
+    description: Displays the help pages for the jail plugin
+    usage: /jailshelp
+    permission: jails.help

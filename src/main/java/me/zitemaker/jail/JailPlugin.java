@@ -77,6 +77,7 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
         getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
+        getServer().getPluginManager().registerEvents(new HandcuffListener(this), this);
     }
 
     @Override
@@ -151,8 +152,12 @@ public class JailPlugin extends JavaPlugin {
     public void handcuffPlayer(Player player) {
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
-        player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.05);
-        player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
+        if(getConfig().getBoolean("handcuff-settings.slow-movement")){
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.05);
+        }
+        if(getConfig().getBoolean("handcuff-settings.blindness")){
+            player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
+        }
 
         handcuffedPlayersConfig.set(basePath + ".handcuffed", true);
         saveHandcuffedPlayersConfig();
@@ -199,6 +204,8 @@ public class JailPlugin extends JavaPlugin {
             getLogger().info("Loaded jailed player: " + key);
         }
     }
+
+    // --- Jailed Players ---
 
     public void jailPlayer(Player player, String jailName, long endTime, String reason, String jailer) {
         Location jailLocation = getJail(jailName);
@@ -279,12 +286,15 @@ public class JailPlugin extends JavaPlugin {
             saveJailedPlayersConfig();
         }
 
-        try {
-            String targetSkin = "SirMothsho";
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
-        } catch (Exception e) {
-            getLogger().severe("Failed to set skin for " + player.getName() + ": " + e.getMessage());
+        if(getConfig().getBoolean("jail-settings.change-skin")){
+            try {
+                String targetSkin = getConfig().getString("jail-settings.skin-username", "SirMothsho");
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
+            } catch (Exception e) {
+                getLogger().severe("Failed to set skin for " + player.getName() + ": " + e.getMessage());
+            }
         }
+
 
         if (jailLocation != null) {
             player.teleport(jailLocation);
@@ -354,12 +364,14 @@ public class JailPlugin extends JavaPlugin {
             }
         }
 
-        try {
+        if(getConfig().getBoolean("jail-settings.change-skin")){
+            try {
 
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
-            getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
-        } catch (Exception e) {
-            getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin clear " + player.getName());
+                getLogger().info("Executed /skin clear for " + player.getName() + " to reset their skin.");
+            } catch (Exception e) {
+                getLogger().severe("Failed to reset skin for " + player.getName() + ": " + e.getMessage());
+            }
         }
 
 
@@ -506,13 +518,13 @@ public class JailPlugin extends JavaPlugin {
 
             if (jailLocation != null && isLocationInAnyFlag(jailLocation)) {
                 player.teleport(jailLocation);
-                player.sendMessage(ChatColor.RED + "You have been returned to your jail cell!");
-
-                Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " +
-                        ChatColor.GOLD + player.getName() + ChatColor.RED + " attempted to escape and was returned.");
+                player.sendMessage(ChatColor.YELLOW + "You were teleported back for trying to escape from jail.");
+                if(alertMessages){
+                    Bukkit.broadcastMessage(ChatColor.DARK_RED + "[Security Alert] " +
+                            ChatColor.GOLD + player.getName() + ChatColor.RED + " attempted to escape and was returned.");
+                }
             } else {
-                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[CRITICAL ERROR] Cannot return prisoner " +
-                        player.getName() + " to jail '" + jailName + "' as it's not within a secure zone!");
+
             }
 
             alertCooldown.put(playerUUID, currentTime);
@@ -586,9 +598,10 @@ public class JailPlugin extends JavaPlugin {
                         }
                     }
 
-
-                    Bukkit.broadcastMessage(ChatColor.RED + "[Alert] " + ChatColor.GOLD + player.getName() +
-                            ChatColor.RED + " has escaped from jail! Security breach detected!");
+                    if(alertMessages){
+                        Bukkit.broadcastMessage(ChatColor.RED + "[Alert] " + ChatColor.GOLD + player.getName() +
+                                ChatColor.RED + " has escaped from jail! Security breach detected!");
+                    }
 
 
                 } else {
@@ -652,7 +665,6 @@ public class JailPlugin extends JavaPlugin {
         }
 
         if (!isInsideAssignedFlag) {
-            boolean shouldTeleport = getConfig().getBoolean("jail.jailbreak-tp", true);
             handleEscape(player, playerUUID);
             /*if (shouldTeleport) {
                 handleTeleportBack(player, playerUUID);
@@ -668,11 +680,12 @@ public class JailPlugin extends JavaPlugin {
         if (!isLocationInAnyFlag(jailLocation) && !notifiedInsecureJails.contains(jailName)) {
             notifiedInsecureJails.add(jailName);
 
-            setter.sendMessage(ChatColor.RED + "[SECURITY ALERT] The jail '" + jailName +
-                    "' is not within a secure flag zone!");
+                setter.sendMessage(ChatColor.RED + "[SECURITY ALERT] The jail '" + jailName +
+                        "' is not within a secure flag zone!");
 
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY ALERT] Jail '" + jailName +
-                    "' is not secured within a flagged zone! Prisoner escapes won't be detected!");
+                Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[SECURITY ALERT] Jail '" + jailName +
+                        "' is not secured within a flagged zone! Prisoner escapes won't be detected!");
+
         }
     }
 

@@ -11,7 +11,6 @@
 ############################################################################
 
 prefix: "&7[&eJails&7]"
-language: english
 
 # General settings
 general:
@@ -35,7 +34,7 @@ jail-settings:
     - item: BREAD
       amount: 16
   punish-on-escape: true # whether a player should get punished or not if they escape jail. you need to define the jail area for this. if set to false, it will only show alerts.
-  escape-punishment: KILL # KILL, TELEPORT_BACK, or BAN. Default is TELEPORT_BACK.
+  escape-punishment: TELEPORT_BACK # KILL, TELEPORT_BACK, or BAN. Default is TELEPORT_BACK.
   ban-duration: 1d # Accepted formats: 1s/1m/1d/1w
   escape-punishment-message: "{prefix} &cYou were punished for trying to escape jail!"
   enable-escape-alerts: true
@@ -50,7 +49,7 @@ handcuff-settings:
   blindness: true                # Give handcuffed players the blindness effect
   disable_items: true            # Prevent using items while handcuffed
   broadcast-on-handcuff: true    # Notify all players when someone is handcuffed
-  broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
+  broadcast-message: "{prefix} &c{player} has been handcuffed by {handcuffer}!"
 
 # Blocked commands when jailed
 # Players will not be able to use the following commands while jailed

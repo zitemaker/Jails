@@ -43,7 +43,7 @@ jail-settings:
   change-skin: # whether the player's skin should change when they get jailed (you need the SkinsRestorer plugin installed on your server for this)
   skin-username: SirMothsho # whose skin to use when a player gets jailed
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat
-  jailed-role: "Jailed" # the text to show next to a player's name when they're jailed
+  jailed-role: "§c[Jailed]§r" # the text to show next to a player's name when they're jailed
 
 # Handcuff settings
 handcuff-settings:

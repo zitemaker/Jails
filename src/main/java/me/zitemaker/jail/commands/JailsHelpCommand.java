@@ -46,9 +46,9 @@ public class JailsHelpCommand implements CommandExecutor {
 
         helpPages.put(3, new String[]{
                 "Advanced Jail and Handcuff Commands:",
-                "/handcuff <player> - Restrict player movement",
-                "/handcuffremove <player> - Remove movement restrictions",
-                "/jailspawn <player> <spawn|originallocation> - Set post-jail teleport point",
+                "/handcuff <player> - Handcuff a player",
+                "/unhandcuff <player> - Unhandcuff a player",
+                "/jailspawn <player> <spawn|originallocation> - Set unjail teleport point",
                 "/jailsetflag <name> - Define jail area boundaries using WorldEdit",
                 "/jaildelflag <name> - Remove a specific jail boundary flag",
                 "/jailflaglist - View all defined jail boundary flags"

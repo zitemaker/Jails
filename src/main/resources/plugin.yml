@@ -67,7 +67,7 @@ commands:
     usage: /handcuff <player>
     permission: jails.handcuff
 
-  handcuffremove:
+  unhandcuff:
     description: Remove handcuffs from a player.
     usage: /handcuffremove <player>
     permission: jails.handcuffremove

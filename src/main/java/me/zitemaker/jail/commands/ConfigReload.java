@@ -16,7 +16,7 @@ public class ConfigReload implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender.hasPermission("jails.reload")) {
-            plugin.reloadConfig();
+            plugin.reloadPluginConfig();
             sender.sendMessage(ChatColor.GREEN + "Jails configuration reloaded!");
             return true;
         }

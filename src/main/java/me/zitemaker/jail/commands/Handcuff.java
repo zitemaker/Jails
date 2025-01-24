@@ -3,6 +3,7 @@ package me.zitemaker.jail.commands;
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,6 +14,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.UUID;
 
@@ -46,16 +48,26 @@ public class Handcuff implements CommandExecutor, Listener {
             return true;
         }
 
+        /*
         if (target.equals(handcuffer)) {
             handcuffer.sendMessage(ChatColor.RED + "You cannot handcuff yourself!");
             return true;
         }
+
+         */
 
         UUID targetUUID = target.getUniqueId();
         if (!plugin.isPlayerHandcuffed(targetUUID)) {
             plugin.handcuffPlayer(target);
             handcuffer.sendMessage(ChatColor.GREEN + target.getName() + " has been handcuffed!");
             target.sendMessage(ChatColor.RED + "You have been handcuffed by " + handcuffer.getName() + "!");
+            String messageTemplate = plugin.getConfig().getString("handcuff-settings.broadcast-message", "{prefix} &c{player} has been handcuffed by {handcuffer}!");
+            String broadcastMessage = messageTemplate
+                    .replace("{prefix}", plugin.getPrefix())
+                    .replace("{player}", target.getName())
+                    .replace("{handcuffer}", sender.getName());
+
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
         } else {
             handcuffer.sendMessage(ChatColor.YELLOW + target.getName() + " is already handcuffed!");
         }
@@ -66,7 +78,7 @@ public class Handcuff implements CommandExecutor, Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isPlayerHandcuffed(player.getUniqueId())) {
+        if (plugin.isPlayerHandcuffed(player.getUniqueId()) && plugin.getConfig().getBoolean("handcuff-settings.disable-block-break", true)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot break blocks while handcuffed!");
         }
@@ -75,7 +87,7 @@ public class Handcuff implements CommandExecutor, Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isPlayerHandcuffed(player.getUniqueId())) {
+        if (plugin.isPlayerHandcuffed(player.getUniqueId()) && plugin.getConfig().getBoolean("handcuff-settings.disable-block-place", true)) {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "You cannot place blocks while handcuffed!");
         }
@@ -85,7 +97,7 @@ public class Handcuff implements CommandExecutor, Listener {
     public void onPlayerHit(EntityDamageByEntityEvent event) {
         if (event.getDamager() instanceof Player) {
             Player player = (Player) event.getDamager();
-            if (plugin.isPlayerHandcuffed(player.getUniqueId())) {
+            if (plugin.isPlayerHandcuffed(player.getUniqueId()) && plugin.getConfig().getBoolean("handcuff-settings.disable-pvp", true)) {
                 event.setCancelled(true);
                 player.sendMessage(ChatColor.RED + "You cannot attack others while handcuffed!");
             }
@@ -95,9 +107,18 @@ public class Handcuff implements CommandExecutor, Listener {
     @EventHandler
     public void onItemUse(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (plugin.isPlayerHandcuffed(player.getUniqueId())) {
-            event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot use items while handcuffed!");
+        ItemStack item = event.getItem();
+
+
+        if (item != null && plugin.isPlayerHandcuffed(player.getUniqueId()) && plugin.getConfig().getBoolean("handcuff-settings.disable-items", true)) {
+            Material material = item.getType();
+            if (material.isBlock()) {
+
+            } else {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "You cannot use items while handcuffed!");
+            }
         }
     }
+
 }

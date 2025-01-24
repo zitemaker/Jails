@@ -34,13 +34,16 @@ public class JailPlugin extends JavaPlugin {
     private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
     private final Set<UUID> alreadyAlerted = new HashSet<>();
     private final Set<String> notifiedInsecureJails = new HashSet<>();
-    public final String prefix = getConfig().getString("prefix", "&7[&eJails&7]");
-    public final boolean alertMessages = getConfig().getBoolean("jail-settings.enable-escape-alerts");
+    public String prefix;
+    public boolean alertMessages;
+    public String targetSkin;
+    public double handcuffSpeed;
 
     @Override
     public void onEnable() {
         getLogger().info("Jails has been enabled!");
         saveDefaultConfig();
+        loadConfigValues();
         createFiles();
         loadJails();
         loadJailedPlayers();
@@ -66,7 +69,7 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jaildelflag").setExecutor(new DelFlag(this));
         getCommand("jailflaglist").setExecutor(new FlagList(this));
         getCommand("handcuff").setExecutor(new Handcuff(this));
-        getCommand("handcuffremove").setExecutor(new HandcuffRemove(this));
+        getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
         getCommand("jailsreload").setExecutor(new ConfigReload(this));
 
         JailListCommand jailListCommand = new JailListCommand(this);
@@ -77,7 +80,6 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
         getServer().getPluginManager().registerEvents(new FlagBoundaryListener(this), this);
-        getServer().getPluginManager().registerEvents(new HandcuffListener(this), this);
     }
 
     @Override
@@ -87,6 +89,19 @@ public class JailPlugin extends JavaPlugin {
         saveHandcuffedPlayersConfig();
         getLogger().info("Jails has been disabled!");
     }
+
+    public void loadConfigValues() {
+        this.prefix = ChatColor.translateAlternateColorCodes('&', getConfig().getString("prefix", "&7[&eJails&7]"));
+        this.alertMessages = getConfig().getBoolean("jail-settings.enable-escape-alerts", true);
+        this.targetSkin = getConfig().getString("jail-settings.skin-username", "SirMothsho");
+        this.handcuffSpeed = getConfig().getDouble("handcuff-settings.handcuff-speed", 0.05);
+    }
+
+    public void reloadPluginConfig(){
+        reloadConfig();
+        loadConfigValues();
+    }
+
 
     // ------ Jail Locations ------
     public void addJail(String name, Location location) {
@@ -153,7 +168,7 @@ public class JailPlugin extends JavaPlugin {
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
         if(getConfig().getBoolean("handcuff-settings.slow-movement")){
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.05);
+            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(handcuffSpeed);
         }
         if(getConfig().getBoolean("handcuff-settings.blindness")){
             player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
@@ -162,6 +177,7 @@ public class JailPlugin extends JavaPlugin {
         handcuffedPlayersConfig.set(basePath + ".handcuffed", true);
         saveHandcuffedPlayersConfig();
 
+        
         getLogger().info("Player " + player.getName() + " has been handcuffed.");
     }
 
@@ -288,7 +304,6 @@ public class JailPlugin extends JavaPlugin {
 
         if(getConfig().getBoolean("jail-settings.change-skin")){
             try {
-                String targetSkin = getConfig().getString("jail-settings.skin-username", "SirMothsho");
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "skin set " + targetSkin + " " + player.getName());
             } catch (Exception e) {
                 getLogger().severe("Failed to set skin for " + player.getName() + ": " + e.getMessage());

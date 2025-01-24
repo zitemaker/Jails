@@ -29,7 +29,7 @@ public class HandcuffRemove implements CommandExecutor {
 
 
 
-        plugin.getCommand("handcuffremove").setExecutor(this);
+        plugin.getCommand("unhandcuff").setExecutor(this);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class HandcuffRemove implements CommandExecutor {
         Player remover = (Player) sender;
 
         if (args.length < 1) {
-            remover.sendMessage(ChatColor.RED + "Usage: /handcuffremove <player>");
+            remover.sendMessage(ChatColor.RED + "Usage: /unhandcuff <player>");
             return true;
         }
 

@@ -45,9 +45,13 @@ jail-settings:
 
 # Handcuff settings
 handcuff-settings:
-  slow_movement: true            # Make handcuffed players slower
+  slow-movement: true            # Make handcuffed players slower
   blindness: true                # Give handcuffed players the blindness effect
-  disable_items: true            # Prevent using items while handcuffed
+  disable-items: true            # Prevent using items while handcuffed
+  disable-block-place: true      # Prevent placing blocks while handcuffed
+  disable-block-break: true      # Prevent breaking blocks while handcuffed
+  disable-pvp: true              # Prevent PVP while handcuffed
+  handcuff-speed: 0.05           # Default speed in Minecraft is 0.1. DO NOT SET TO ANYTHING higher than 0.1
   broadcast-on-handcuff: true    # Notify all players when someone is handcuffed
   broadcast-message: "{prefix} &c{player} has been handcuffed by {handcuffer}!"
 

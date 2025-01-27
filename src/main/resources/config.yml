@@ -5,7 +5,7 @@
 ############################################################################
 #                                                                          #
 # Development Team: zitemaker                                              #
-# Authors: [FahianR, AdolfHustler, ArthropodR                              #
+# Authors: [FahianR, Radif, Arthropod                                      #
 # Bug Reports: https://github.com/zitemaker/Jail/issues                    #
 # Source Code: https://github.com/zitemaker/Jail                           #
 ############################################################################
@@ -20,7 +20,7 @@ general:
   jail-broadcast-message: "{prefix} &6{player} has been jailed for {duration}. Reason: {reason}!"
   # Notify all server players when a player is unjailed
   broadcast-on-unjail: true
-  unjail-broadcast-message: "{prefix} &a{player} has been unjailed."
+  unjail-broadcast-message: "{prefix} &a{player} has been released from jail!"
 
   # Where should a player be teleported to when they get unjailed (WORLD_SPAWN/ORIGINAL_LOCATION) WORLD_SPAWN will teleport them to the world spawn and ORIGINAL_LOCATION will teleport them to the location they were at when they got jailed.
   default-unjail-location: WORLD_SPAWN     # WORLD_SPAWN or ORIGINAL_LOCATION
@@ -38,8 +38,8 @@ jail-settings:
     - item: BREAD
       amount: 16
   punish-on-escape: true # whether a player should get punished or not if they escape jail. you need to define the jail area for this. if set to false, it will only show alerts.
-  escape_punishment: KILL                  # KILL, TELEPORT_BACK, or BAN
-  escape-punishment-message: "{prefix} &cYou were killed for trying to escape jail!"
+  escape_punishment: KILL    # KILL, TELEPORT_BACK, BAN, or UNJAIL
+  escape-punishment-message: "{prefix} &cYou were punished for trying to escape jail!"
   change-skin: # whether the player's skin should change when they get jailed (you need the SkinsRestorer plugin installed on your server for this)
   skin-username: SirMothsho # whose skin to use when a player gets jailed
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat
@@ -53,9 +53,9 @@ handcuff-settings:
   disable-block-place: true      # Prevent placing blocks while handcuffed
   disable-block-break: true      # Prevent breaking blocks while handcuffed
   disable-pvp: true              # Prevent PVP while handcuffed
-  handcuff-speed: 0.05           # Default speed in Minecraft is 0.1. DO NOT SET TO ANYTHING higher than 0.1
+  handcuff-speed: 0.05           # Default speed in Minecraft is 0.1. [Warning!! DO NOT SET TO ANYTHING higher than 0.1]
   broadcast-on-handcuff: true    # Notify all players when someone is handcuffed
-  broadcast-message: "{prefix} &c{player} has been jailed in {jail} for {reason}!"
+  broadcast-message: "{prefix} &c{player} has been handcuffed by {handcuffer}"
 
 # Blocked commands when jailed
 # Players will not be able to use the following commands while jailed

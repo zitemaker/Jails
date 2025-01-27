@@ -9,8 +9,8 @@ softdepend: [WorldEdit, SkinsRestorer]
 commands:
   jailset:
     description: Set a jail location.
-    usage: /jailset <name>
-    permission: jails.jailset
+    usage: /setjail <name>
+    permission: jails.setjail
   jail:
     description: Jail a player.
     usage: /jail <player> <jail name> <reason>

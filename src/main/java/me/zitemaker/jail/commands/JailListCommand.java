@@ -136,12 +136,25 @@ public class JailListCommand implements CommandExecutor, TabCompleter, Listener 
             }
         } else if (event.getClick() == ClickType.RIGHT) {
             UUID targetUUID = meta.getOwningPlayer().getUniqueId();
+            Player target = Bukkit.getPlayer(targetUUID);
+
             plugin.unjailPlayer(targetUUID);
-            player.sendMessage(ChatColor.GREEN + "You have set " + Bukkit.getOfflinePlayer(targetUUID).getName() + " free.");
+
+            String prefix = plugin.getPrefix();
+            String messageTemplate = plugin.getConfig().getString("general.unjail-broadcast-message",
+                    "{prefix} &c{player} has been unjailed.");
+
+            String broadcastMessage = messageTemplate
+                    .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
+                    .replace("{player}", target.getName());
+
+            if(plugin.getConfig().getBoolean("general.broadcast-on-unjail")){
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            } else {
+                player.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+            }
         }
     }
-
-
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {

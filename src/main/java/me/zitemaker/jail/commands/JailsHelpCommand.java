@@ -8,15 +8,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 public class JailsHelpCommand implements CommandExecutor {
-
-    private static final String PREFIX = "§b";
-    private static final String HIGHLIGHT = "§e";
-    private static final String ERROR = "§c";
+    private static final String PREFIX = "§9§l";
+    private static final String COMMAND = "§b";
+    private static final String DESCRIPTION = "§7";
+    private static final String HEADER = "§3§l";
+    private static final String FOOTER = "§8";
 
     private final Map<Integer, String[]> helpPages;
 
@@ -37,7 +37,7 @@ public class JailsHelpCommand implements CommandExecutor {
 
         helpPages.put(2, new String[]{
                 "Jail Location and Player Management:",
-                "/jailset <jail name> - Set jail location at current position",
+                "/setjail <jail name> - Set jail location at current position",
                 "/deljail <jail name> - Remove a specific jail location",
                 "/jails - Open jail management interface",
                 "/jailed list - View all currently jailed players",
@@ -60,7 +60,7 @@ public class JailsHelpCommand implements CommandExecutor {
         int page = determineRequestedPage(args);
 
         if (!isValidPage(page)) {
-            sender.sendMessage(ERROR + "Invalid page number. Available pages: 1-" + helpPages.size());
+            sender.sendMessage(FOOTER + "Invalid page number. Available pages: 1-" + helpPages.size());
             return true;
         }
 
@@ -84,49 +84,46 @@ public class JailsHelpCommand implements CommandExecutor {
     }
 
     private void displayHelpPage(CommandSender sender, int page) {
-        sender.sendMessage(PREFIX + "━━━━━━━━━━━━━━━━━━━━ [Help (" + page + " of " + helpPages.size() + ")] ━━━━━━━━━━━━━━━━━━━━");
+        sender.sendMessage(HEADER + "➤ Jail Management Help " +
+                PREFIX + "(" + page + "/" + helpPages.size() + ") " + FOOTER + "»»»");
 
         for (String line : helpPages.get(page)) {
-            sender.sendMessage(HIGHLIGHT + line);
+            if (line.contains(":")) {
+                sender.sendMessage(HEADER + "◆ " + line);
+            } else {
+                String[] parts = line.split(" - ", 2);
+                sender.sendMessage(COMMAND + parts[0] +
+                        DESCRIPTION + " - " + parts[1]);
+            }
         }
-        sender.sendMessage("");
+
+        sender.sendMessage(FOOTER + "════════════════════════════════");
 
         sendNavigationButtons(sender, page);
     }
 
     private void sendNavigationButtons(CommandSender sender, int page) {
-        TextComponent navButtons = new TextComponent(PREFIX + "━━━━━━━━━━━━━━━━━━━━━ ");
+        TextComponent navButtons = new TextComponent(PREFIX + "« ");
 
-        addPreviousPageButton(navButtons, page);
-        addNextPageButton(navButtons, page);
-
-        navButtons.addExtra(PREFIX + " ━━━━━━━━━━━━━━━━━━━━━━");
-        sender.spigot().sendMessage(navButtons);
-    }
-
-    private void addPreviousPageButton(TextComponent navButtons, int page) {
         if (page > 1) {
-            TextComponent prevButton = new TextComponent("§a<< ");
+            TextComponent prevButton = new TextComponent("§a⬅ Previous");
             prevButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder("§7Previous Help Page").create()));
+                    new ComponentBuilder("§7Click to view previous help page").create()));
             prevButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                     "/jailshelp " + (page - 1)));
             navButtons.addExtra(prevButton);
-        } else {
-            navButtons.addExtra("§7<< ");
         }
-    }
 
-    private void addNextPageButton(TextComponent navButtons, int page) {
         if (page < helpPages.size()) {
-            TextComponent nextButton = new TextComponent("§a>>");
+            navButtons.addExtra(" §7| ");
+            TextComponent nextButton = new TextComponent("§aNext ➡");
             nextButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder("§7Next Help Page").create()));
+                    new ComponentBuilder("§7Click to view next help page").create()));
             nextButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
                     "/jailshelp " + (page + 1)));
             navButtons.addExtra(nextButton);
-        } else {
-            navButtons.addExtra("§7>>");
         }
+
+        sender.spigot().sendMessage(navButtons);
     }
 }

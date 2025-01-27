@@ -23,7 +23,7 @@ public class JailSetCommand implements CommandExecutor {
         }
 
         if (args.length != 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /jailset <jail name>");
+            sender.sendMessage(ChatColor.RED + "Usage: /setjail <jail name>");
             return true;
         }
 

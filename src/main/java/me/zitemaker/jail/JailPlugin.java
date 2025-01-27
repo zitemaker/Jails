@@ -53,7 +53,7 @@ public class JailPlugin extends JavaPlugin {
 
         blockedCommands = getConfig().getStringList("blockedCommands");
 
-        getCommand("jailset").setExecutor(new JailSetCommand(this));
+        getCommand("setjail").setExecutor(new JailSetCommand(this));
         getCommand("jail").setExecutor(new JailCommand(this));
         getCommand("jail").setTabCompleter(new JailTabCompleter(this));
         getCommand("tempjail").setExecutor(new TempJailCommand(this));
@@ -407,7 +407,7 @@ public class JailPlugin extends JavaPlugin {
         getLogger().info("Player " + player.getName() + " has been unjailed and their data removed.");
     }
 
-    /*public void playerEscape(UUID playerUUID) {
+    public void playerEscape(UUID playerUUID) {
         Player player = Bukkit.getPlayer(playerUUID);
         String spawnOption = getPlayerSpawnOption(playerUUID);
 
@@ -441,7 +441,6 @@ public class JailPlugin extends JavaPlugin {
         saveJailedPlayersConfig();
         getLogger().info("Player " + player.getName() + " has escaped from jail.");
     }
-     */
 
     public void teleportToOriginalLocation(Player player, String basePath) {
         String worldName = jailedPlayersConfig.getString(basePath + ".world");

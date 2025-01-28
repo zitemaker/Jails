@@ -11,7 +11,7 @@
 ############################################################################
 
 prefix: "&7[&eJails&7]"
-language: english
+license-key:
 
 # General settings
 general:
@@ -80,4 +80,4 @@ jail-restrictions:
   entity-ride: false    # If false, players cannot mount any entities (e.g. horses, llamas, players, camels) while jailed.
   block-mount: false    # If false, players cannot mount on any blocks while jailed.
   ender-pearl: false    # If false, players cannot use ender pearls while jailed.
-  allow-movement: false # If false, players cannot move while jailed.
+  allow-movement: true # If false, players cannot move while jailed.

@@ -35,9 +35,8 @@ public class FlagBoundaryListener implements Listener {
         UUID playerUUID = player.getUniqueId();
 
         if (plugin.isPlayerJailed(playerUUID)) {
-            boolean allowMovement = plugin.getConfig().getBoolean("jail-restrictions.allow-movement", false);
 
-            if (!allowMovement) {
+            if (!plugin.getConfig().getBoolean("jail-restrictions.allow-movement", true)) {
                 Location from = event.getFrom();
                 Location to = event.getTo();
 
@@ -68,7 +67,8 @@ public class FlagBoundaryListener implements Listener {
                             boolean isInside = isInsideJailArea(to, jailLocation);
 
                             if (wasInside && !isInside) {
-                                handleEscapePunishment(player, playerUUID);
+                                //handleEscapePunishment(player, playerUUID);
+                                plugin.handleEscape(player, playerUUID);
                             }
                         }
                     }

@@ -607,6 +607,8 @@ public class JailPlugin extends JavaPlugin {
                                 player.kickPlayer(ChatColor.translateAlternateColorCodes('&', banPunishmentMessage));
                                 break;
 
+                            case null:
+                                break;
                             default:
                                 Bukkit.getLogger().warning("Unknown punishment type in config: " + punishment);
                                 break;

@@ -1,6 +1,8 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -45,10 +47,8 @@ public class JailSpawnCommand implements CommandExecutor {
             return true;
         }
 
-        UUID targetUUID = target.getUniqueId();
-        plugin.setPlayerSpawnOption(targetUUID, spawnOption);
-
-        sender.sendMessage(ChatColor.GREEN + "Set " + target.getName() + "'s spawn to " + spawnOption + ".");
+        Player player = (Player) sender;
+        plugin.sendJailsPlusMessage(player);
         return true;
     }
 }

@@ -31,8 +31,6 @@ public class JailsHelpCommand implements CommandExecutor {
                 "/jailshelp - Display comprehensive help guide",
                 "/jailsreload - Reload configuration without server restart",
                 "/jail <player> <jail name> [reason] - Jail a player",
-                "/jailduration [player] - Check player's current jail duration",
-                "/tempjail <player> <jail name> <duration> [reason] - Temporarily jail a player"
         });
 
         helpPages.put(2, new String[]{
@@ -40,7 +38,6 @@ public class JailsHelpCommand implements CommandExecutor {
                 "/setjail <jail name> - Set jail location at current position",
                 "/deljail <jail name> - Remove a specific jail location",
                 "/jails - Open jail management interface",
-                "/jailed list - View all currently jailed players",
                 "/unjail <player name> - Release a player from jail"
         });
 
@@ -48,10 +45,6 @@ public class JailsHelpCommand implements CommandExecutor {
                 "Advanced Jail and Handcuff Commands:",
                 "/handcuff <player> - Handcuff a player",
                 "/unhandcuff <player> - Unhandcuff a player",
-                "/jailspawn <player> <spawn|originallocation> - Set unjail teleport point",
-                "/jailsetflag <name> - Define jail area boundaries using WorldEdit",
-                "/jaildelflag <name> - Remove a specific jail boundary flag",
-                "/jailflaglist - View all defined jail boundary flags"
         });
     }
 

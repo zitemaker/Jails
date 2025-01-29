@@ -1,6 +1,8 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -48,44 +50,8 @@ public class TempJailCommand implements CommandExecutor {
             return false;
         }
 
-        String reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 3, args.length)) : "No reason provided";
-
-
-
-        long durationMillis = duration;
-        long endTime = System.currentTimeMillis() + durationMillis;
-
-
-        String formattedTime = plugin.formatTimeLeft(durationMillis);
-
-
-        plugin.jailPlayer(target, jailName, endTime, reason, sender.getName());
-        plugin.scheduleUnjail(target, durationMillis);
-
-
-        target.sendMessage(ChatColor.RED + "You have been jailed in " + jailName + " for " + formattedTime + ". Reason: " + reason);
-
-
-        String prefix = plugin.getConfig().getString("prefix", "&7[&eJails&7]");
-        String messageTemplate = plugin.getConfig().getString("general.jail-broadcast-message",
-                "{prefix} &c{player} has been jailed for {duration} by {jailer}. Reason: {reason}!");
-
-
-        String broadcastMessage = messageTemplate
-                .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
-                .replace("{player}", target.getName())
-                .replace("{duration}", formattedTime)
-                .replace("{jailer}", sender.getName())
-                .replace("{reason}", reason);
-
-
-        if(plugin.getConfig().getBoolean("general.broadcast-on-jail")){
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
-        } else {
-            sender.sendMessage(ChatColor.GREEN + target.getName() + " has been jailed temporarily for " + formattedTime + ".");
-        }
-
-
+        Player player = (Player) sender;
+        plugin.sendJailsPlusMessage(player);
         return true;
     }
 }

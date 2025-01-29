@@ -21,35 +21,12 @@ public class JailDurationCommand implements CommandExecutor {
         Player target;
         if (args.length == 0 && sender instanceof Player) {
             target = (Player) sender;
-        } else if (args.length == 1) {
-            target = Bukkit.getPlayer(args[0]);
-            if (target == null) {
-                sender.sendMessage(ChatColor.RED + "Player not found.");
-                return false;
-            }
-        } else {
-            sender.sendMessage(ChatColor.RED + "Usage: /jailduration [player]");
-            return false;
         }
 
-        FileConfiguration config = plugin.getJailedPlayersConfig();
-        if (!config.contains(target.getUniqueId().toString())) {
-            sender.sendMessage(ChatColor.RED + target.getName() + " is not jailed.");
-            return true;
-        }
+        Player player = (Player) sender;
+        plugin.sendJailsPlusMessage(player);
 
-        long endTime = config.getLong(target.getUniqueId() + ".endTime");
-        if(endTime == -1){
-            sender.sendMessage(ChatColor.RED + target.getName() + " is permanently jailed!");
-            return true;
-        }
-        if (System.currentTimeMillis() > endTime) {
-            sender.sendMessage(ChatColor.GREEN + target.getName() + " is no longer jailed.");
-            return true;
-        }
 
-        long remainingTime = (endTime - System.currentTimeMillis()) / 1000;
-        sender.sendMessage(ChatColor.GREEN + target.getName() + " has " + remainingTime + " seconds remaining in jail.");
         return true;
     }
 }

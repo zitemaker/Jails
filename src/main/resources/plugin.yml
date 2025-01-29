@@ -1,7 +1,7 @@
 name: Jails
 version: '1.0.0'
 main: me.zitemaker.jail.JailPlugin
-api-version: '1.13'
+api-version: '1.21'
 author: zitemaker
 softdepend: [WorldEdit, SkinsRestorer]
 
@@ -69,8 +69,8 @@ commands:
 
   unhandcuff:
     description: Remove handcuffs from a player.
-    usage: /handcuffremove <player>
-    permission: jails.handcuffremove
+    usage: /unhandcuff <player>
+    permission: jails.unhandcuff
 
   jailsreload:
     description: Reloads the Jails config file

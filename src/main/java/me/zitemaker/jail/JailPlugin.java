@@ -472,7 +472,6 @@ public class JailPlugin extends JavaPlugin {
         sender.sendMessage(JailsChatColor.BOLD + message1);
         TextComponent message = new TextComponent("Click here to purchase Jails+!");
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
-        message.setColor(net.md_5.bungee.api.ChatColor.UNDERLINE);
         message.setBold(true);
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getPurchaseLink()));
         sender.spigot().sendMessage(message);

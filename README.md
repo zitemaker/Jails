@@ -34,4 +34,4 @@ supported this project by contributing.
 ## :scroll: License
 
 Jails is licensed under GNU General Public License v3.0. Please
-see [`LICENSE`](https://github.com/zitemaker/zitemaker/blob/HEAD/LICENSE) for more info.
+see [`LICENSE`](https://github.com/zitemaker/Jails/blob/master/LICENSE) for more info.

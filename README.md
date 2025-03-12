@@ -1,3 +1,18 @@
+<p align="center">
+<a href="https://github.com/zitemaker/Jails/releases/"><img src="https://img.shields.io/github/downloads/zitemaker/Jails/latest/total.svg" alt="Github Downloads"></a>
+<a href="https://www.spigotmc.org/resources/123183/"><img src="https://img.shields.io/spiget/downloads/123183" alt="Spigot downloads"></a>
+<a href="https://www.spigotmc.org/resources/123183/"><img src="https://img.shields.io/spiget/rating/123183" alt="Spigot rating"></a>
+</p>
+
+<p align="center">
+<a href="https://github.com/SkinsRestorer/SkinsRestorer/releases/latest"><img src="https://img.shields.io/github/release/zitemaker/Jails.svg" alt="Current Release"></a>
+<a href="https://github.com/zitemaker/Jails/graphs/contributors"><img src="https://img.shields.io/github/contributors/zitemaker/Jails.svg" alt="Contributors"></a>
+<a href="https://github.com/zitemaker/Jails/blob/master/LICENSE"><img src="https://img.shields.io/github/license/zitemaker/Jails.svg" alt="License"></a>
+</p>
+
+<p align="center"><a href="https://discord.gg/HkTQz3xWJc"><img src="https://discord.com/api/guilds/1341770518684241991/embed.png" alt="Discord embed"></a></p>
+<p align="center"><a href="https://github.com/zitemaker/Jails/releases/latest/"><img src="https://img.shields.io/badge/DOWNLOAD-LATEST-success?style=for-the-badge" alt="download badge"></a></p>
+
 This is the official repository for [Jails](https://zitemaker.tebex.io/) (Minecraft plugin).
 
 Get rid of rule breakers in your server with Jails!

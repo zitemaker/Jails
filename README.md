@@ -1,7 +1,9 @@
 <p align="center">
 <a href="https://github.com/zitemaker/Jails/releases/"><img src="https://img.shields.io/github/downloads/zitemaker/Jails/latest/total.svg" alt="Github Downloads"></a>
-<a href="https://www.spigotmc.org/resources/123183/"><img src="https://img.shields.io/spiget/downloads/123183" alt="Spigot downloads"></a>
+<a href="https://www.spigotmc.org/resources/123183/"><img src="https://img.shields.io/spiget/downloads/123183?label=Spigot%20Downloads" alt="Spigot downloads"></a>
 <a href="https://www.spigotmc.org/resources/123183/"><img src="https://img.shields.io/spiget/rating/123183" alt="Spigot rating"></a>
+<a href="https://www.curseforge.com/minecraft/bukkit-plugins/jails"><img src="https://img.shields.io/curseforge/dt/1218504?label=CurseForge%20Downloads" alt="CurseForge Downloads"></a>
+
 </p>
 
 <p align="center">

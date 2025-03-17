@@ -16,7 +16,7 @@ public class DelJailCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("jailplugin.deljail")) {
+        if (!sender.hasPermission("jails.deljail")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return true;
         }

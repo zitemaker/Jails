@@ -37,7 +37,7 @@ public class JailsCommand implements CommandExecutor, Listener {
 
         Player player = (Player) sender;
 
-        if (!player.hasPermission("jailplugin.jails")) {
+        if (!player.hasPermission("jails.jails")) {
             player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return true;
         }

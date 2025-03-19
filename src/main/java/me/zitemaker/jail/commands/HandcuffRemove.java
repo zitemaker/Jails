@@ -24,11 +24,6 @@ public class HandcuffRemove implements CommandExecutor {
 
     public HandcuffRemove(JailPlugin plugin) {
         this.plugin = plugin;
-
-
-
-
-
         plugin.getCommand("unhandcuff").setExecutor(this);
     }
 
@@ -37,6 +32,11 @@ public class HandcuffRemove implements CommandExecutor {
         if (!(sender instanceof Player)) {
             sender.sendMessage(ChatColor.RED + "Only players can use this command!");
             return true;
+        }
+
+        if(!sender.hasPermission("jails.unhandcuff")){
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+            return false;
         }
 
         Player remover = (Player) sender;

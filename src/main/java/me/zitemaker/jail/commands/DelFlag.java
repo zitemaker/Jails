@@ -1,6 +1,7 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -19,6 +20,11 @@ public class DelFlag implements CommandExecutor {
             sender.sendMessage("You must be a player to use this command!");
             return false;
         }
+
+        if (!sender.hasPermission("jails.delflag")) {
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+        }
+
         Player player = (Player) sender;
         plugin.sendJailsPlusMessage(player);
         return true;

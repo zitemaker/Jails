@@ -35,6 +35,11 @@ public class Handcuff implements CommandExecutor, Listener {
             return true;
         }
 
+        if(!sender.hasPermission("jails.handcuff")){
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+            return false;
+        }
+
         Player handcuffer = (Player) sender;
 
         if (args.length < 1) {

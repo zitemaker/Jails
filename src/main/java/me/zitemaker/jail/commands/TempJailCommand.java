@@ -27,6 +27,11 @@ public class TempJailCommand implements CommandExecutor {
             return false;
         }
 
+        if (!sender.hasPermission("jails.tempjail")){
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+            return false;
+        }
+
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
             sender.sendMessage(ChatColor.RED + "Player not found.");

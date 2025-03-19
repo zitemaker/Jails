@@ -20,7 +20,7 @@ public class UnjailCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!sender.hasPermission("jailplugin.unjail")) {
+        if (!sender.hasPermission("jails.unjail")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return true;
         }

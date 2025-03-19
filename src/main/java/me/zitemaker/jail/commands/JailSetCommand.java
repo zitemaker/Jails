@@ -22,6 +22,11 @@ public class JailSetCommand implements CommandExecutor {
             return true;
         }
 
+        if(!sender.hasPermission("jails.setjail")){
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
+            return false;
+        }
+
         if (args.length != 1) {
             sender.sendMessage(ChatColor.RED + "Usage: /setjail <jail name>");
             return true;

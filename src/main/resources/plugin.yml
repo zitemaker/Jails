@@ -1,5 +1,5 @@
 name: Jails
-version: '1.0.2'
+version: '1.0.3'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker

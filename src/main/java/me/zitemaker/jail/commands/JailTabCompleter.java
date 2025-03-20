@@ -20,9 +20,9 @@ public class JailTabCompleter implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> suggestions = new ArrayList<>();
 
-        if (args.length == 1) { // Suggest online player names
+        if (args.length == 1) {
             Bukkit.getOnlinePlayers().forEach(player -> suggestions.add(player.getName()));
-        } else if (args.length == 2) { // Suggest jail names
+        } else if (args.length == 2) {
             suggestions.addAll(plugin.getJails().keySet());
         }
         return suggestions;

@@ -19,6 +19,16 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
 
         if (plugin.isPlayerJailed(player.getUniqueId())) {
+            // check if chat is disabled for jailed players
+            if (!plugin.getConfig().getBoolean("jail-restrictions.chat", false)) {
+                String prefix = ChatColor.translateAlternateColorCodes('&',
+                        plugin.getConfig().getString("prefix", "&7[&eJailsPlus&7]"));
+                player.sendMessage(prefix + " " + ChatColor.RED + "You cannot chat while jailed!");
+                event.setCancelled(true);
+                return;
+            }
+
+            // if chat is allowed give the jailed players jailed role
             if (plugin.getConfig().getBoolean("jail-settings.enable-jailed-role")) {
                 String jailedRole = plugin.getConfig().getString("jail-settings.jailed-role", "§c[Jailed]§r");
                 jailedRole = ChatColor.translateAlternateColorCodes('&', jailedRole);
@@ -27,5 +37,4 @@ public class ChatListener implements Listener {
             }
         }
     }
-
 }

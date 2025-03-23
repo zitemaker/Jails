@@ -60,3 +60,4 @@ jail-restrictions:
   block-mount: false    # If false, players cannot mount on any blocks while jailed.
   ender-pearl: false    # If false, players cannot use ender pearls while jailed.
   allow-movement: true # If false, players cannot move while jailed.
+  chat: false           # If false, players cannot send chat messages while jailed.

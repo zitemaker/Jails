@@ -32,6 +32,7 @@ Get rid of rule breakers in your server with Jails!
 - [Jails+](https://zitemaker.tebex.io/package/6703941)
 - [SpigotMC](https://www.spigotmc.org/resources/123183)
 - [CurseForge](https://www.curseforge.com/minecraft/bukkit-plugins/jails)
+- [Modrinth](https://modrinth.com/plugin/jails)
 - [Discord](https://discord.gg/HkTQz3xWJc)
 - [Website](https://zitemaker.tebex.io)
 

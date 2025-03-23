@@ -28,6 +28,7 @@ Get rid of rule breakers in your server with Jails!
 
 ## :link: Links
 
+- [BuiltByBit](https://builtbybit.com/resources/jails.62499/)
 - [Jails+](https://zitemaker.tebex.io/package/6703941)
 - [SpigotMC](https://www.spigotmc.org/resources/123183)
 - [CurseForge](https://www.curseforge.com/minecraft/bukkit-plugins/jails)

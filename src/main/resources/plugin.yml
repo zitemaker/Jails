@@ -1,5 +1,5 @@
 name: Jails
-version: '1.0.3'
+version: '1.0.5'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker
@@ -23,6 +23,13 @@ commands:
     description: Unjail a player.
     usage: /unjail <player>
     permission: jails.unjail
+
+  confirmunjail:
+    description: Confirm unjail action
+
+  cancelunjail:
+    description: Cancel unjail action
+
   jailduration:
     description: View your or a player's jail duration
     usage: /jailduration <player>
@@ -81,3 +88,8 @@ commands:
     description: Displays the help pages for the jail plugin
     usage: /jailshelp
     permission: jails.help
+
+  handledeljail:
+    description: Handle jail deletion confirmation
+    usage: /handledeljail <yes|no>
+    permission: jails.handledel

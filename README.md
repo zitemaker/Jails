@@ -24,7 +24,7 @@ Get rid of rule breakers in your server with Jails!
 **WE DO NOT SUPPORT FORGE / FABRIC**
 
 - Java 17+ ([Get Adoptium](https://adoptium.net/))
-- Minecraft 1.13.0 - 1.21.4
+- Minecraft 1.18.0 - 1.21.4
 
 ## :link: Links
 

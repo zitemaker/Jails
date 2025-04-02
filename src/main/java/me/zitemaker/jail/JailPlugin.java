@@ -22,6 +22,7 @@ package me.zitemaker.jail;
 import me.zitemaker.jail.commands.*;
 import me.zitemaker.jail.listeners.*;
 import me.zitemaker.jail.utils.*;
+import me.zitemaker.jail.confirmations.*;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -60,6 +61,7 @@ public class JailPlugin extends JavaPlugin {
     public String targetSkin;
     public double handcuffSpeed;
     public String purchaseLink = "https://zitemaker.tebex.io";
+    public UnjailConfirmation unjailConfirmation;
     private Console console = new SpigotConsole();;
     private PlatformLogger platformLogger;
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
@@ -76,13 +78,21 @@ public class JailPlugin extends JavaPlugin {
 
         blockedCommands = getConfig().getStringList("blockedCommands");
 
+        unjailConfirmation = new UnjailConfirmation(this);
+        getCommand("unjail").setExecutor(new UnjailCommand(this));
+        getCommand("confirmunjail").setExecutor(unjailConfirmation);
+        getCommand("cancelunjail").setExecutor(unjailConfirmation);
+
+        DelJailCommand delJailCommand = new DelJailCommand(this);
+        getCommand("deljail").setExecutor(delJailCommand);
+        getCommand("handledeljail").setExecutor(new HandleDelJailCommand(this, delJailCommand));
+
         getCommand("setjail").setExecutor(new JailSetCommand(this));
         getCommand("jail").setExecutor(new JailCommand(this));
         getCommand("jail").setTabCompleter(new JailTabCompleter(this));
-        getCommand("deljail").setExecutor(new DelJailCommand(this));
         getCommand("deljail").setTabCompleter(new DelJailTabCompleter(this));
         getCommand("jails").setExecutor(new JailsCommand(this));
-        getCommand("unjail").setExecutor(new UnjailCommand(this));
+//      getCommand("unjail").setExecutor(new UnjailCommand(this));
         getCommand("handcuff").setExecutor(new Handcuff(this));
         getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
         getCommand("jailsreload").setExecutor(new ConfigReload(this));
@@ -211,7 +221,7 @@ public class JailPlugin extends JavaPlugin {
         handcuffedPlayersConfig.set(basePath + ".handcuffed", true);
         saveHandcuffedPlayersConfig();
 
-        
+
         logger.info("Player " + player.getName() + " has been handcuffed.");
     }
 
@@ -294,7 +304,7 @@ public class JailPlugin extends JavaPlugin {
                 setPlayerSpawnOption(playerUUID, "world_spawn");
                 break;
         }
-            saveJailedPlayersConfig();
+        saveJailedPlayersConfig();
 
 
 

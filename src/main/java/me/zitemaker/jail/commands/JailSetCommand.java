@@ -6,9 +6,13 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-public class JailSetCommand implements CommandExecutor {
+import java.util.ArrayList;
+import java.util.List;
+
+public class JailSetCommand implements CommandExecutor, TabCompleter {
     private final JailPlugin plugin;
 
     public JailSetCommand(JailPlugin plugin) {
@@ -39,5 +43,20 @@ public class JailSetCommand implements CommandExecutor {
         plugin.addJail(jailName, location);
         player.sendMessage(ChatColor.GREEN + "Jail " + ChatColor.YELLOW + jailName + ChatColor.GREEN + " has been set at your current location!");
         return true;
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!sender.hasPermission("jails.setjail")) {
+            return new ArrayList<>();
+        }
+
+        if (args.length == 1) {
+            List<String> suggestions = new ArrayList<>();
+            suggestions.add("<jailname>");
+            return suggestions;
+        }
+
+        return new ArrayList<>();
     }
 }

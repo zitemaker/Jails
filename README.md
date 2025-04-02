@@ -24,13 +24,15 @@ Get rid of rule breakers in your server with Jails!
 **WE DO NOT SUPPORT FORGE / FABRIC**
 
 - Java 17+ ([Get Adoptium](https://adoptium.net/))
-- Minecraft 1.13.0 - 1.21.4
+- Minecraft 1.18.0 - 1.21.4
 
 ## :link: Links
 
+- [BuiltByBit](https://builtbybit.com/resources/jails.62499/)
 - [Jails+](https://zitemaker.tebex.io/package/6703941)
 - [SpigotMC](https://www.spigotmc.org/resources/123183)
 - [CurseForge](https://www.curseforge.com/minecraft/bukkit-plugins/jails)
+- [Modrinth](https://modrinth.com/plugin/jails)
 - [Discord](https://discord.gg/HkTQz3xWJc)
 - [Website](https://zitemaker.tebex.io)
 

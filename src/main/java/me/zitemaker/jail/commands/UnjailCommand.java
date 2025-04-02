@@ -1,12 +1,16 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
@@ -21,49 +25,61 @@ public class UnjailCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jails.unjail")) {
-            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            sender.sendMessage(org.bukkit.ChatColor.RED + "You do not have permission to unjail players.");
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /unjail <player>");
+            sender.sendMessage(org.bukkit.ChatColor.RED + "Usage: " + org.bukkit.ChatColor.YELLOW + "/unjail <player>");
             return true;
         }
 
-
-        OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-
+        org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (target == null || !target.hasPlayedBefore()) {
-            sender.sendMessage(ChatColor.RED + "Player not found or has never joined the server.");
+            sender.sendMessage(org.bukkit.ChatColor.RED + "Player not found or has never joined the server.");
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
-
         if (!plugin.isPlayerJailed(targetUUID)) {
-            sender.sendMessage(ChatColor.YELLOW + target.getName() + " is not jailed.");
+            sender.sendMessage(org.bukkit.ChatColor.YELLOW + target.getName() + " is not currently jailed.");
             return true;
         }
 
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            UUID senderUUID = player.getUniqueId();
+            String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID);
 
-        plugin.unjailPlayer(targetUUID);
+            TextComponent message = new TextComponent("Are you sure you want to unjail ");
+            message.setColor(ChatColor.GOLD);
 
-        String prefix = plugin.getPrefix();
+            TextComponent playerName = new TextComponent(target.getName());
+            playerName.setColor(ChatColor.YELLOW);
+            message.addExtra(playerName);
+            message.addExtra("?");
 
-        String messageTemplate = plugin.getConfig().getString("general.unjail-broadcast-message",
-                "{prefix} &c{player} has been unjailed.");
+            TextComponent yes = new TextComponent(" [CONFIRM] ");
+            yes.setColor(ChatColor.GREEN);
+            yes.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirmunjail " + token));
+            yes.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder("Click to confirm unjailing").color(ChatColor.GREEN).create()));
 
-        String broadcastMessage = messageTemplate
-                .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
-                .replace("{player}", target.getName());
+            TextComponent no = new TextComponent("[CANCEL]");
+            no.setColor(ChatColor.RED);
+            no.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cancelunjail " + token));
+            no.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                    new ComponentBuilder("Click to cancel unjailing").color(ChatColor.RED).create()));
 
-
-
-        if(plugin.getConfig().getBoolean("general.broadcast-on-unjail")){
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            player.spigot().sendMessage(new ComponentBuilder("")
+                    .append(message).append("\n")
+                    .append(yes).append(" ").append(no)
+                    .create());
         } else {
-            sender.sendMessage(ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+            plugin.unjailPlayer(targetUUID);
+            sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
         }
+
         return true;
     }
 }

@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/SkinsRestorer/SkinsRestorer/releases/latest"><img src="https://img.shields.io/github/release/zitemaker/Jails.svg" alt="Current Release"></a>
+<a href="https://github.com/zitemaker/Jails/releases/latest"><img src="https://img.shields.io/github/release/zitemaker/Jails.svg" alt="Current Release"></a>
 <a href="https://github.com/zitemaker/Jails/graphs/contributors"><img src="https://img.shields.io/github/contributors/zitemaker/Jails.svg" alt="Contributors"></a>
 <a href="https://github.com/zitemaker/Jails/blob/master/LICENSE"><img src="https://img.shields.io/github/license/zitemaker/Jails.svg" alt="License"></a>
 </p>

@@ -49,7 +49,7 @@ Feel free to join our Discord community server:
 
 ## :family: Authors
 
-See [Contributors](https://skinsrestorer.net/contributors) for a list of people that have
+See [Contributors](https://github.com/zitemaker/Jails/graphs/contributors) for a list of people that have
 supported this project by contributing.
 
 ## :scroll: License

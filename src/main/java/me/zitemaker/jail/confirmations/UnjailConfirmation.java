@@ -21,9 +21,9 @@ public class UnjailConfirmation implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    public String generateToken(UUID senderUUID, UUID targetUUID) {
+    public String generateToken(UUID senderUUID, UUID targetUUID, boolean isIpJailed) {
         String token = UUID.randomUUID().toString();
-        pendingConfirmations.put(token, new UnjailRequest(senderUUID, targetUUID));
+        pendingConfirmations.put(token, new UnjailRequest(senderUUID, targetUUID, isIpJailed));
         return token;
     }
 
@@ -54,11 +54,20 @@ public class UnjailConfirmation implements CommandExecutor {
 
         if (command.getName().equalsIgnoreCase("confirmunjail")) {
             UUID targetUUID = request.getTargetUUID();
+            boolean isIpJailed = request.isIpJailed();
             if (!plugin.isPlayerJailed(targetUUID)) {
                 sender.sendMessage(org.bukkit.ChatColor.YELLOW + "Player is no longer jailed.");
             } else {
                 plugin.unjailPlayer(targetUUID);
                 org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
+                boolean wasIpJailed = false;
+
+                if (isIpJailed) {
+                    Player targetPlayer = target.getPlayer();
+                    if (targetPlayer != null && targetPlayer.isOnline()) {
+                        wasIpJailed = plugin.removePlayerIpJail(targetPlayer);
+                    }
+                }
 
                 String prefix = plugin.getPrefix();
                 String messageTemplate = plugin.getConfig().getString("general.unjail-broadcast-message",
@@ -70,7 +79,11 @@ public class UnjailConfirmation implements CommandExecutor {
                 if (plugin.getConfig().getBoolean("general.broadcast-on-unjail")) {
                     Bukkit.broadcastMessage(org.bukkit.ChatColor.translateAlternateColorCodes('&', broadcastMessage));
                 } else {
-                    sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+                    if (wasIpJailed) {
+                        sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed and their IP has been removed from the IP jail list.");
+                    } else {
+                        sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+                    }
                 }
             }
         } else if (command.getName().equalsIgnoreCase("cancelunjail")) {
@@ -84,10 +97,12 @@ public class UnjailConfirmation implements CommandExecutor {
     private static class UnjailRequest {
         private final UUID senderUUID;
         private final UUID targetUUID;
+        private final boolean isIpJailed;
 
-        public UnjailRequest(UUID senderUUID, UUID targetUUID) {
+        public UnjailRequest(UUID senderUUID, UUID targetUUID, boolean isIpJailed) {
             this.senderUUID = senderUUID;
             this.targetUUID = targetUUID;
+            this.isIpJailed = isIpJailed;
         }
 
         public UUID getSenderUUID() {
@@ -96,6 +111,10 @@ public class UnjailConfirmation implements CommandExecutor {
 
         public UUID getTargetUUID() {
             return targetUUID;
+        }
+
+        public boolean isIpJailed() {
+            return isIpJailed;
         }
     }
 }

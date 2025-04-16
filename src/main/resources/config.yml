@@ -5,7 +5,6 @@
 ############################################################################
 #                                                                          #
 # Development Team: zitemaker                                              #
-# Authors: [adolfhustler, ArthropodR]                                      #
 # Bug Reports: https://github.com/zitemaker/Jail/issues                    #
 # Source Code: https://github.com/zitemaker/Jail                           #
 ############################################################################
@@ -17,13 +16,20 @@ general:
   # Notify all server players when a player is jailed
   broadcast-on-jail: true
   jail-broadcast-message: "{prefix} &6{player} has been jailed for {duration}. Reason: {reason}!"
+  # Notify all server players when a player is ip-jailed.
+  ip-jail-broadcast-message: "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!"
   # Notify all server players when a player is unjailed
   broadcast-on-unjail: true
   unjail-broadcast-message: "{prefix} &a{player} has been released from jail!"
 
+
 jail-settings:
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat
   jailed-role: "§c[Jailed]§r" # the text to show next to a player's name when they're jailed
+
+# Update checking settings
+check-updates: true
+notify-up-to-date: false
 
 # Handcuff settings
 handcuff-settings:

@@ -49,7 +49,15 @@ public class UnjailCommand implements CommandExecutor {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             UUID senderUUID = player.getUniqueId();
-            String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID);
+
+            boolean isIpJailed = false;
+            Player targetPlayer = target.getPlayer();
+            if (targetPlayer != null && targetPlayer.isOnline()) {
+                String hashedIp = plugin.getPlayerHashedIp(targetPlayer);
+                isIpJailed = plugin.isIpJailed(hashedIp);
+            }
+
+            String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID, isIpJailed);
 
             TextComponent message = new TextComponent("Are you sure you want to unjail ");
             message.setColor(ChatColor.GOLD);
@@ -58,6 +66,13 @@ public class UnjailCommand implements CommandExecutor {
             playerName.setColor(ChatColor.YELLOW);
             message.addExtra(playerName);
             message.addExtra("?");
+
+            if (isIpJailed) {
+                message.addExtra("\n");
+                TextComponent ipInfo = new TextComponent("This player is IP-jailed. Unjailing will also remove their IP from the jail list.");
+                ipInfo.setColor(ChatColor.LIGHT_PURPLE);
+                message.addExtra(ipInfo);
+            }
 
             TextComponent yes = new TextComponent(" [CONFIRM] ");
             yes.setColor(ChatColor.GREEN);
@@ -79,7 +94,19 @@ public class UnjailCommand implements CommandExecutor {
                     .create());
         } else {
             plugin.unjailPlayer(targetUUID);
-            sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+
+            Player targetPlayer = target.getPlayer();
+            boolean wasIpJailed = false;
+            if (targetPlayer != null && targetPlayer.isOnline()) {
+                wasIpJailed = plugin.removePlayerIpJail(targetPlayer);
+            }
+
+            if (wasIpJailed) {
+                sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() +
+                        " has been unjailed and their IP has been removed from the IP jail list.");
+            } else {
+                sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+            }
         }
 
         return true;

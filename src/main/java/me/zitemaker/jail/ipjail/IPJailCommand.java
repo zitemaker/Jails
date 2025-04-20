@@ -10,7 +10,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
-import java.util.UUID;
 
 public class IPJailCommand implements CommandExecutor {
 
@@ -35,52 +34,55 @@ public class IPJailCommand implements CommandExecutor {
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
             sender.sendMessage(ChatColor.RED + "Player not found.");
-            return false;
+            return true;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
             sender.sendMessage(ChatColor.RED + target.getName() + " is already jailed!");
-            return false;
+            return true;
         }
 
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
             sender.sendMessage(ChatColor.RED + "Jail not found. Available jails:");
             plugin.getJails().forEach((name, location) ->
-                    sender.sendMessage(ChatColor.GOLD + "- " + name)
-            );
-            return false;
+                    sender.sendMessage(ChatColor.GOLD + "- " + name));
+            return true;
         }
 
         String reason = "No reason provided";
         long duration = -1;
 
         if (args.length > 2) {
-            if (args.length == 3) {
-                if (args[2].matches("\\d+[smhd]")) {
-                    duration = JailPlugin.parseDuration(args[2]);
-                } else {
-                    reason = args[2];
+            // Check for duration in the arguments
+            for (int i = args.length - 1; i >= 2; i--) {
+                if (args[i].matches("\\d+[smhd]")) {
+                    duration = JailPlugin.parseDuration(args[i]);
+                    reason = String.join(" ", Arrays.copyOfRange(args, 2, i));
+                    break;
                 }
-            } else if (args.length >= 4) {
-                String lastArg = args[args.length - 1];
-                if (lastArg.matches("\\d+[smhd]")) {
-                    duration = JailPlugin.parseDuration(lastArg);
-                    reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length - 1));
-                } else {
-                    reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-                }
+            }
+            // If no duration found, take all remaining args as reason
+            if (duration == -1) {
+                reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
             }
         }
 
         String playerIp = target.getAddress().getAddress().getHostAddress();
         String hashedIp = plugin.hashIpAddress(playerIp);
+        if (hashedIp == null) {
+            sender.sendMessage(ChatColor.RED + "Failed to process IP address.");
+            return true;
+        }
 
+        long endTime = duration > 0 ? System.currentTimeMillis() + duration : -1;
         plugin.addJailedIp(hashedIp, jailName, duration, reason, sender.getName());
 
         Location jailLocation = plugin.getJails().get(jailName);
-        plugin.jailPlayer(target, jailName, duration, reason, sender.getName());
-        plugin.scheduleUnjail(target, duration);
+        plugin.jailPlayer(target, jailName, endTime, reason, sender.getName());
+        if (duration > 0) {
+            plugin.scheduleUnjail(target, duration);
+        }
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             if (!onlinePlayer.equals(target) && !plugin.isPlayerJailed(onlinePlayer.getUniqueId())) {
@@ -88,9 +90,12 @@ public class IPJailCommand implements CommandExecutor {
                 String hashedOnlinePlayerIp = plugin.hashIpAddress(onlinePlayerIp);
 
                 if (hashedIp.equals(hashedOnlinePlayerIp)) {
-                    plugin.jailPlayer(onlinePlayer, jailName, duration, "Associated with " + target.getName() + ": " + reason, sender.getName());
+                    plugin.jailPlayer(onlinePlayer, jailName, endTime,
+                            "Associated with " + target.getName() + ": " + reason, sender.getName());
                     onlinePlayer.sendMessage(ChatColor.RED + "You have been jailed because your IP is associated with " + target.getName());
-                    plugin.scheduleUnjail(onlinePlayer, duration);
+                    if (duration > 0) {
+                        plugin.scheduleUnjail(onlinePlayer, duration);
+                    }
                 }
             }
         }

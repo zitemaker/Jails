@@ -136,13 +136,14 @@ public class JailPlugin extends JavaPlugin {
         if (getConfig().getBoolean("check-updates", true)) {
             updateChecker.fetchRemoteVersion()
                     .thenAccept(remoteVersion -> {
-                        String currentVersion = getDescription().getVersion();
+                        String currentVersion = getDescription().getVersion().trim().replace("v", "");
                         if (remoteVersion != null) {
-                            if (!remoteVersion.equals(currentVersion)) {
+                            String normalizedRemote = remoteVersion.trim().replace("v", "");
+                            if (!normalizedRemote.equals(currentVersion)) {
                                 logger.info("§6╔════════════════════════════════════╗");
                                 logger.info("§6║ §eNew Jails version available!     §6║");
                                 logger.info("§6║ §7Current: §c" + currentVersion + " ".repeat(Math.max(0, 20 - currentVersion.length())) + "§6║");
-                                logger.info("§6║ §7Latest: §b" + remoteVersion + " ".repeat(Math.max(0, 20 - remoteVersion.length())) + "§6║");
+                                logger.info("§6║ §7Latest: §b" + normalizedRemote + " ".repeat(Math.max(0, 20 - normalizedRemote.length())) + "§6║");
                                 logger.info("§6╚════════════════════════════════════╝");
                             } else if (getConfig().getBoolean("notify-up-to-date", false)) {
                                 logger.info("§aJails is up to date (v" + currentVersion + ")");
@@ -692,34 +693,24 @@ public class JailPlugin extends JavaPlugin {
         return time;
     }
 
-
     public void scheduleUnjail(Player player, long duration) {
+        if (duration <= 0) {
+            return;
+        }
         String prefix = getPrefix();
         Bukkit.getScheduler().runTaskLater(this, () -> {
-            if(player.isOnline()){
+            if (player.isOnline()) {
                 unjailPlayer(player.getUniqueId());
                 String messageTemplate = getConfig().getString("general.unjail-broadcast-message",
                         "{prefix} &c{player} has been unjailed.");
-
                 String broadcastMessage = messageTemplate
                         .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
                         .replace("{player}", player.getName());
-
-                if(getConfig().getBoolean("general.broadcast-on-unjail")){
+                if (getConfig().getBoolean("general.broadcast-on-unjail")) {
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
                 }
-            }
-            else if (isPlayerJailed(player.getUniqueId())) {
-                String messageTemplate = getConfig().getString("general.unjail-broadcast-message",
-                        "{prefix} &c{player} has been unjailed.");
-
-                String broadcastMessage = messageTemplate
-                        .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
-                        .replace("{player}", player.getName());
-
-                if(getConfig().getBoolean("general.broadcast-on-unjail")){
-                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
-                }
+            } else if (isPlayerJailed(player.getUniqueId())) {
+                unjailPlayer(player.getUniqueId());
             }
         }, duration / 50);
     }

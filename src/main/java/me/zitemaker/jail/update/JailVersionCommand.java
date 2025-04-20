@@ -19,15 +19,17 @@ public class JailVersionCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         sender.sendMessage("§7Checking for latest version...");
         updateChecker.fetchRemoteVersion().thenAccept(remoteVersion -> {
-            String currentVersion = plugin.getDescription().getVersion();
+            String currentVersion = plugin.getDescription().getVersion().trim().replace("v", "");
             if (remoteVersion == null) {
                 sender.sendMessage("§cCould not determine latest version.");
                 return;
             }
-            if (remoteVersion.equals(currentVersion)) {
+            String normalizedRemote = remoteVersion.trim().replace("v", "");
+
+            if (normalizedRemote.equals(currentVersion)) {
                 sender.sendMessage("§aYou are using the latest version: §b" + currentVersion);
             } else {
-                sender.sendMessage("§eA new version is available: §b" + remoteVersion);
+                sender.sendMessage("§eA new version is available: §b" + normalizedRemote);
                 sender.sendMessage("§eYou are using: §c" + currentVersion);
                 sender.sendMessage("§6Download the latest version: §nhttps://www.spigotmc.org/resources/" + SPIGOTMC_RESOURCE_ID + "/");
             }

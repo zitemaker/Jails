@@ -1,5 +1,5 @@
 name: Jails
-version: '1.0.5'
+version: '1.0.6'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker
@@ -93,3 +93,14 @@ commands:
     description: Handle jail deletion confirmation
     usage: /handledeljail <yes|no>
     permission: jails.handledel
+
+  jailversion:
+    description: Check the current version of Jails plugin
+    usage: /jailversion
+    permission: jails.version
+
+  ip-jail:
+    description: Jail a player and all accounts with the same IP address
+    usage: /ip-jail <player> <jail name> [reason] [duration]
+    permission: jails.ipjail
+    default: op

@@ -31,6 +31,7 @@ public class JailsHelpCommand implements CommandExecutor {
                 "/jailshelp - Display comprehensive help guide",
                 "/jailsreload - Reload configuration without server restart",
                 "/jail <player> <jail name> [reason] - Jail a player",
+                "/ip-jail <player> <jail name> [reason] <duration>",
         });
 
         helpPages.put(2, new String[]{

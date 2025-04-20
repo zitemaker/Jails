@@ -70,9 +70,11 @@ public class DelJailCommand implements CommandExecutor {
         no.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new ComponentBuilder("Click to cancel jail deletion").color(ChatColor.RED).create()));
 
+        TextComponent spacing = new TextComponent("     ");
+
         player.spigot().sendMessage(new ComponentBuilder("")
                 .append(message).append("\n")
-                .append(yes).append(" ").append(no)
+                .append(spacing).append(yes).append("  ").append(no)
                 .create());
 
         return true;

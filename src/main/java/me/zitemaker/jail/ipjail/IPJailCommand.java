@@ -54,7 +54,6 @@ public class IPJailCommand implements CommandExecutor {
         long duration = -1;
 
         if (args.length > 2) {
-            // Check for duration in the arguments
             for (int i = args.length - 1; i >= 2; i--) {
                 if (args[i].matches("\\d+[smhd]")) {
                     duration = JailPlugin.parseDuration(args[i]);
@@ -62,7 +61,7 @@ public class IPJailCommand implements CommandExecutor {
                     break;
                 }
             }
-            // If no duration found, take all remaining args as reason
+
             if (duration == -1) {
                 reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
             }

@@ -25,7 +25,7 @@ public class IPJailTabCompleter implements TabCompleter {
             Bukkit.getOnlinePlayers().forEach(player -> completions.add(player.getName()));
         } else if (args.length == 2) {
             completions.addAll(plugin.getJails().keySet());
-        } else if (args.length == 4) {
+        } else if (args.length == 3) {
             completions.addAll(Arrays.asList("10s", "30s", "1m", "5m", "10m", "1h", "3h", "6h", "12h", "1d", "7d", "30d"));
         }
 

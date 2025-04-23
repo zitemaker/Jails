@@ -71,7 +71,7 @@ public class JailPlugin extends JavaPlugin {
     public boolean alertMessages;
     public String targetSkin;
     public double handcuffSpeed;
-    public String purchaseLink = "https://zitemaker.tebex.io";
+    public String purchaseLink = "https://builtbybit.com/resources/jails.62499/";
     public UnjailConfirmation unjailConfirmation;
     private Console console = new SpigotConsole();;
     private PlatformLogger platformLogger;

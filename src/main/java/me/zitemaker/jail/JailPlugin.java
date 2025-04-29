@@ -39,7 +39,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.inventory.ItemStack;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -77,6 +76,7 @@ public class JailPlugin extends JavaPlugin {
     private PlatformLogger platformLogger;
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
     private final boolean loggerColor = true;
+
 
     @Override
     public void onEnable() {
@@ -742,6 +742,7 @@ public class JailPlugin extends JavaPlugin {
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getPurchaseLink()));
         sender.spigot().sendMessage(message);
     }
+
 
     public String getPurchaseLink(){
         return purchaseLink;

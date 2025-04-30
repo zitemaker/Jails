@@ -76,7 +76,7 @@ public class JailPlugin extends JavaPlugin {
     private PlatformLogger platformLogger;
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
     private final boolean loggerColor = true;
-
+    Handcuff handcuffInstance = new Handcuff(this);
 
     @Override
     public void onEnable() {
@@ -110,7 +110,7 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jail").setTabCompleter(new JailTabCompleter(this));
         getCommand("deljail").setTabCompleter(new DelJailTabCompleter(this));
         getCommand("jails").setExecutor(new JailsCommand(this));
-        getCommand("handcuff").setExecutor(new Handcuff(this));
+        getCommand("handcuff").setExecutor(handcuffInstance);
         getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
         getCommand("jailsreload").setExecutor(new ConfigReload(this));
         getCommand("jailshelp").setExecutor(new JailsHelpCommand());
@@ -186,6 +186,7 @@ public class JailPlugin extends JavaPlugin {
 
     public void reloadPluginConfig(){
         reloadConfig();
+        handcuffInstance.reloadSettings();
         loadConfigValues();
     }
 

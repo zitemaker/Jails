@@ -13,18 +13,14 @@
 ############################################################################
 
 prefix: "&7[&eJails&7]"
+language: en # available lang - en (english), es (spanish)
 
 # General settings
 general:
   # Notify all server players when a player is jailed
   broadcast-on-jail: true
-  jail-broadcast-message: "{prefix} &6{player} has been jailed for {duration}. Reason: {reason}!"
-  # Notify all server players when a player is ip-jailed.
-  ip-jail-broadcast-message: "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!"
   # Notify all server players when a player is unjailed
   broadcast-on-unjail: true
-  unjail-broadcast-message: "{prefix} &a{player} has been released from jail!"
-
 
 jail-settings:
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat

@@ -1,6 +1,7 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import me.zitemaker.jail.listeners.TranslationManager;
 import org.bukkit.*;
 import org.bukkit.command.*;
 import org.bukkit.entity.Player;
@@ -18,27 +19,31 @@ public class JailsCommand implements CommandExecutor, Listener {
     private static final String PERMISSION = "jails.jails";
 
     private final JailPlugin plugin;
+    private final TranslationManager translationManager;
 
     public JailsCommand(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        String prefix = plugin.getPrefix();
+
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "Only players can use this command.");
+            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jails_only_players"));
             return true;
         }
 
         if (!player.hasPermission(PERMISSION)) {
-            player.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            player.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jails_no_permission"));
             return true;
         }
 
         Map<String, Location> jails = plugin.getJails();
         if (jails.isEmpty()) {
-            player.sendMessage(ChatColor.YELLOW + "No jail locations have been set.");
+            player.sendMessage(prefix + ChatColor.YELLOW + translationManager.getMessage("jails_no_jails"));
             return true;
         }
 
@@ -58,12 +63,12 @@ public class JailsCommand implements CommandExecutor, Listener {
             ItemMeta meta = item.getItemMeta();
 
             if (meta != null) {
-                meta.setDisplayName(ChatColor.YELLOW + "Name: " + ChatColor.GOLD + name);
+                meta.setDisplayName(ChatColor.YELLOW + translationManager.getMessage("jails_gui_name") + ChatColor.GOLD + name);
                 meta.setLore(List.of(
-                        ChatColor.YELLOW + "Coords:",
+                        ChatColor.YELLOW + translationManager.getMessage("jails_gui_coords"),
                         ChatColor.GOLD + String.format("[%.1f, %.1f, %.1f]", loc.getX(), loc.getY(), loc.getZ()),
                         "",
-                        ChatColor.GREEN + "Left-click to teleport"
+                        ChatColor.GREEN + translationManager.getMessage("jails_gui_left_click")
                 ));
                 item.setItemMeta(meta);
                 jailGUI.addItem(item);
@@ -88,21 +93,22 @@ public class JailsCommand implements CommandExecutor, Listener {
         if (meta == null || !meta.hasDisplayName()) return;
 
         if (event.getClick() != ClickType.LEFT) {
-            player.sendMessage(ChatColor.RED + "Please left-click to teleport.");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("jails_left_click_only"));
             return;
         }
 
         String strippedName = ChatColor.stripColor(meta.getDisplayName());
-        if (!strippedName.startsWith("Name: ")) return;
+        if (!strippedName.startsWith(translationManager.getMessage("jails_gui_name"))) return;
 
-        String jailName = strippedName.substring(6).trim();
+        String jailName = strippedName.substring(translationManager.getMessage("jails_gui_name").length()).trim();
         Location jailLocation = plugin.getJails().get(jailName);
 
         if (jailLocation != null) {
             player.teleport(jailLocation);
-            player.sendMessage(ChatColor.GREEN + "Teleported to jail: " + ChatColor.GOLD + jailName);
+            String msg = String.format(translationManager.getMessage("jails_teleported"), jailName);
+            player.sendMessage(ChatColor.GREEN + msg);
         } else {
-            player.sendMessage(ChatColor.RED + "Jail location not found!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("jails_location_not_found"));
         }
     }
 }

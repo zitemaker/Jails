@@ -1,6 +1,7 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
+import me.zitemaker.jail.listeners.TranslationManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -17,32 +18,37 @@ import java.util.UUID;
 public class UnjailCommand implements CommandExecutor {
 
     private final JailPlugin plugin;
+    private final TranslationManager translationManager;
+    private final String prefix;
 
     public UnjailCommand(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
+        this.prefix = plugin.getPrefix();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jails.unjail")) {
-            sender.sendMessage(org.bukkit.ChatColor.RED + "You do not have permission to unjail players.");
+            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_no_permission"));
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(org.bukkit.ChatColor.RED + "Usage: " + org.bukkit.ChatColor.YELLOW + "/unjail <player>");
+            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_usage"));
             return true;
         }
 
         org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (target == null || !target.hasPlayedBefore()) {
-            sender.sendMessage(org.bukkit.ChatColor.RED + "Player not found or has never joined the server.");
+            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_player_not_found"));
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (!plugin.isPlayerJailed(targetUUID)) {
-            sender.sendMessage(org.bukkit.ChatColor.YELLOW + target.getName() + " is not currently jailed.");
+            String msg = String.format(translationManager.getMessage("unjail_player_not_jailed"), target.getName());
+            sender.sendMessage(prefix + ChatColor.YELLOW + msg);
             return true;
         }
 
@@ -59,18 +65,15 @@ public class UnjailCommand implements CommandExecutor {
 
             String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID, isIpJailed);
 
-            TextComponent message = new TextComponent("Are you sure you want to unjail ");
+            String prompt = String.format(translationManager.getMessage("unjail_confirmation_prompt"), target.getName());
+            TextComponent message = new TextComponent(prompt);
             message.setColor(ChatColor.GOLD);
 
-            TextComponent playerName = new TextComponent(target.getName());
-            playerName.setColor(ChatColor.YELLOW);
-            message.addExtra(playerName);
-            message.addExtra("?");
-
             if (isIpJailed) {
-                message.addExtra("\n");
-                TextComponent ipInfo = new TextComponent("This player is IP-jailed. Unjailing will also remove their IP from the jail list.");
+                String ipInfoText = translationManager.getMessage("unjail_ip_jailed_info");
+                TextComponent ipInfo = new TextComponent(ipInfoText);
                 ipInfo.setColor(ChatColor.LIGHT_PURPLE);
+                message.addExtra("\n");
                 message.addExtra(ipInfo);
             }
 
@@ -78,13 +81,13 @@ public class UnjailCommand implements CommandExecutor {
             yes.setColor(ChatColor.GREEN);
             yes.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/confirmunjail " + token));
             yes.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder("Click to confirm unjailing").color(ChatColor.GREEN).create()));
+                    new ComponentBuilder(translationManager.getMessage("unjail_confirm_hover")).color(ChatColor.GREEN).create()));
 
             TextComponent no = new TextComponent("[CANCEL]");
             no.setColor(ChatColor.RED);
             no.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/cancelunjail " + token));
             no.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                    new ComponentBuilder("Click to cancel unjailing").color(ChatColor.RED).create()));
+                    new ComponentBuilder(translationManager.getMessage("unjail_cancel_hover")).color(ChatColor.RED).create()));
 
             TextComponent spacing = new TextComponent("     ");
 
@@ -102,10 +105,11 @@ public class UnjailCommand implements CommandExecutor {
             }
 
             if (wasIpJailed) {
-                sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() +
-                        " has been unjailed and their IP has been removed from the IP jail list.");
+                String msg = String.format(translationManager.getMessage("unjail_success_ip_removed"), target.getName());
+                sender.sendMessage(prefix + ChatColor.GREEN + msg);
             } else {
-                sender.sendMessage(org.bukkit.ChatColor.GREEN + "Player " + target.getName() + " has been unjailed.");
+                String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
+                sender.sendMessage(prefix + ChatColor.GREEN + msg);
             }
         }
 

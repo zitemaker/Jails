@@ -76,7 +76,7 @@ public class JailPlugin extends JavaPlugin {
     private PlatformLogger platformLogger;
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
     private final boolean loggerColor = true;
-    Handcuff handcuffInstance = new Handcuff(this);
+    private Handcuff handcuffInstance;
 
     @Override
     public void onEnable() {
@@ -89,7 +89,6 @@ public class JailPlugin extends JavaPlugin {
         setupIpJailFile();
         loadJailedIps();
 
-        blockedCommands = getConfig().getStringList("blockedCommands");
 
         getConfig().addDefault("general.ip-jail-broadcast-message",
                 "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!");
@@ -110,6 +109,7 @@ public class JailPlugin extends JavaPlugin {
         getCommand("jail").setTabCompleter(new JailTabCompleter(this));
         getCommand("deljail").setTabCompleter(new DelJailTabCompleter(this));
         getCommand("jails").setExecutor(new JailsCommand(this));
+        handcuffInstance = new Handcuff(this);
         getCommand("handcuff").setExecutor(handcuffInstance);
         getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
         getCommand("jailsreload").setExecutor(new ConfigReload(this));
@@ -182,6 +182,7 @@ public class JailPlugin extends JavaPlugin {
         this.alertMessages = getConfig().getBoolean("jail-settings.enable-escape-alerts", true);
         this.targetSkin = getConfig().getString("jail-settings.skin-username", "SirMothsho");
         this.handcuffSpeed = getConfig().getDouble("handcuff-settings.handcuff-speed", 0.05);
+        this.blockedCommands = getConfig().getStringList("blocked-commands");
     }
 
     public void reloadPluginConfig(){

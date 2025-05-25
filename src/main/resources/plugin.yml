@@ -1,5 +1,5 @@
 name: Jails
-version: '1.1.1'
+version: '1.1'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker
@@ -11,17 +11,14 @@ commands:
     description: Set a jail location.
     usage: /setjail <name>
     permission: jails.setjail
-
   jail:
     description: Jail a player.
     usage: /jail <player> <jail name> <reason>
     permission: jails.jail
-
   jails:
     description: List all jail locations.
     usage: /jails
     permission: jails.jails
-
   unjail:
     description: Unjail a player.
     usage: /unjail <player>
@@ -36,7 +33,6 @@ commands:
   jailduration:
     description: View your or a player's jail duration
     usage: /jailduration <player>
-
   tempjail:
     description: Temporarily jail a player.
     usage: /tempjail <player> <jail name> <duration> <reason>

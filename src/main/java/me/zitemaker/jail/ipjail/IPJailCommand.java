@@ -1,7 +1,6 @@
 package me.zitemaker.jail.ipjail;
 
 import me.zitemaker.jail.JailPlugin;
-import me.zitemaker.jail.listeners.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,33 +14,31 @@ import java.util.concurrent.TimeUnit;
 
 public class IPJailCommand implements CommandExecutor {
 
+
     private static final String PERMISSION = "jails.ipjail";
+    private static final String USAGE_MESSAGE = ChatColor.RED + "Usage: /ip-jail <player> <jail name> [reason] [duration]";
+    private static final String DEFAULT_REASON = "No reason provided";
 
     private final JailPlugin plugin;
-    private final TranslationManager translationManager;
 
     public IPJailCommand(JailPlugin plugin) {
         this.plugin = plugin;
-        this.translationManager = plugin.getTranslationManager();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String prefix = plugin.getPrefix();
-
         if (!validateCommand(sender, args)) {
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("ipjail_player_not_found"));
+            sender.sendMessage(ChatColor.RED + "Player not found.");
             return true;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
-            String msg = String.format(translationManager.getMessage("ipjail_already_jailed"), target.getName());
-            sender.sendMessage(prefix + ChatColor.RED + msg);
+            sender.sendMessage(ChatColor.RED + target.getName() + " is already jailed!");
             return true;
         }
 
@@ -62,12 +59,12 @@ public class IPJailCommand implements CommandExecutor {
 
     private boolean validateCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission(PERMISSION)) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_no_permission"));
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
             return false;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_usage"));
+            sender.sendMessage(USAGE_MESSAGE);
             return false;
         }
         return true;
@@ -75,16 +72,16 @@ public class IPJailCommand implements CommandExecutor {
 
     private boolean validateJailExists(CommandSender sender, String jailName) {
         if (!plugin.getJails().containsKey(jailName)) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_jail_not_found"));
+            sender.sendMessage(ChatColor.RED + "Jail not found. Available jails:");
             plugin.getJails().forEach((name, location) ->
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GOLD + "- " + name));
+                    sender.sendMessage(ChatColor.GOLD + "- " + name));
             return false;
         }
         return true;
     }
 
     private CommandParameters parseCommandParameters(String[] args) {
-        String reason = translationManager.getMessage("ipjail_default_reason");
+        String reason = DEFAULT_REASON;
         long duration = -1;
 
         if (args.length > 2) {
@@ -109,12 +106,12 @@ public class IPJailCommand implements CommandExecutor {
             String playerIp = target.getAddress().getAddress().getHostAddress();
             String hashedIp = plugin.hashIpAddress(playerIp);
             if (hashedIp == null) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_failed"));
+                sender.sendMessage(ChatColor.RED + "Failed to process IP address.");
                 return null;
             }
             return hashedIp;
         } catch (Exception e) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_error"));
+            sender.sendMessage(ChatColor.RED + "Error processing IP address.");
             plugin.getLogger().warning("Error processing IP address for " + target.getName() + ": " + e.getMessage());
             return null;
         }
@@ -127,8 +124,8 @@ public class IPJailCommand implements CommandExecutor {
 
         jailMatchingIpPlayers(sender, target, jailName, hashedIp, params, endTime);
 
-        String msg = String.format(translationManager.getMessage("ipjail_success"), target.getName());
-        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + msg);
+        sender.sendMessage(ChatColor.GREEN + "Player " + target.getName() +
+                " IP-jailed successfully. Any accounts sharing this IP will also be jailed.");
     }
 
     private void jailPlayerAndBroadcast(CommandSender sender, Player player, String jailName,
@@ -143,8 +140,8 @@ public class IPJailCommand implements CommandExecutor {
         }
 
         String durationText = formatDuration(params.duration);
-        String notificationMsg = String.format(translationManager.getMessage("ipjail_notification"), durationText, sender.getName(), params.reason);
-        player.sendMessage(ChatColor.RED + notificationMsg);
+        player.sendMessage(ChatColor.RED + "You have been IP-jailed " + durationText +
+                " by " + sender.getName() + ". Reason: " + params.reason);
 
         broadcastJailMessage(sender, player, params, durationText);
     }
@@ -157,10 +154,9 @@ public class IPJailCommand implements CommandExecutor {
                 String hashedOnlinePlayerIp = plugin.hashIpAddress(onlinePlayerIp);
 
                 if (hashedIp.equals(hashedOnlinePlayerIp)) {
-                    String associatedReason = String.format(translationManager.getMessage("ipjail_associated_reason"), primaryTarget.getName(), params.reason);
+                    String associatedReason = "Associated with " + primaryTarget.getName() + ": " + params.reason;
                     plugin.jailPlayer(onlinePlayer, jailName, endTime, associatedReason, sender.getName());
-                    String associatedMsg = String.format(translationManager.getMessage("ipjail_associated_notification"), primaryTarget.getName());
-                    onlinePlayer.sendMessage(ChatColor.RED + associatedMsg);
+                    onlinePlayer.sendMessage(ChatColor.RED + "You have been jailed because your IP is associated with " + primaryTarget.getName());
 
                     if (params.duration > 0) {
                         plugin.scheduleUnjail(onlinePlayer, params.duration);
@@ -180,9 +176,12 @@ public class IPJailCommand implements CommandExecutor {
             return;
         }
 
-        String broadcastTemplate = translationManager.getMessage("ipjail_broadcast");
-        String broadcastMessage = broadcastTemplate
-                .replace("{prefix}", plugin.getPrefix())
+        String prefix = plugin.getPrefix();
+        String messageTemplate = plugin.getConfig().getString("general.ip-jail-broadcast-message",
+                "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!");
+
+        String broadcastMessage = messageTemplate
+                .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
                 .replace("{player}", player.getName())
                 .replace("{duration}", durationText)
                 .replace("{jailer}", sender.getName())
@@ -193,27 +192,27 @@ public class IPJailCommand implements CommandExecutor {
 
     private String formatDuration(long durationMillis) {
         if (durationMillis <= 0) {
-            return translationManager.getMessage("ipjail_permanent_duration");
+            return "permanently";
         }
 
         long seconds = TimeUnit.MILLISECONDS.toSeconds(durationMillis);
 
         if (seconds < 60) {
-            return String.format(translationManager.getMessage("ipjail_seconds"), seconds);
+            return seconds + " second" + (seconds != 1 ? "s" : "");
         }
 
         long minutes = TimeUnit.SECONDS.toMinutes(seconds);
         if (minutes < 60) {
-            return String.format(translationManager.getMessage("ipjail_minutes"), minutes);
+            return minutes + " minute" + (minutes != 1 ? "s" : "");
         }
 
         long hours = TimeUnit.MINUTES.toHours(minutes);
         if (hours < 24) {
-            return String.format(translationManager.getMessage("ipjail_hours"), hours);
+            return hours + " hour" + (hours != 1 ? "s" : "");
         }
 
         long days = TimeUnit.HOURS.toDays(hours);
-        return String.format(translationManager.getMessage("ipjail_days"), days);
+        return days + " day" + (days != 1 ? "s" : "");
     }
 
     private static class CommandParameters {

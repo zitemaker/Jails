@@ -76,9 +76,7 @@ public class JailPlugin extends JavaPlugin {
     private PlatformLogger platformLogger;
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
     private final boolean loggerColor = true;
-    private TranslationManager translationManager;
-    private Handcuff handcuffInstance;
-    private Handcuff handcuffCommand;
+    Handcuff handcuffInstance = new Handcuff(this);
 
     @Override
     public void onEnable() {
@@ -91,10 +89,7 @@ public class JailPlugin extends JavaPlugin {
         setupIpJailFile();
         loadJailedIps();
 
-        translationManager = new TranslationManager(this);
-
         blockedCommands = getConfig().getStringList("blockedCommands");
-        this.handcuffCommand = new Handcuff(this);
 
         getConfig().addDefault("general.ip-jail-broadcast-message",
                 "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!");
@@ -110,18 +105,13 @@ public class JailPlugin extends JavaPlugin {
         getCommand("deljail").setExecutor(delJailCommand);
         getCommand("handledeljail").setExecutor(new HandleDelJailCommand(this, delJailCommand));
 
-        this.handcuffInstance = new Handcuff(this);
-        getCommand("handcuff").setExecutor(handcuffInstance);
-        getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
-
         getCommand("setjail").setExecutor(new JailSetCommand(this));
         getCommand("jail").setExecutor(new JailCommand(this));
         getCommand("jail").setTabCompleter(new JailTabCompleter(this));
         getCommand("deljail").setTabCompleter(new DelJailTabCompleter(this));
         getCommand("jails").setExecutor(new JailsCommand(this));
-        getCommand("jailduration").setExecutor(new JailDurationCommand(this));
-        getCommand("jailspawn").setExecutor(new JailSpawnCommand(this));
-        getCommand("jailspawn").setTabCompleter(new JailSpawnTabCompleter());
+        getCommand("handcuff").setExecutor(handcuffInstance);
+        getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
         getCommand("jailsreload").setExecutor(new ConfigReload(this));
         getCommand("jailshelp").setExecutor(new JailsHelpCommand());
         getCommand("tempjail").setExecutor(new TempJailCommand(this));
@@ -141,7 +131,7 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
-        // update checker
+        // update checkerr
         UpdateChecker updateChecker = new UpdateChecker(this);
         if (getConfig().getBoolean("check-updates", true)) {
             updateChecker.fetchRemoteVersion()
@@ -254,15 +244,10 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void saveJailLocationsConfig() {
-        if (jailLocationsConfig != null && jailLocationsFile != null) {
-            try {
-                jailLocationsConfig.save(jailLocationsFile);
-            } catch (IOException e) {
-                getLogger().severe("Could not save jail_locations.yml!");
-                e.printStackTrace();
-            }
-        } else {
-            getLogger().warning("Skipped saving jail_locations.yml because config or file is null.");
+        try {
+            jailLocationsConfig.save(jailLocationsFile);
+        } catch (IOException e) {
+            logger.severe("Could not save jail_locations.yml!");
         }
     }
 
@@ -307,15 +292,10 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void saveHandcuffedPlayersConfig() {
-        if (handcuffedPlayersConfig != null && handcuffedPlayersFile != null) {
-            try {
-                handcuffedPlayersConfig.save(handcuffedPlayersFile);
-            } catch (IOException e) {
-                getLogger().severe("Could not save handcuffed_players.yml");
-                e.printStackTrace();
-            }
-        } else {
-            getLogger().warning("Skipped saving handcuffed_players.yml because config or file is null.");
+        try {
+            handcuffedPlayersConfig.save(handcuffedPlayersFile);
+        } catch (IOException e) {
+            logger.severe("Could not save handcuffed_players.yml!");
         }
     }
 
@@ -599,11 +579,6 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void saveJailedIps() {
-        if (ipJailConfig == null) {
-            getLogger().warning("Cannot save jailed IPs: ipJailConfig is null.");
-            return;
-        }
-
         jailedIps.entrySet().removeIf(entry -> entry.getValue().isExpired());
 
         ipJailConfig.set("jailed-ips", null);
@@ -760,18 +735,15 @@ public class JailPlugin extends JavaPlugin {
     }
 
     public void sendJailsPlusMessage(Player sender){
-        String message1 = JailsChatColor.GOLD + translationManager.getMessage("jailsplus_access");
+        String message1 = JailsChatColor.GOLD + "You are trying to use a feature that is only available in Jails+.";
         sender.sendMessage(JailsChatColor.BOLD + message1);
-        TextComponent message = new TextComponent (translationManager.getMessage("jailsplus_access"));
+        TextComponent message = new TextComponent("Click here to purchase Jails+!");
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
         message.setBold(true);
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getPurchaseLink()));
         sender.spigot().sendMessage(message);
     }
 
-    public TranslationManager getTranslationManager() {
-        return translationManager;
-    }
 
     public String getPurchaseLink(){
         return purchaseLink;

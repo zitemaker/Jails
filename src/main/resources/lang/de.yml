@@ -1,0 +1,174 @@
+messages:
+  #  Config reload
+  config_reload_success: "Gefängniskonfiguration neu geladen!"
+  cr_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+
+  # DelFlag
+  df_player_check: "Du musst ein Spieler sein, um diesen Befehl zu nutzen!"
+  df_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+
+  # DelJailCmd
+  "deljail_no_permission": "Du hast keine Berechtigung, Gefängnisse zu löschen."
+  "deljail_usage": "Verwendung: /deljail <jail_name>"
+  "deljail_jail_not_found": "Gefängnis '%s' existiert nicht."
+  "deljail_success": "Gefängnis '%s' wurde gelöscht."
+  "deljail_confirmation_prompt": "Bist du sicher, dass du das Gefängnis '%s' löschen möchtest?"
+  "deljail_confirm_hover": "Klicken zum Bestätigen"
+  "deljail_cancel_hover": "Klicken zum Abbrechen"
+  "handledeljail_only_players": "Dieser Befehl kann nur von Spielern verwendet werden."
+  "handledeljail_usage": "Verwendung: /handledeljail <yes|no>"
+  "handledeljail_no_pending": "Keine ausstehenden Gefängnislöschungen."
+  "handledeljail_jail_not_found": "Gefängnis '%s' existiert nicht mehr."
+  "handledeljail_success": "Gefängnis '%s' wurde erfolgreich gelöscht."
+  "handledeljail_canceled": "Gefängnislöschung abgebrochen."
+
+  # FlagList
+  fl_player_check: "Du musst ein Spieler sein, um diesen Befehl zu nutzen!"
+  fl_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+
+  # Handcuff
+  handcuff_only_players: "Nur Spieler können diesen Befehl verwenden!"
+  handcuff_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+  handcuff_usage: "Verwendung: /handcuff <player>"
+  handcuff_player_not_found: "Spieler nicht gefunden!"
+  handcuff_already_handcuffed: "%s ist bereits gefesselt!"
+  handcuff_success: "%s wurde gefesselt!"
+  handcuff_notification: "Du wurdest von %s gefesselt!"
+  handcuff_broadcast: "{prefix} &c{player} wurde von {handcuffer} gefesselt!"
+  handcuff_no_break: "Du kannst keine Blöcke zerstören, während du gefesselt bist!"
+  handcuff_no_place: "Du kannst keine Blöcke platzieren, während du gefesselt bist!"
+  handcuff_no_pvp: "Du kannst keine anderen Spieler angreifen, während du gefesselt bist!"
+  handcuff_no_item_use: "Du kannst keine Gegenstände verwenden, während du gefesselt bist!"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "Nur Spieler können diesen Befehl verwenden!"
+  unhandcuff_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+  unhandcuff_usage: "Verwendung: /unhandcuff <player>"
+  unhandcuff_player_not_found: "Spieler nicht gefunden!"
+  unhandcuff_not_handcuffed: "%s ist nicht gefesselt!"
+  unhandcuff_success: "%s wurde entfesselt."
+  unhandcuff_notification: "Du wurdest entfesselt."
+
+  # JailCommand
+  jail_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+  jail_usage: "Verwendung: /jail <player> <jail name> [reason]"
+  jail_player_not_found: "Spieler nicht gefunden."
+  jail_already_jailed: "%s ist bereits im Gefängnis!"
+  jail_not_found: "Gefängnis nicht gefunden. Verfügbare Gefängnisse:"
+  jail_default_reason: "Kein Grund angegeben"
+  jail_permanent_duration: "dauerhaft"
+  jail_broadcast: "{prefix} &c{player} wurde für {duration} von {jailer} eingesperrt. Grund: {reason}!"
+  jail_notification: "Du wurdest dauerhaft von %s eingesperrt. Grund: %s"
+
+  # JailDuration
+  jailduration_only_players: "Nur Spieler können diesen Befehl verwenden!"
+  jailduration_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+
+  # Jailed List
+  jailed_list_only_players: "Nur Spieler können diesen Befehl verwenden!"
+  jailed_list_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+
+  # Jails
+  jails_only_players: "Nur Spieler können diesen Befehl verwenden."
+  jails_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+  jails_no_jails: "Keine Gefängnisse konfiguriert."
+  jails_gui_name: "Name: "
+  jails_gui_coords: "Koordinaten:"
+  jails_gui_left_click: "Linksklick zum Teleportieren"
+  jails_left_click_only: "Bitte linksklicken, um dich zu teleportieren."
+  jails_teleported: "Zum Gefängnis teleportiert: %s"
+  jails_location_not_found: "Gefängnisstandort nicht gefunden!"
+
+  # SetJail
+  setjail_only_players: "Nur Spieler können Gefängnisse setzen!"
+  setjail_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+  setjail_usage: "Verwendung: /setjail <jail name>"
+  setjail_success: "Gefängnis %s wurde an deinem aktuellen Standort gesetzt!"
+
+  # JailSpawn
+  jail_spawn_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+  jail_spawn_no_player_found: "Spieler nicht gefunden."
+  jail_spawn_invalid: "Ungültige Spawn-Option. Verwende 'world_spawn' oder 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "Du musst ein Spieler sein, um diesen Befehl zu nutzen!"
+  set_flag_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+
+  #  Unjail Cmd
+  "unjail_no_permission": "Du hast keine Berechtigung, Spieler zu entlassen."
+  "unjail_usage": "Verwendung: /unjail <player>"
+  "unjail_player_not_found": "Spieler nicht gefunden oder nie beigetreten."
+  "unjail_player_not_jailed": "%s ist derzeit nicht eingesperrt."
+  "unjail_confirmation_prompt": "Bist du sicher, dass du %s entlassen möchtest?"
+  "unjail_ip_jailed_info": "Dieser Spieler ist IP-gesperrt. Entlassen entfernt auch seine IP von der Liste."
+  "unjail_confirm_hover": "Klicken zum Bestätigen"
+  "unjail_cancel_hover": "Klicken zum Abbrechen"
+  "unjail_success": "Spieler %s wurde entlassen."
+  "unjail_success_ip_removed": "Spieler %s wurde entlassen und seine IP wurde von der Sperrliste entfernt."
+
+  # Unjail Confirmation
+  "confirmation_only_players": "Dieser Befehl kann nur von Spielern verwendet werden."
+  "confirmation_usage": "Verwendung: /%s <token>"
+  "confirmation_invalid_token": "Ungültiges oder abgelaufenes Token."
+  "confirmation_not_authorized": "Du bist nicht berechtigt, diese Aktion zu bestätigen."
+  "unjail_player_no_longer_jailed": "Spieler ist nicht mehr eingesperrt."
+  "unjail_broadcast": "{prefix} &c{player} wurde aus dem Gefängnis entlassen!"
+  "unjail_operation_canceled": "Entlassung abgebrochen."
+
+  # TempJail
+  tempjail_usage: "Verwendung: /tempjail <player> <jail name> <Dauer (z.B. 2d, 3h)> [reason]"
+  tempjail_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
+  tempjail_player_not_found: "Spieler nicht gefunden."
+  tempjail_jail_not_found: "Gefängnis nicht gefunden."
+  tempjail_invalid_duration: "Ungültige Dauer."
+  tempjail_already_jailed: "%s ist bereits eingesperrt!"
+
+  # IpJail
+  ipjail_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
+  ipjail_usage: "Verwendung: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_player_not_found: "Spieler nicht gefunden."
+  ipjail_already_jailed: "%s ist bereits eingesperrt!"
+  ipjail_jail_not_found: "Gefängnis nicht gefunden. Verfügbare Gefängnisse:"
+  ipjail_ip_processing_failed: "Verarbeitung der IP-Adresse fehlgeschlagen."
+  ipjail_ip_processing_error: "Fehler bei der IP-Adressverarbeitung."
+  ipjail_success: "Spieler %s erfolgreich IP-gesperrt. Alle Konten mit dieser IP werden ebenfalls gesperrt."
+  ipjail_notification: "Du wurdest IP-gesperrt %s von %s. Grund: %s"
+  ipjail_associated_reason: "Zugehörig zu %s: %s"
+  ipjail_associated_notification: "Du wurdest eingesperrt, weil deine IP mit %s verknüpft ist"
+  ipjail_default_reason: "Kein Grund angegeben"
+  ipjail_permanent_duration: "dauerhaft"
+  ipjail_seconds: "%s Sekunde(n)"
+  ipjail_minutes: "%s Minute(n)"
+  ipjail_hours: "%s Stunde(n)"
+  ipjail_days: "%s Tag(e)"
+  ipjail_broadcast: "{prefix} &c{player} wurde für {duration} von {jailer} IP-gesperrt. Grund: {reason}!"
+  ipjail_auto_jailed: "Du wurdest automatisch eingesperrt, weil deine IP mit einem gesperrten Konto verknüpft ist."
+  ipjail_ip_association: "IP mit gesperrtem Konto verknüpft. Ursprünglicher Grund: "
+  ip_jail_autojail: "Du wurdest automatisch gesperrt wegen einer blockierten IP-Adresse."
+
+  # Version Command
+  version_checking: "Prüfe auf neue Version..."
+  version_could_not_determine: "Neueste Version konnte nicht ermittelt werden."
+  version_latest: "Du verwendest die neueste Version: %s"
+  version_new_available: "Eine neue Version ist verfügbar: %s"
+  version_current: "Deine Version: %s"
+  version_download: "Lade die neueste Version herunter: %s"
+  version_check_failed: "Update-Prüfung fehlgeschlagen."
+
+  # Chat
+  chat: "Du kannst im Gefängnis nicht chatten!"
+
+  # Command
+  command_usage: "Du kannst diesen Befehl im Gefängnis nicht verwenden."
+
+  # Jail Restrictions
+  block_break: "Du kannst im Gefängnis keine Blöcke zerstören!"
+  block_place: "Du kannst im Gefängnis keine Blöcke platzieren!"
+  attack: "Du kannst im Gefängnis nicht angreifen!"
+  vehicles: "Du kannst im Gefängnis keine Fahrzeuge betreten!"
+  pearl: "Du kannst im Gefängnis keine Enderperlen verwenden!"
+
+  # Client Sided jailed messages
+  perm_jail: "Du wurdest dauerhaft eingesperrt von: "
+  jail_end: "Deine Gefängnisstrafe ist beendet! Du bist jetzt frei."
+  temp_jail: "Du wurdest vorübergehend eingesperrt für "

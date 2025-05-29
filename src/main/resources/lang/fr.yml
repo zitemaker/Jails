@@ -1,0 +1,174 @@
+messages:
+  #  Config reload
+  config_reload_success: "Configuration des prisons rechargée !"
+  cr_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+
+  # DelFlag
+  df_player_check: "Vous devez être un joueur pour utiliser cette commande !"
+  df_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+
+  # DelJailCmd
+  "deljail_no_permission": "Vous n'avez pas la permission de supprimer des prisons."
+  "deljail_usage": "Utilisation : /deljail <jail_name>"
+  "deljail_jail_not_found": "La prison '%s' n'existe pas."
+  "deljail_success": "La prison '%s' a été supprimée."
+  "deljail_confirmation_prompt": "Êtes-vous sûr de vouloir supprimer la prison '%s' ?"
+  "deljail_confirm_hover": "Cliquez pour confirmer la suppression"
+  "deljail_cancel_hover": "Cliquez pour annuler la suppression"
+  "handledeljail_only_players": "Cette commande ne peut être utilisée que par des joueurs."
+  "handledeljail_usage": "Utilisation : /handledeljail <yes|no>"
+  "handledeljail_no_pending": "Aucune suppression de prison en attente."
+  "handledeljail_jail_not_found": "La prison '%s' n'existe plus."
+  "handledeljail_success": "La prison '%s' a été supprimée avec succès."
+  "handledeljail_canceled": "Suppression de prison annulée."
+
+  # FlagList
+  fl_player_check: "Vous devez être un joueur pour utiliser cette commande !"
+  fl_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+
+  # Handcuff
+  handcuff_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
+  handcuff_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+  handcuff_usage: "Utilisation : /handcuff <player>"
+  handcuff_player_not_found: "Joueur introuvable !"
+  handcuff_already_handcuffed: "%s est déjà menotté !"
+  handcuff_success: "%s a été menotté !"
+  handcuff_notification: "Vous avez été menotté par %s !"
+  handcuff_broadcast: "{prefix} &c{player} a été menotté par {handcuffer} !"
+  handcuff_no_break: "Vous ne pouvez pas casser de blocs lorsque vous êtes menotté !"
+  handcuff_no_place: "Vous ne pouvez pas placer de blocs lorsque vous êtes menotté !"
+  handcuff_no_pvp: "Vous ne pouvez pas attaquer d'autres joueurs lorsque vous êtes menotté !"
+  handcuff_no_item_use: "Vous ne pouvez pas utiliser d'objets lorsque vous êtes menotté !"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
+  unhandcuff_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+  unhandcuff_usage: "Utilisation : /unhandcuff <player>"
+  unhandcuff_player_not_found: "Joueur introuvable !"
+  unhandcuff_not_handcuffed: "%s n'est pas menotté !"
+  unhandcuff_success: "%s a été retiré de la liste des menottés."
+  unhandcuff_notification: "Vous avez été retiré de la liste des menottés."
+
+  # JailCommand
+  jail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+  jail_usage: "Utilisation : /jail <player> <jail name> [reason]"
+  jail_player_not_found: "Joueur introuvable."
+  jail_already_jailed: "%s est déjà en prison !"
+  jail_not_found: "Prison introuvable. Prisons disponibles :"
+  jail_default_reason: "Aucune raison fournie"
+  jail_permanent_duration: "de façon permanente"
+  jail_broadcast: "{prefix} &c{player} a été emprisonné pour {duration} par {jailer}. Raison : {reason} !"
+  jail_notification: "Vous avez été emprisonné de façon permanente par %s. Raison : %s"
+
+  # JailDuration
+  jailduration_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
+  jailduration_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+
+  # Jailed List
+  jailed_list_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
+  jailed_list_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+
+  # Jails
+  jails_only_players: "Seuls les joueurs peuvent utiliser cette commande."
+  jails_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+  jails_no_jails: "Aucune prison n'a été configurée."
+  jails_gui_name: "Nom : "
+  jails_gui_coords: "Coordonnées :"
+  jails_gui_left_click: "Clic-gauche pour vous téléporter"
+  jails_left_click_only: "Veuillez faire un clic-gauche pour vous téléporter."
+  jails_teleported: "Téléporté à la prison : %s"
+  jails_location_not_found: "Emplacement de la prison introuvable !"
+
+  # SetJail
+  setjail_only_players: "Seuls les joueurs peuvent configurer des prisons !"
+  setjail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+  setjail_usage: "Utilisation : /setjail <jail name>"
+  setjail_success: "La prison %s a été configurée à votre emplacement actuel !"
+
+  # JailSpawn
+  jail_spawn_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+  jail_spawn_no_player_found: "Joueur introuvable."
+  jail_spawn_invalid: "Option de spawn invalide. Utilisez 'world_spawn' ou 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "Vous devez être un joueur pour utiliser cette commande !"
+  set_flag_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+
+  #  Unjail Cmd
+  "unjail_no_permission": "Vous n'avez pas la permission de libérer des joueurs."
+  "unjail_usage": "Utilisation : /unjail <player>"
+  "unjail_player_not_found": "Joueur introuvable ou n'a jamais rejoint le serveur."
+  "unjail_player_not_jailed": "%s n'est pas actuellement en prison."
+  "unjail_confirmation_prompt": "Êtes-vous sûr de vouloir libérer %s ?"
+  "unjail_ip_jailed_info": "Ce joueur est emprisonné par IP. Le libérer supprimera également son IP de la liste."
+  "unjail_confirm_hover": "Cliquez pour confirmer la libération"
+  "unjail_cancel_hover": "Cliquez pour annuler la libération"
+  "unjail_success": "Le joueur %s a été libéré."
+  "unjail_success_ip_removed": "Le joueur %s a été libéré et son IP a été retirée de la liste des IP emprisonnées."
+
+  # Unjail Confirmation
+  "confirmation_only_players": "Cette commande ne peut être utilisée que par des joueurs."
+  "confirmation_usage": "Utilisation : /%s <token>"
+  "confirmation_invalid_token": "Jeton invalide ou expiré."
+  "confirmation_not_authorized": "Vous n'êtes pas autorisé à confirmer cette action."
+  "unjail_player_no_longer_jailed": "Le joueur n'est plus emprisonné."
+  "unjail_broadcast": "{prefix} &c{player} a été libéré de prison."
+  "unjail_operation_canceled": "Libération annulée."
+
+  # TempJail
+  tempjail_usage: "Utilisation : /tempjail <player> <jail name> <durée (ex: 2d, 3h)> [reason]"
+  tempjail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+  tempjail_player_not_found: "Joueur introuvable."
+  tempjail_jail_not_found: "Prison introuvable."
+  tempjail_invalid_duration: "Durée invalide."
+  tempjail_already_jailed: "%s est déjà en prison !"
+
+  # IpJail
+  ipjail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."
+  ipjail_usage: "Utilisation : /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_player_not_found: "Joueur introuvable."
+  ipjail_already_jailed: "%s est déjà en prison !"
+  ipjail_jail_not_found: "Prison introuvable. Prisons disponibles :"
+  ipjail_ip_processing_failed: "Échec du traitement de l'adresse IP."
+  ipjail_ip_processing_error: "Erreur lors du traitement de l'adresse IP."
+  ipjail_success: "Le joueur %s a été emprisonné par IP. Tous les comptes partageant cette IP seront également emprisonnés."
+  ipjail_notification: "Vous avez été emprisonné par IP %s par %s. Raison : %s"
+  ipjail_associated_reason: "Associé à %s : %s"
+  ipjail_associated_notification: "Vous avez été emprisonné car votre IP est associée à %s"
+  ipjail_default_reason: "Aucune raison fournie"
+  ipjail_permanent_duration: "de façon permanente"
+  ipjail_seconds: "%s seconde(s)"
+  ipjail_minutes: "%s minute(s)"
+  ipjail_hours: "%s heure(s)"
+  ipjail_days: "%s jour(s)"
+  ipjail_broadcast: "{prefix} &c{player} a été emprisonné par IP pour {duration} par {jailer}. Raison : {reason} !"
+  ipjail_auto_jailed: "Vous avez été automatiquement emprisonné car votre adresse IP est associée à un compte emprisonné."
+  ipjail_ip_association: "IP associée à un compte emprisonné. Raison originale : "
+  ip_jail_autojail: "Vous avez été auto-emprisonné à cause d'une adresse IP bloquée."
+
+  # Version Command
+  version_checking: "Vérification de la dernière version..."
+  version_could_not_determine: "Impossible de déterminer la dernière version."
+  version_latest: "Vous utilisez la dernière version : %s"
+  version_new_available: "Une nouvelle version est disponible : %s"
+  version_current: "Vous utilisez : %s"
+  version_download: "Téléchargez la dernière version : %s"
+  version_check_failed: "Échec de la vérification des mises à jour."
+
+  # Chat
+  chat: "Vous ne pouvez pas parler en prison !"
+
+  # Command
+  command_usage: "Vous ne pouvez pas utiliser cette commande en prison."
+
+  # Jail Restrictions
+  block_break: "Vous ne pouvez pas casser de blocs en prison !"
+  block_place: "Vous ne pouvez pas placer de blocs en prison !"
+  attack: "Vous ne pouvez pas attaquer en prison !"
+  vehicles: "Vous ne pouvez pas entrer dans des véhicules en prison !"
+  pearl: "Vous ne pouvez pas utiliser les perles de l'Ender en prison !"
+
+  # Client Sided jailed messages
+  perm_jail: "Vous êtes emprisonné de façon permanente par : "
+  jail_end: "Votre temps de prison est terminé. Vous êtes libre !"
+  temp_jail: "Vous êtes emprisonné temporairement pour "

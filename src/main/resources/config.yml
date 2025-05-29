@@ -13,12 +13,14 @@
 ############################################################################
 
 prefix: "&7[&eJails&7]"
-language: en # available lang - en (english), es (spanish)
+language: en # available languages - en (english), es (spanish), fr (french), ru (russian) and de (german)
 
 # General settings
 general:
   # Notify all server players when a player is jailed
   broadcast-on-jail: true
+  # Notify all server players when a player is jailed
+  broadcast-on-ip-jail: true
   # Notify all server players when a player is unjailed
   broadcast-on-unjail: true
 

@@ -1,0 +1,174 @@
+messages:
+  #  Config reload
+  config_reload_success: "¡Configuración de cárceles recargada!"
+  cr_no_permission: "No tienes permiso para usar este comando."
+
+  # DelFlag
+  df_player_check: "¡Debes ser un jugador para usar este comando!"
+  df_no_permission: "No tienes permiso para usar este comando."
+
+  # DelJailCmd
+  "deljail_no_permission": "No tienes permiso para eliminar cárceles."
+  "deljail_usage": "Uso: /deljail <jail_name>"
+  "deljail_jail_not_found": "La cárcel '%s' no existe."
+  "deljail_success": "La cárcel '%s' ha sido eliminada."
+  "deljail_confirmation_prompt": "¿Seguro que quieres eliminar la cárcel '%s'?"
+  "deljail_confirm_hover": "Click para confirmar eliminación"
+  "deljail_cancel_hover": "Click para cancelar eliminación"
+  "handledeljail_only_players": "Este comando solo puede ser usado por jugadores."
+  "handledeljail_usage": "Uso: /handledeljail <yes|no>"
+  "handledeljail_no_pending": "No hay eliminaciones pendientes."
+  "handledeljail_jail_not_found": "La cárcel '%s' ya no existe."
+  "handledeljail_success": "La cárcel '%s' ha sido eliminada exitosamente."
+  "handledeljail_canceled": "Eliminación de cárcel cancelada."
+
+  # FlagList
+  fl_player_check: "¡Debes ser un jugador para usar este comando!"
+  fl_no_permission: "No tienes permiso para usar este comando!"
+
+  # Handcuff
+  handcuff_only_players: "¡Solo jugadores pueden usar este comando!"
+  handcuff_no_permission: "¡No tienes permiso para usar este comando!"
+  handcuff_usage: "Uso: /handcuff <player>"
+  handcuff_player_not_found: "¡Jugador no encontrado!"
+  handcuff_already_handcuffed: "¡%s ya está esposado!"
+  handcuff_success: "¡%s ha sido esposado!"
+  handcuff_notification: "¡%s te ha puesto esposas!"
+  handcuff_broadcast: "{prefix} &c¡{player} ha sido esposado por {handcuffer}!"
+  handcuff_no_break: "¡No puedes romper bloques estando esposado!"
+  handcuff_no_place: "¡No puedes colocar bloques estando esposado!"
+  handcuff_no_pvp: "¡No puedes atacar a otros estando esposado!"
+  handcuff_no_item_use: "¡No puedes usar objetos estando esposado!"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "¡Solo jugadores pueden usar este comando!"
+  unhandcuff_no_permission: "¡No tienes permiso para usar este comando!"
+  unhandcuff_usage: "Uso: /unhandcuff <player>"
+  unhandcuff_player_not_found: "¡Jugador no encontrado!"
+  unhandcuff_not_handcuffed: "¡%s no está esposado!"
+  unhandcuff_success: "Se han quitado las esposas a %s."
+  unhandcuff_notification: "Se te han quitado las esposas."
+
+  # JailCommand
+  jail_no_permission: "No tienes permiso para usar este comando."
+  jail_usage: "Uso: /jail <player> <jail name> [reason]"
+  jail_player_not_found: "Jugador no encontrado."
+  jail_already_jailed: "¡%s ya está en la cárcel!"
+  jail_not_found: "Cárcel no encontrada. Cárceles disponibles:"
+  jail_default_reason: "Sin razón especificada"
+  jail_permanent_duration: "permanentemente"
+  jail_broadcast: "{prefix} &c¡{player} ha sido encarcelado por {duration} por {jailer}. Razón: {reason}!"
+  jail_notification: "Has sido encarcelado permanentemente por %s. Razón: %s"
+
+  # JailDuration
+  jailduration_only_players: "¡Solo jugadores pueden usar este comando!"
+  jailduration_no_permission: "¡No tienes permiso para usar este comando!"
+
+  # Jailed List
+  jailed_list_only_players: "¡Solo jugadores pueden usar este comando!"
+  jailed_list_no_permission: "No tienes permiso para usar este comando."
+
+  # Jails
+  jails_only_players: "Solo jugadores pueden usar este comando."
+  jails_no_permission: "No tienes permiso para usar este comando."
+  jails_no_jails: "No hay cárceles configuradas."
+  jails_gui_name: "Nombre: "
+  jails_gui_coords: "Coordenadas:"
+  jails_gui_left_click: "Click izquierdo para teletransportarse"
+  jails_left_click_only: "Por favor haz click izquierdo para teletransportarte."
+  jails_teleported: "Teletransportado a la cárcel: %s"
+  jails_location_not_found: "¡Ubicación de la cárcel no encontrada!"
+
+  # SetJail
+  setjail_only_players: "¡Solo jugadores pueden configurar cárceles!"
+  setjail_no_permission: "¡No tienes permiso para usar este comando!"
+  setjail_usage: "Uso: /setjail <jail name>"
+  setjail_success: "¡La cárcel %s ha sido configurada en tu ubicación actual!"
+
+  # JailSpawn
+  jail_spawn_no_permission: "No tienes permiso para usar este comando."
+  jail_spawn_no_player_found: "Jugador no encontrado."
+  jail_spawn_invalid: "Opción inválida. Usa 'world_spawn' u 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "¡Debes ser un jugador para usar este comando!"
+  set_flag_no_permission: "¡No tienes permiso para usar este comando!"
+
+  #  Unjail Cmd
+  "unjail_no_permission": "No tienes permiso para liberar jugadores."
+  "unjail_usage": "Uso: /unjail <player>"
+  "unjail_player_not_found": "Jugador no encontrado o nunca se ha conectado."
+  "unjail_player_not_jailed": "%s no está actualmente encarcelado."
+  "unjail_confirmation_prompt": "¿Seguro que quieres liberar a %s?"
+  "unjail_ip_jailed_info": "Este jugador tiene IP bloqueada. Liberarlo también eliminará su IP de la lista."
+  "unjail_confirm_hover": "Click para confirmar liberación"
+  "unjail_cancel_hover": "Click para cancelar liberación"
+  "unjail_success": "El jugador %s ha sido liberado."
+  "unjail_success_ip_removed": "El jugador %s ha sido liberado y su IP ha sido eliminada de la lista bloqueada."
+
+  # Unjail Confirmation
+  "confirmation_only_players": "Este comando solo puede ser usado por jugadores."
+  "confirmation_usage": "Uso: /%s <token>"
+  "confirmation_invalid_token": "Token inválido o expirado."
+  "confirmation_not_authorized": "No estás autorizado para confirmar esta acción."
+  "unjail_player_no_longer_jailed": "El jugador ya no está encarcelado."
+  "unjail_broadcast": "{prefix} &c¡{player} ha sido liberado de la cárcel!"
+  "unjail_operation_canceled": "Operación de liberación cancelada."
+
+  # TempJail
+  tempjail_usage: "Uso: /tempjail <player> <jail name> <duración (ej: 2d, 3h)> [reason]"
+  tempjail_no_permission: "¡No tienes permiso para usar este comando!"
+  tempjail_player_not_found: "Jugador no encontrado."
+  tempjail_jail_not_found: "Cárcel no encontrada."
+  tempjail_invalid_duration: "Duración inválida."
+  tempjail_already_jailed: "¡%s ya está encarcelado!"
+
+  # IpJail
+  ipjail_no_permission: "No tienes permiso para usar este comando."
+  ipjail_usage: "Uso: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_player_not_found: "Jugador no encontrado."
+  ipjail_already_jailed: "¡%s ya está encarcelado!"
+  ipjail_jail_not_found: "Cárcel no encontrada. Cárceles disponibles:"
+  ipjail_ip_processing_failed: "Error al procesar la dirección IP."
+  ipjail_ip_processing_error: "Error procesando la dirección IP."
+  ipjail_success: "Jugador %s encarcelado por IP exitosamente. Todas las cuentas con esta IP también serán encarceladas."
+  ipjail_notification: "Has sido encarcelado por IP %s por %s. Razón: %s"
+  ipjail_associated_reason: "Asociado con %s: %s"
+  ipjail_associated_notification: "Has sido encarcelado porque tu IP está asociada con %s"
+  ipjail_default_reason: "Sin razón especificada"
+  ipjail_permanent_duration: "permanentemente"
+  ipjail_seconds: "%s segundo(s)"
+  ipjail_minutes: "%s minuto(s)"
+  ipjail_hours: "%s hora(s)"
+  ipjail_days: "%s día(s)"
+  ipjail_broadcast: "{prefix} &c¡{player} ha sido encarcelado por IP por {duration} por {jailer}. Razón: {reason}!"
+  ipjail_auto_jailed: "Has sido encarcelado automáticamente porque tu dirección IP está asociada a una cuenta encarcelada."
+  ipjail_ip_association: "IP asociada con cuenta encarcelada. Razón original: "
+  ip_jail_autojail: "Has sido auto-encarcelado por tener una dirección IP bloqueada."
+
+  # Version Command
+  version_checking: "Buscando la última versión..."
+  version_could_not_determine: "No se pudo determinar la última versión."
+  version_latest: "Estás usando la última versión: %s"
+  version_new_available: "Hay una nueva versión disponible: %s"
+  version_current: "Estás usando: %s"
+  version_download: "Descarga la última versión: %s"
+  version_check_failed: "Error al buscar actualizaciones."
+
+  # Chat
+  chat: "¡No puedes chatear estando encarcelado!"
+
+  # Command
+  command_usage: "No puedes usar este comando estando encarcelado."
+
+  # Jail Restrictions
+  block_break: "¡No puedes romper bloques en la cárcel!"
+  block_place: "¡No puedes colocar bloques en la cárcel!"
+  attack: "¡No puedes atacar en la cárcel!"
+  vehicles: "¡No puedes entrar a vehículos en la cárcel!"
+  pearl: "¡No puedes usar perlas de ender en la cárcel!"
+
+  # Client Sided jailed messages
+  perm_jail: "Estás encarcelado permanentemente por: "
+  jail_end: "¡Tu condena ha terminado! Ahora eres libre."
+  temp_jail: "Estás encarcelado temporalmente por "

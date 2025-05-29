@@ -78,7 +78,6 @@ public class JailPlugin extends JavaPlugin {
     private final boolean loggerColor = true;
     private TranslationManager translationManager;
     private Handcuff handcuffInstance;
-    private Handcuff handcuffCommand;
 
     @Override
     public void onEnable() {
@@ -93,12 +92,6 @@ public class JailPlugin extends JavaPlugin {
 
         translationManager = new TranslationManager(this);
 
-        blockedCommands = getConfig().getStringList("blockedCommands");
-        this.handcuffCommand = new Handcuff(this);
-
-        getConfig().addDefault("general.ip-jail-broadcast-message",
-                "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!");
-        getConfig().options().copyDefaults(true);
         saveConfig();
 
         unjailConfirmation = new UnjailConfirmation(this);
@@ -150,10 +143,17 @@ public class JailPlugin extends JavaPlugin {
                         if (remoteVersion != null) {
                             String normalizedRemote = remoteVersion.trim().replace("v", "");
                             if (!normalizedRemote.equals(currentVersion)) {
+                                int boxWidth = 35;
+                                int currentLineLength = "Current: ".length() + currentVersion.length();
+                                int remoteLineLength = "Latest: ".length() + normalizedRemote.length();
+
+                                int currentPadding = boxWidth - currentLineLength;
+                                int remotePadding = boxWidth - remoteLineLength;
+
                                 logger.info("§6╔════════════════════════════════════╗");
-                                logger.info("§6║ §eNew Jails version available!     §6║");
-                                logger.info("§6║ §7Current: §c" + currentVersion + " ".repeat(Math.max(0, 20 - currentVersion.length())) + "§6║");
-                                logger.info("§6║ §7Latest: §b" + normalizedRemote + " ".repeat(Math.max(0, 20 - normalizedRemote.length())) + "§6║");
+                                logger.info("§6║ §eNew Jails version available!       §6║");
+                                logger.info("§6║ §7Current: §c" + currentVersion + " ".repeat(Math.max(0, currentPadding)) + "§6║");
+                                logger.info("§6║ §7Latest: §b" + normalizedRemote + " ".repeat(Math.max(0, remotePadding)) + "§6║");
                                 logger.info("§6╚════════════════════════════════════╝");
                             } else if (getConfig().getBoolean("notify-up-to-date", false)) {
                                 logger.info("§aJails is up to date (v" + currentVersion + ")");
@@ -192,6 +192,7 @@ public class JailPlugin extends JavaPlugin {
         this.alertMessages = getConfig().getBoolean("jail-settings.enable-escape-alerts", true);
         this.targetSkin = getConfig().getString("jail-settings.skin-username", "SirMothsho");
         this.handcuffSpeed = getConfig().getDouble("handcuff-settings.handcuff-speed", 0.05);
+        this.blockedCommands = getConfig().getStringList("blocked-commands");
     }
 
     public void reloadPluginConfig(){
@@ -369,8 +370,6 @@ public class JailPlugin extends JavaPlugin {
                 break;
         }
         saveJailedPlayersConfig();
-
-
 
         if (jailLocation != null) {
             player.teleport(jailLocation);
@@ -658,8 +657,7 @@ public class JailPlugin extends JavaPlugin {
                     "IP associated with a jailed account. Original reason: " + info.getReason(),
                     "SYSTEM (IP-Jail)");
 
-            player.sendMessage(getPrefix() + " " +
-                    "You have been automatically jailed because your IP address is associated with a jailed account.");
+            player.sendMessage(getPrefix() + " " + translationManager.getMessage("ipjail_auto_jailed"));
         }
     }
 
@@ -727,8 +725,7 @@ public class JailPlugin extends JavaPlugin {
         Bukkit.getScheduler().runTaskLater(this, () -> {
             if (player.isOnline()) {
                 unjailPlayer(player.getUniqueId());
-                String messageTemplate = getConfig().getString("general.unjail-broadcast-message",
-                        "{prefix} &c{player} has been unjailed.");
+                String messageTemplate = translationManager.getMessage("unjail_broadcast");
                 String broadcastMessage = messageTemplate
                         .replace("{prefix}", ChatColor.translateAlternateColorCodes('&', prefix))
                         .replace("{player}", player.getName());
@@ -759,10 +756,35 @@ public class JailPlugin extends JavaPlugin {
         return days + " day" + (days == 1 ? "" : "s");
     }
 
-    public void sendJailsPlusMessage(Player sender){
-        String message1 = JailsChatColor.GOLD + translationManager.getMessage("jailsplus_access");
-        sender.sendMessage(JailsChatColor.BOLD + message1);
-        TextComponent message = new TextComponent (translationManager.getMessage("jailsplus_access"));
+    public void sendJailsPlusMessage(Player sender) {
+        String language = getConfig().getString("language", "en").toLowerCase();
+        String accessMessage;
+        String purchaseMessage;
+        switch (language) {
+            case "de":
+                accessMessage = "Du versuchst, eine Funktion zu nutzen, die nur in Jails+ verfügbar ist.";
+                purchaseMessage = "Klicke hier, um Jails+ zu kaufen!";
+                break;
+            case "es":
+                accessMessage = "Estás intentando usar una función que solo está disponible en Jails+.";
+                purchaseMessage = "¡Haz clic aquí para comprar Jails+!";
+                break;
+            case "fr":
+                accessMessage = "Vous essayez d'utiliser une fonctionnalité disponible uniquement dans Jails+.";
+                purchaseMessage = "Cliquez ici pour acheter Jails+ !";
+                break;
+            case "ru":
+                accessMessage = "Вы пытаетесь использовать функцию, доступную только в Jails+.";
+                purchaseMessage = "Нажмите здесь, чтобы купить Jails+!";
+                break;
+            case "en":
+            default:
+                accessMessage = "You are trying to use a feature that is only available in Jails+.";
+                purchaseMessage = "Click here to purchase Jails+!";
+                break;
+        }
+        sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + accessMessage);
+        TextComponent message = new TextComponent(purchaseMessage);
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);
         message.setBold(true);
         message.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, getPurchaseLink()));

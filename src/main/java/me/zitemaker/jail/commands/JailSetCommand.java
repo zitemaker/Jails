@@ -27,17 +27,17 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("setjail_only_players"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("setjail_only_players"));
             return true;
         }
 
         if (!sender.hasPermission("jails.setjail")) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("setjail_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("setjail_no_permission"));
             return false;
         }
 
         if (args.length != 1) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("setjail_usage"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("setjail_usage"));
             return true;
         }
 
@@ -47,7 +47,7 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
 
         plugin.addJail(jailName, location);
         String successMsg = String.format(translationManager.getMessage("setjail_success"), jailName);
-        player.sendMessage(prefix + ChatColor.GREEN + successMsg);
+        player.sendMessage(prefix + " " + ChatColor.GREEN + successMsg);
         return true;
     }
 

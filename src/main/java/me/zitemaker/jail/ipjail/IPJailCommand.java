@@ -35,13 +35,13 @@ public class IPJailCommand implements CommandExecutor {
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("ipjail_player_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("ipjail_player_not_found"));
             return true;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
             String msg = String.format(translationManager.getMessage("ipjail_already_jailed"), target.getName());
-            sender.sendMessage(prefix + ChatColor.RED + msg);
+            sender.sendMessage(prefix + " " + ChatColor.RED + msg);
             return true;
         }
 
@@ -62,12 +62,12 @@ public class IPJailCommand implements CommandExecutor {
 
     private boolean validateCommand(CommandSender sender, String[] args) {
         if (!sender.hasPermission(PERMISSION)) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_no_permission"));
+            sender.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("ipjail_no_permission"));
             return false;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_usage"));
+            sender.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("ipjail_usage"));
             return false;
         }
         return true;
@@ -75,9 +75,9 @@ public class IPJailCommand implements CommandExecutor {
 
     private boolean validateJailExists(CommandSender sender, String jailName) {
         if (!plugin.getJails().containsKey(jailName)) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_jail_not_found"));
+            sender.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("ipjail_jail_not_found"));
             plugin.getJails().forEach((name, location) ->
-                    sender.sendMessage(plugin.getPrefix() + ChatColor.GOLD + "- " + name));
+                    sender.sendMessage(plugin.getPrefix() + " " + ChatColor.GOLD + "- " + name));
             return false;
         }
         return true;
@@ -109,12 +109,12 @@ public class IPJailCommand implements CommandExecutor {
             String playerIp = target.getAddress().getAddress().getHostAddress();
             String hashedIp = plugin.hashIpAddress(playerIp);
             if (hashedIp == null) {
-                sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_failed"));
+                sender.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_failed"));
                 return null;
             }
             return hashedIp;
         } catch (Exception e) {
-            sender.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_error"));
+            sender.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("ipjail_ip_processing_error"));
             plugin.getLogger().warning("Error processing IP address for " + target.getName() + ": " + e.getMessage());
             return null;
         }
@@ -128,7 +128,7 @@ public class IPJailCommand implements CommandExecutor {
         jailMatchingIpPlayers(sender, target, jailName, hashedIp, params, endTime);
 
         String msg = String.format(translationManager.getMessage("ipjail_success"), target.getName());
-        sender.sendMessage(plugin.getPrefix() + ChatColor.GREEN + msg);
+        sender.sendMessage(plugin.getPrefix() + " " + ChatColor.GREEN + msg);
     }
 
     private void jailPlayerAndBroadcast(CommandSender sender, Player player, String jailName,
@@ -176,7 +176,7 @@ public class IPJailCommand implements CommandExecutor {
 
     private void broadcastJailMessage(CommandSender sender, Player player,
                                       CommandParameters params, String durationText) {
-        if (!plugin.getConfig().getBoolean("general.broadcast-on-jail", true)) {
+        if (!plugin.getConfig().getBoolean("general.broadcast-on-ip-jail", true)) {
             return;
         }
 

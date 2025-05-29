@@ -6,13 +6,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import me.zitemaker.jail.listeners.TranslationManager;
 
 public class PlayerJoinListener implements Listener {
-
     private final JailPlugin plugin;
+    private final TranslationManager translationManager;
 
     public PlayerJoinListener(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
     }
 
     @EventHandler
@@ -33,12 +35,12 @@ public class PlayerJoinListener implements Listener {
                         player,
                         info.getJailName(),
                         duration,
-                        "IP associated with jailed account. Original reason: " + info.getReason(),
+                        translationManager.getMessage("ipjail_ip_association") + info.getReason() + info.getReason(),
                         info.getJailer()
                 );
 
                 player.sendMessage(plugin.getPrefix() + " " +
-                        ChatColor.RED + "You've been auto-jailed due to a jailed IP address.");
+                        ChatColor.RED + translationManager.getMessage("ip_jail_autojail"));
             }
         }
     }

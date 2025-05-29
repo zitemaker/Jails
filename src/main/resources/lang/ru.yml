@@ -1,0 +1,174 @@
+messages:
+  #  Config reload
+  config_reload_success: "Конфигурация тюрем перезагружена!"
+  cr_no_permission: "У вас нет прав для использования этой команды."
+
+  # DelFlag
+  df_player_check: "Вы должны быть игроком, чтобы использовать эту команду!"
+  df_no_permission: "У вас нет прав для использования этой команды!"
+
+  # DelJailCmd
+  "deljail_no_permission": "У вас нет прав на удаление тюрем."
+  "deljail_usage": "Использование: /deljail <jail_name>"
+  "deljail_jail_not_found": "Тюрьма '%s' не существует."
+  "deljail_success": "Тюрьма '%s' была удалена."
+  "deljail_confirmation_prompt": "Вы уверены, что хотите удалить тюрьму '%s'?"
+  "deljail_confirm_hover": "Нажмите для подтверждения удаления"
+  "deljail_cancel_hover": "Нажмите для отмены удаления"
+  "handledeljail_only_players": "Эту команду могут использовать только игроки."
+  "handledeljail_usage": "Использование: /handledeljail <yes|no>"
+  "handledeljail_no_pending": "Нет ожидающих удалений тюрем."
+  "handledeljail_jail_not_found": "Тюрьма '%s' больше не существует."
+  "handledeljail_success": "Тюрьма '%s' успешно удалена."
+  "handledeljail_canceled": "Удаление тюрьмы отменено."
+
+  # FlagList
+  fl_player_check: "Вы должны быть игроком, чтобы использовать эту команду!"
+  fl_no_permission: "У вас нет прав для использования этой команды!"
+
+  # Handcuff
+  handcuff_only_players: "Только игроки могут использовать эту команду!"
+  handcuff_no_permission: "У вас нет прав для использования этой команды!"
+  handcuff_usage: "Использование: /handcuff <player>"
+  handcuff_player_not_found: "Игрок не найден!"
+  handcuff_already_handcuffed: "%s уже в наручниках!"
+  handcuff_success: "%s был закован в наручники!"
+  handcuff_notification: "Вас заковал в наручники %s!"
+  handcuff_broadcast: "{prefix} &c{player} был закован в наручники {handcuffer}!"
+  handcuff_no_break: "Вы не можете ломать блоки в наручниках!"
+  handcuff_no_place: "Вы не можете ставить блоки в наручниках!"
+  handcuff_no_pvp: "Вы не можете атаковать других в наручниках!"
+  handcuff_no_item_use: "Вы не можете использовать предметы в наручниках!"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "Только игроки могут использовать эту команду!"
+  unhandcuff_no_permission: "У вас нет прав для использования этой команды!"
+  unhandcuff_usage: "Использование: /unhandcuff <player>"
+  unhandcuff_player_not_found: "Игрок не найден!"
+  unhandcuff_not_handcuffed: "%s не в наручниках!"
+  unhandcuff_success: "%s был освобожден из наручников."
+  unhandcuff_notification: "С вас сняли наручники."
+
+  # JailCommand
+  jail_no_permission: "У вас нет прав для использования этой команды."
+  jail_usage: "Использование: /jail <player> <jail name> [reason]"
+  jail_player_not_found: "Игрок не найден."
+  jail_already_jailed: "%s уже в тюрьме!"
+  jail_not_found: "Тюрьма не найдена. Доступные тюрьмы:"
+  jail_default_reason: "Причина не указана"
+  jail_permanent_duration: "навсегда"
+  jail_broadcast: "{prefix} &c{player} был посажен в тюрьму на {duration} администратором {jailer}. Причина: {reason}!"
+  jail_notification: "Вы были посажены в тюрьму навсегда администратором %s. Причина: %s"
+
+  # JailDuration
+  jailduration_only_players: "Только игроки могут использовать эту команду!"
+  jailduration_no_permission: "У вас нет прав для использования этой команды!"
+
+  # Jailed List
+  jailed_list_only_players: "Только игроки могут использовать эту команду!"
+  jailed_list_no_permission: "У вас нет прав для использования этой команды."
+
+  # Jails
+  jails_only_players: "Только игроки могут использовать эту команду."
+  jails_no_permission: "У вас нет прав для использования этой команды."
+  jails_no_jails: "Не настроено ни одной тюрьмы."
+  jails_gui_name: "Название: "
+  jails_gui_coords: "Координаты:"
+  jails_gui_left_click: "ЛКМ для телепортации"
+  jails_left_click_only: "Пожалуйста, нажмите ЛКМ для телепортации."
+  jails_teleported: "Телепортирован в тюрьму: %s"
+  jails_location_not_found: "Местоположение тюрьмы не найдено!"
+
+  # SetJail
+  setjail_only_players: "Только игроки могут создавать тюрьмы!"
+  setjail_no_permission: "У вас нет прав для использования этой команды!"
+  setjail_usage: "Использование: /setjail <jail name>"
+  setjail_success: "Тюрьма %s создана на вашей текущей позиции!"
+
+  # JailSpawn
+  jail_spawn_no_permission: "У вас нет прав для использования этой команды."
+  jail_spawn_no_player_found: "Игрок не найден."
+  jail_spawn_invalid: "Некорректная точка спавна. Используйте 'world_spawn' или 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "Вы должны быть игроком, чтобы использовать эту команду!"
+  set_flag_no_permission: "У вас нет прав для использования этой команды!"
+
+  #  Unjail Cmd
+  "unjail_no_permission": "У вас нет прав освобождать игроков."
+  "unjail_usage": "Использование: /unjail <player>"
+  "unjail_player_not_found": "Игрок не найден или никогда не заходил на сервер."
+  "unjail_player_not_jailed": "%s не находится в тюрьме."
+  "unjail_confirmation_prompt": "Вы уверены, что хотите освободить %s?"
+  "unjail_ip_jailed_info": "Этот игрок в IP-тюрьме. Освобождение также удалит его IP из списка."
+  "unjail_confirm_hover": "Нажмите для подтверждения освобождения"
+  "unjail_cancel_hover": "Нажмите для отмены освобождения"
+  "unjail_success": "Игрок %s был освобожден."
+  "unjail_success_ip_removed": "Игрок %s освобожден, его IP удален из списка IP-тюрем."
+
+  # Unjail Confirmation
+  "confirmation_only_players": "Эту команду могут использовать только игроки."
+  "confirmation_usage": "Использование: /%s <token>"
+  "confirmation_invalid_token": "Некорректный или просроченный токен."
+  "confirmation_not_authorized": "У вас нет прав подтверждать это действие."
+  "unjail_player_no_longer_jailed": "Игрок больше не в тюрьме."
+  "unjail_broadcast": "{prefix} &c{player} был освобожден из тюрьмы!"
+  "unjail_operation_canceled": "Освобождение отменено."
+
+  # TempJail
+  tempjail_usage: "Использование: /tempjail <player> <jail name> <время (напр. 2d, 3h)> [reason]"
+  tempjail_no_permission: "У вас нет прав для использования этой команды!"
+  tempjail_player_not_found: "Игрок не найден."
+  tempjail_jail_not_found: "Тюрьма не найдена."
+  tempjail_invalid_duration: "Некорректная длительность."
+  tempjail_already_jailed: "%s уже в тюрьме!"
+
+  # IpJail
+  ipjail_no_permission: "У вас нет прав для использования этой команды."
+  ipjail_usage: "Использование: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_player_not_found: "Игрок не найден."
+  ipjail_already_jailed: "%s уже в тюрьме!"
+  ipjail_jail_not_found: "Тюрьма не найдена. Доступные тюрьмы:"
+  ipjail_ip_processing_failed: "Ошибка обработки IP-адреса."
+  ipjail_ip_processing_error: "Ошибка при обработке IP-адреса."
+  ipjail_success: "Игрок %s помещен в IP-тюрьму. Все аккаунты с этим IP также будут арестованы."
+  ipjail_notification: "Вы помещены в IP-тюрьму %s администратором %s. Причина: %s"
+  ipjail_associated_reason: "Связано с %s: %s"
+  ipjail_associated_notification: "Вы арестованы, потому что ваш IP связан с %s"
+  ipjail_default_reason: "Причина не указана"
+  ipjail_permanent_duration: "навсегда"
+  ipjail_seconds: "%s секунд(ы)"
+  ipjail_minutes: "%s минут(ы)"
+  ipjail_hours: "%s часов(ы)"
+  ipjail_days: "%s дней(я)"
+  ipjail_broadcast: "{prefix} &c{player} помещен в IP-тюрьму на {duration} администратором {jailer}. Причина: {reason}!"
+  ipjail_auto_jailed: "Вы автоматически арестованы, так как ваш IP связан с арестованным аккаунтом."
+  ipjail_ip_association: "IP связан с арестованным аккаунтом. Изначальная причина: "
+  ip_jail_autojail: "Вы автоматически арестованы из-за заблокированного IP-адреса."
+
+  # Version Command
+  version_checking: "Проверка последней версии..."
+  version_could_not_determine: "Не удалось определить последнюю версию."
+  version_latest: "У вас последняя версия: %s"
+  version_new_available: "Доступна новая версия: %s"
+  version_current: "Ваша версия: %s"
+  version_download: "Скачать последнюю версию: %s"
+  version_check_failed: "Ошибка проверки обновлений."
+
+  # Chat
+  chat: "Вы не можете писать в чат в тюрьме!"
+
+  # Command
+  command_usage: "Вы не можете использовать эту команду в тюрьме."
+
+  # Jail Restrictions
+  block_break: "Вы не можете ломать блоки в тюрьме!"
+  block_place: "Вы не можете ставить блоки в тюрьме!"
+  attack: "Вы не можете атаковать в тюрьме!"
+  vehicles: "Вы не можете садиться в транспорт в тюрьме!"
+  pearl: "Вы не можете использовать жемчуг края в тюрьме!"
+
+  # Client Sided jailed messages
+  perm_jail: "Вы посажены в тюрьму навсегда администратором: "
+  jail_end: "Ваш срок заключения окончен! Вы свободны."
+  temp_jail: "Вы временно посажены в тюрьму на "

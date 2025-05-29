@@ -2,7 +2,8 @@ package me.zitemaker.jail.confirmations;
 
 import me.zitemaker.jail.JailPlugin;
 import me.zitemaker.jail.commands.DelJailCommand;
-import org.bukkit.ChatColor;
+import me.zitemaker.jail.listeners.TranslationManager;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,24 +14,27 @@ import java.util.UUID;
 public class HandleDelJailCommand implements CommandExecutor {
     private final JailPlugin plugin;
     private final DelJailCommand delJailCommand;
+    private final TranslationManager translationManager;
+    private final String prefix;
 
     public HandleDelJailCommand(JailPlugin plugin, DelJailCommand delJailCommand) {
         this.plugin = plugin;
         this.delJailCommand = delJailCommand;
+        this.translationManager = plugin.getTranslationManager();
+        this.prefix = plugin.getPrefix();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-
         if (!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handledeljail_only_players"));
             return true;
         }
 
         Player player = (Player) sender;
 
         if (args.length != 1 || (!args[0].equalsIgnoreCase("yes") && !args[0].equalsIgnoreCase("no"))) {
-            player.sendMessage(ChatColor.RED + "Usage: " + ChatColor.YELLOW + "/handledeljail <yes|no>");
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handledeljail_usage"));
             return true;
         }
 
@@ -39,19 +43,21 @@ public class HandleDelJailCommand implements CommandExecutor {
         String jailName = delJailCommand.getPendingDeletions().get(playerUUID);
 
         if (jailName == null) {
-            player.sendMessage(ChatColor.RED + "No pending jail deletion found.");
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handledeljail_no_pending"));
             return true;
         }
 
         if (action.equals("yes")) {
             if (!plugin.getJails().containsKey(jailName)) {
-                player.sendMessage(ChatColor.RED + "Jail '" + ChatColor.YELLOW + jailName + ChatColor.RED + "' no longer exists.");
+                String msg = String.format(translationManager.getMessage("handledeljail_jail_not_found"), jailName);
+                player.sendMessage(prefix + " " + ChatColor.RED + msg);
             } else {
                 plugin.removeJail(jailName);
-                player.sendMessage(ChatColor.GREEN + "Jail " + ChatColor.YELLOW + jailName + ChatColor.GREEN + " has been successfully deleted.");
+                String msg = String.format(translationManager.getMessage("handledeljail_success"), jailName);
+                player.sendMessage(prefix + " " + ChatColor.GREEN + msg);
             }
         } else {
-            player.sendMessage(ChatColor.YELLOW + "Jail deletion canceled.");
+            player.sendMessage(prefix + " " + ChatColor.YELLOW + translationManager.getMessage("handledeljail_canceled"));
         }
 
         delJailCommand.getPendingDeletions().remove(playerUUID);

@@ -6,12 +6,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.entity.Player;
+import me.zitemaker.jail.listeners.TranslationManager;
 
 public class ChatListener implements Listener {
     private final JailPlugin plugin;
+    private final TranslationManager translationManager;
 
     public ChatListener(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
     }
 
     @EventHandler
@@ -19,16 +22,14 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
 
         if (plugin.isPlayerJailed(player.getUniqueId())) {
-            // check if chat is disabled for jailed players
             if (!plugin.getConfig().getBoolean("jail-restrictions.chat", false)) {
                 String prefix = ChatColor.translateAlternateColorCodes('&',
                         plugin.getConfig().getString("prefix", "&7[&eJailsPlus&7]"));
-                player.sendMessage(prefix + " " + ChatColor.RED + "You cannot chat while jailed!");
+                player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("chat"));
                 event.setCancelled(true);
                 return;
             }
 
-            // if chat is allowed give the jailed players jailed role
             if (plugin.getConfig().getBoolean("jail-settings.enable-jailed-role")) {
                 String jailedRole = plugin.getConfig().getString("jail-settings.jailed-role", "§c[Jailed]§r");
                 jailedRole = ChatColor.translateAlternateColorCodes('&', jailedRole);

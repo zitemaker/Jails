@@ -16,15 +16,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
+import me.zitemaker.jail.listeners.TranslationManager;
 
 import java.util.UUID;
 
 public class JailListeners implements Listener {
-
     private final JailPlugin plugin;
+    private final TranslationManager translationManager;
 
     public JailListeners(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
     }
 
     @EventHandler
@@ -33,7 +35,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.block-break", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot break blocks while in jail!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("block_break"));
         }
     }
 
@@ -43,7 +45,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.block-place", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot place blocks while in jail!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("block_place"));
         }
     }
 
@@ -55,7 +57,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.attack", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot attack while in jail!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("attack"));
         }
     }
 
@@ -67,7 +69,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot enter vehicles while in jail!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("vehicles"));
         }
     }
 
@@ -108,18 +110,18 @@ public class JailListeners implements Listener {
             long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
             if (endTime == -1) {
                 player.teleport(jailLocation);
-                player.sendMessage(ChatColor.RED + "You are permanently jailed by: " +
+                player.sendMessage(ChatColor.RED + translationManager.getMessage("perm_jail") +
                         ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") +
                         ChatColor.RED + ". Reason: " +
                         ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason"));
             } else if (System.currentTimeMillis() >= endTime) {
                 plugin.unjailPlayer(playerUUID);
-                player.sendMessage(ChatColor.GREEN + "Your jail time has ended. You are now free!");
+                player.sendMessage(ChatColor.GREEN + translationManager.getMessage("jail_end"));
             } else {
                 player.teleport(jailLocation);
                 long timeLeftMillis = endTime - System.currentTimeMillis();
                 String formattedTime = plugin.formatTimeLeft(timeLeftMillis);
-                player.sendMessage(ChatColor.RED + "You are temporarily jailed for " + formattedTime);
+                player.sendMessage(ChatColor.RED + translationManager.getMessage("temp_jail") + formattedTime);
             }
         }
     }
@@ -134,7 +136,7 @@ public class JailListeners implements Listener {
                 item.getType() == Material.ENDER_PEARL &&
                 !plugin.getConfig().getBoolean("jail-restrictions.ender-pearl", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + "You cannot use ender pearls while in jail!");
+            player.sendMessage(ChatColor.RED + translationManager.getMessage("pearl"));
         }
     }
 

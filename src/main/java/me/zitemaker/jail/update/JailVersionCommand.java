@@ -1,43 +1,67 @@
 package me.zitemaker.jail.update;
 
+import me.zitemaker.jail.JailPlugin;
+import me.zitemaker.jail.listeners.TranslationManager;
+import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class JailVersionCommand implements CommandExecutor {
-    private final JavaPlugin plugin;
+    private final JailPlugin plugin;
+    private final TranslationManager translationManager;
+    private final String prefix;
     private final UpdateChecker updateChecker;
     private static final int SPIGOTMC_RESOURCE_ID = 123183;
 
-    public JailVersionCommand(JavaPlugin plugin) {
+    public JailVersionCommand(JailPlugin plugin) {
         this.plugin = plugin;
+        this.translationManager = plugin.getTranslationManager();
+        this.prefix = plugin.getPrefix();
         this.updateChecker = new UpdateChecker(plugin);
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        sender.sendMessage("§7Checking for latest version...");
-        updateChecker.fetchRemoteVersion().thenAccept(remoteVersion -> {
-            String currentVersion = plugin.getDescription().getVersion().trim().replace("v", "");
-            if (remoteVersion == null) {
-                sender.sendMessage("§cCould not determine latest version.");
-                return;
-            }
-            String normalizedRemote = remoteVersion.trim().replace("v", "");
+        sender.sendMessage(prefix + " " + ChatColor.GRAY + translationManager.getMessage("version_checking"));
 
-            if (normalizedRemote.equals(currentVersion)) {
-                sender.sendMessage("§aYou are using the latest version: §b" + currentVersion);
-            } else {
-                sender.sendMessage("§eA new version is available: §b" + normalizedRemote);
-                sender.sendMessage("§eYou are using: §c" + currentVersion);
-                sender.sendMessage("§6Download the latest version: §nhttps://www.spigotmc.org/resources/" + SPIGOTMC_RESOURCE_ID + "/");
-            }
+        updateChecker.fetchRemoteVersion().thenAccept(remoteVersion -> {
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                String currentVersion = plugin.getDescription().getVersion().trim().replace("v", "");
+                if (remoteVersion == null) {
+                    sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("version_could_not_determine"));
+                    return;
+                }
+                String normalizedRemote = remoteVersion.trim().replace("v", "");
+
+                if (normalizedRemote.equals(currentVersion)) {
+                    String message = translationManager.getMessage("version_latest");
+                    String formatted = String.format(message, ChatColor.AQUA + currentVersion);
+                    sender.sendMessage(prefix + " " + ChatColor.GREEN + formatted);
+                } else {
+                    String newAvailable = translationManager.getMessage("version_new_available");
+                    String formattedNew = String.format(newAvailable, ChatColor.AQUA + normalizedRemote);
+                    sender.sendMessage(prefix + " " + ChatColor.YELLOW + formattedNew);
+
+                    String current = translationManager.getMessage("version_current");
+                    String formattedCurrent = String.format(current, ChatColor.RED + currentVersion);
+                    sender.sendMessage(prefix + " " + ChatColor.YELLOW + formattedCurrent);
+
+                    String url = "https://www.spigotmc.org/resources/" + SPIGOTMC_RESOURCE_ID + "/";
+                    String download = translationManager.getMessage("version_download");
+                    String formattedDownload = String.format(download, ChatColor.UNDERLINE + url);
+                    sender.sendMessage(prefix + " " + ChatColor.GOLD + formattedDownload);
+                }
+            });
         }).exceptionally(ex -> {
-            sender.sendMessage("§cFailed to check for updates.");
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("version_check_failed"));
+            });
             plugin.getLogger().warning("Update check failed: " + ex.getMessage());
             return null;
         });
+
         return true;
     }
 }

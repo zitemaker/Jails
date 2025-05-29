@@ -30,25 +30,25 @@ public class UnjailCommand implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!sender.hasPermission("jails.unjail")) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unjail_no_permission"));
             return true;
         }
 
         if (args.length < 1) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_usage"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unjail_usage"));
             return true;
         }
 
         org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
         if (target == null || !target.hasPlayedBefore()) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unjail_player_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unjail_player_not_found"));
             return true;
         }
 
         UUID targetUUID = target.getUniqueId();
         if (!plugin.isPlayerJailed(targetUUID)) {
             String msg = String.format(translationManager.getMessage("unjail_player_not_jailed"), target.getName());
-            sender.sendMessage(prefix + ChatColor.YELLOW + msg);
+            sender.sendMessage(prefix + " " + ChatColor.YELLOW + msg);
             return true;
         }
 
@@ -106,10 +106,10 @@ public class UnjailCommand implements CommandExecutor {
 
             if (wasIpJailed) {
                 String msg = String.format(translationManager.getMessage("unjail_success_ip_removed"), target.getName());
-                sender.sendMessage(prefix + ChatColor.GREEN + msg);
+                sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
             } else {
                 String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
-                sender.sendMessage(prefix + ChatColor.GREEN + msg);
+                sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
             }
         }
 

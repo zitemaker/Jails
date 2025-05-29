@@ -23,36 +23,36 @@ public class TempJailCommand implements CommandExecutor {
         String prefix = plugin.getPrefix();
 
         if (args.length < 3) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("tempjail_usage"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_usage"));
             return false;
         }
 
         if (!sender.hasPermission("jails.tempjail")) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("tempjail_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_no_permission"));
             return false;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("tempjail_player_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_player_not_found"));
             return false;
         }
 
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("tempjail_jail_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_jail_not_found"));
             return false;
         }
 
         long duration = JailPlugin.parseDuration(args[2]);
         if (duration <= 0) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("tempjail_invalid_duration"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_invalid_duration"));
             return false;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
             String msg = String.format(translationManager.getMessage("tempjail_already_jailed"), target.getName());
-            sender.sendMessage(prefix + ChatColor.RED + msg);
+            sender.sendMessage(prefix + " " + ChatColor.RED + msg);
             return false;
         }
 

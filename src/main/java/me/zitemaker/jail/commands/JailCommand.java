@@ -27,32 +27,32 @@ public class JailCommand implements CommandExecutor {
         String prefix = plugin.getPrefix();
 
         if (!sender.hasPermission("jails.jail")) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jail_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_no_permission"));
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jail_usage"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_usage"));
             return false;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jail_player_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_player_not_found"));
             return false;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
             String msg = String.format(translationManager.getMessage("jail_already_jailed"), target.getName());
-            sender.sendMessage(prefix + ChatColor.RED + msg);
+            sender.sendMessage(prefix + " " + ChatColor.RED + msg);
             return false;
         }
 
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jail_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_not_found"));
             plugin.getJails().forEach((name, location) ->
-                    sender.sendMessage(prefix + ChatColor.GOLD + "- " + name)
+                    sender.sendMessage(prefix + " " + ChatColor.GOLD + "- " + name)
             );
             return false;
         }
@@ -71,11 +71,11 @@ public class JailCommand implements CommandExecutor {
                 .replace("{reason}", reason);
 
         if (plugin.getConfig().getBoolean("general.broadcast-on-jail")) {
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            Bukkit.broadcastMessage(" " + ChatColor.translateAlternateColorCodes('&', broadcastMessage));
         }
 
         String notificationMsg = String.format(translationManager.getMessage("jail_notification"), sender.getName(), reason);
-        target.sendMessage(prefix + ChatColor.RED + notificationMsg);
+        target.sendMessage(prefix + " " + ChatColor.RED + notificationMsg);
         return true;
     }
 }

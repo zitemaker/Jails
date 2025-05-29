@@ -35,12 +35,12 @@ public class UnjailConfirmation implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("confirmation_only_players"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("confirmation_only_players"));
             return true;
         }
         if (args.length != 1) {
             String usage = String.format(translationManager.getMessage("confirmation_usage"), label);
-            sender.sendMessage(prefix + ChatColor.RED + usage);
+            sender.sendMessage(prefix + " " + ChatColor.RED + usage);
             return true;
         }
 
@@ -48,13 +48,13 @@ public class UnjailConfirmation implements CommandExecutor {
         UnjailRequest request = pendingConfirmations.get(token);
 
         if (request == null) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("confirmation_invalid_token"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("confirmation_invalid_token"));
             return true;
         }
 
         Player player = (Player) sender;
         if (!player.getUniqueId().equals(request.getSenderUUID())) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("confirmation_not_authorized"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("confirmation_not_authorized"));
             return true;
         }
 
@@ -62,7 +62,7 @@ public class UnjailConfirmation implements CommandExecutor {
             UUID targetUUID = request.getTargetUUID();
             boolean isIpJailed = request.isIpJailed();
             if (!plugin.isPlayerJailed(targetUUID)) {
-                sender.sendMessage(prefix + ChatColor.YELLOW + translationManager.getMessage("unjail_player_no_longer_jailed"));
+                sender.sendMessage(prefix + " " + ChatColor.YELLOW + translationManager.getMessage("unjail_player_no_longer_jailed"));
             } else {
                 plugin.unjailPlayer(targetUUID);
                 org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(targetUUID);
@@ -85,15 +85,15 @@ public class UnjailConfirmation implements CommandExecutor {
                 } else {
                     if (wasIpJailed) {
                         String msg = String.format(translationManager.getMessage("unjail_success_ip_removed"), target.getName());
-                        sender.sendMessage(prefix + ChatColor.GREEN + msg);
+                        sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
                     } else {
                         String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
-                        sender.sendMessage(prefix + ChatColor.GREEN + msg);
+                        sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
                     }
                 }
             }
         } else if (command.getName().equalsIgnoreCase("cancelunjail")) {
-            sender.sendMessage(prefix + ChatColor.YELLOW + translationManager.getMessage("unjail_operation_canceled"));
+            sender.sendMessage(prefix + " " + ChatColor.YELLOW + translationManager.getMessage("unjail_operation_canceled"));
         }
 
         pendingConfirmations.remove(token);

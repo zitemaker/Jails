@@ -1,5 +1,6 @@
 package me.zitemaker.jail.listeners;
 
+import me.zitemaker.jail.JailPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,12 +14,12 @@ import java.util.logging.Level;
 import java.util.Arrays;
 
 public class TranslationManager {
-    private final JavaPlugin plugin;
+    private final JailPlugin plugin;
     private final Map<String, String> messages;
     private String currentLanguage;
-    private final String[] supportedLanguages = {"en", "es"};
+    private final String[] supportedLanguages = {"en", "es", "fr", "ru", "de"};
 
-    public TranslationManager(JavaPlugin plugin) {
+    public TranslationManager(JailPlugin plugin) {
         this.plugin = plugin;
         this.messages = new HashMap<>();
 
@@ -30,6 +31,15 @@ public class TranslationManager {
                 break;
             case "spanish":
                 lang = "es";
+                break;
+            case "french":
+                lang = "fr";
+                break;
+            case "russian":
+                lang = "ru";
+                break;
+            case "german":
+                lang = "de";
                 break;
             default:
         }
@@ -72,7 +82,13 @@ public class TranslationManager {
         if (langFile.exists()) {
             plugin.getLogger().info("Found language file: " + langFile.getAbsolutePath());
             langConfig = YamlConfiguration.loadConfiguration(langFile);
-            YamlConfiguration.loadConfiguration(langFile);
+
+            InputStream defaultStream = plugin.getResource("lang/" + languageCode + ".yml");
+            if (defaultStream != null) {
+                YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(defaultStream, StandardCharsets.UTF_8));
+                langConfig.setDefaults(defaultConfig);
+            }
         } else {
             InputStream defaultStream = plugin.getResource("lang/" + languageCode + ".yml");
             if (defaultStream == null) {
@@ -142,6 +158,15 @@ public class TranslationManager {
                 break;
             case "spanish":
                 lang = "es";
+                break;
+            case "french":
+                lang = "fr";
+                break;
+            case "russian":
+                lang = "ru";
+                break;
+            case "german":
+                lang = "de";
                 break;
             default:
         }

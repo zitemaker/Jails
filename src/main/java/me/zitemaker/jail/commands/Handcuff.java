@@ -46,23 +46,23 @@ public class Handcuff implements CommandExecutor, Listener {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("handcuff_only_players"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handcuff_only_players"));
             return true;
         }
 
         if (!player.hasPermission("jails.handcuff")) {
-            player.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("handcuff_no_permission"));
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handcuff_no_permission"));
             return true;
         }
 
         if (args.length < 1) {
-            player.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("handcuff_usage"));
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handcuff_usage"));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            player.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("handcuff_player_not_found"));
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("handcuff_player_not_found"));
             return true;
         }
 
@@ -70,17 +70,17 @@ public class Handcuff implements CommandExecutor, Listener {
 
         if (plugin.isPlayerHandcuffed(targetUUID)) {
             String msg = String.format(translationManager.getMessage("handcuff_already_handcuffed"), target.getName());
-            player.sendMessage(prefix + ChatColor.YELLOW + msg);
+            player.sendMessage(prefix + " " + ChatColor.YELLOW + msg);
             return true;
         }
 
         plugin.handcuffPlayer(target);
 
         String successMsg = String.format(translationManager.getMessage("handcuff_success"), target.getName());
-        player.sendMessage(prefix + ChatColor.GREEN + successMsg);
+        player.sendMessage(prefix + " " + ChatColor.GREEN + successMsg);
 
         String notificationMsg = String.format(translationManager.getMessage("handcuff_notification"), player.getName());
-        target.sendMessage(prefix + ChatColor.RED + notificationMsg);
+        target.sendMessage(prefix + " " + ChatColor.RED + notificationMsg);
 
         String broadcastTemplate = translationManager.getMessage("handcuff_broadcast");
         String broadcastMessage = broadcastTemplate
@@ -96,7 +96,7 @@ public class Handcuff implements CommandExecutor, Listener {
         Player player = event.getPlayer();
         if (disableBlockBreak && plugin.isPlayerHandcuffed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("handcuff_no_break"));
+            player.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("handcuff_no_break"));
         }
     }
 
@@ -105,7 +105,7 @@ public class Handcuff implements CommandExecutor, Listener {
         Player player = event.getPlayer();
         if (disableBlockPlace && plugin.isPlayerHandcuffed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("handcuff_no_place"));
+            player.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("handcuff_no_place"));
         }
     }
 
@@ -114,7 +114,7 @@ public class Handcuff implements CommandExecutor, Listener {
         if (disablePvp && event.getDamager() instanceof Player player
                 && plugin.isPlayerHandcuffed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("handcuff_no_pvp"));
+            player.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("handcuff_no_pvp"));
         }
     }
 
@@ -126,7 +126,7 @@ public class Handcuff implements CommandExecutor, Listener {
         if (disableItemUse && item != null && !item.getType().isBlock()
                 && plugin.isPlayerHandcuffed(player.getUniqueId())) {
             event.setCancelled(true);
-            player.sendMessage(plugin.getPrefix() + ChatColor.RED + translationManager.getMessage("handcuff_no_item_use"));
+            player.sendMessage(plugin.getPrefix() + " " + ChatColor.RED + translationManager.getMessage("handcuff_no_item_use"));
         }
     }
 }

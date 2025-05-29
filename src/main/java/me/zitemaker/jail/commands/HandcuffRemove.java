@@ -29,25 +29,25 @@ public class HandcuffRemove implements CommandExecutor {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unhandcuff_only_players"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_only_players"));
             return true;
         }
 
         Player remover = (Player) sender;
 
         if (!remover.hasPermission("jails.unhandcuff")) {
-            remover.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unhandcuff_no_permission"));
+            remover.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_no_permission"));
             return false;
         }
 
         if (args.length < 1) {
-            remover.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unhandcuff_usage"));
+            remover.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_usage"));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
-            remover.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("unhandcuff_player_not_found"));
+            remover.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_player_not_found"));
             return true;
         }
 
@@ -55,7 +55,7 @@ public class HandcuffRemove implements CommandExecutor {
 
         if (!plugin.isPlayerHandcuffed(targetUUID)) {
             String msg = String.format(translationManager.getMessage("unhandcuff_not_handcuffed"), target.getName());
-            remover.sendMessage(prefix + ChatColor.RED + msg);
+            remover.sendMessage(prefix + " " + ChatColor.RED + msg);
             return true;
         }
 
@@ -65,9 +65,9 @@ public class HandcuffRemove implements CommandExecutor {
         plugin.unHandcuffPlayer(targetUUID);
 
         String successMsg = String.format(translationManager.getMessage("unhandcuff_success"), target.getName());
-        remover.sendMessage(prefix + ChatColor.GREEN + successMsg);
+        remover.sendMessage(prefix + " " + ChatColor.GREEN + successMsg);
 
-        target.sendMessage(prefix + ChatColor.GREEN + translationManager.getMessage("unhandcuff_notification"));
+        target.sendMessage(prefix + " " + ChatColor.GREEN + translationManager.getMessage("unhandcuff_notification"));
 
         return true;
     }

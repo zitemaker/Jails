@@ -12,18 +12,20 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DelJailCommand implements CommandExecutor {
     private final JailPlugin plugin;
-    private final Map<UUID, String> pendingDeletions = new ConcurrentHashMap<>();
     private final TranslationManager translationManager;
+    private final String prefix;
+    private final Map<UUID, String> pendingDeletions = new ConcurrentHashMap<>();
 
     public DelJailCommand(JailPlugin plugin) {
         this.plugin = plugin;
         this.translationManager = plugin.getTranslationManager();
+        this.prefix = plugin.getPrefix();
     }
 
     public Map<UUID, String> getPendingDeletions() {
@@ -32,82 +34,58 @@ public class DelJailCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        String prefix = plugin.getPrefix();
-
         if (!sender.hasPermission("jails.deljail")) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("djc_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("deljail_no_permission"));
             return true;
         }
 
         if (args.length != 1) {
-            sender.sendMessage(prefix + ChatColor.RED + "Usage: " + ChatColor.YELLOW + "/deljail <jail name>");
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("deljail_usage"));
             return true;
         }
 
         String jailName = args[0].toLowerCase();
 
         if (!plugin.getJails().containsKey(jailName)) {
-            String msg = String.format(translationManager.getMessage("djc_not_exist"), jailName);
+            String msg = String.format(translationManager.getMessage("deljail_jail_not_found"), jailName);
             sender.sendMessage(prefix + ChatColor.RED + msg);
             return true;
         }
 
         if (!(sender instanceof Player)) {
             plugin.removeJail(jailName);
-            String msg = String.format(translationManager.getMessage("djc_deleted"), jailName);
-            sender.sendMessage(prefix + ChatColor.GREEN + msg);
+            String msg = String.format(translationManager.getMessage("deljail_success"), jailName);
+            sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
             return true;
         }
 
         Player player = (Player) sender;
         pendingDeletions.put(player.getUniqueId(), jailName);
 
-        TextComponent message = new TextComponent(
-                String.format(translationManager.getMessage("djc_confirm"), jailName)
-        );
+        String prompt = String.format(translationManager.getMessage("deljail_confirmation_prompt"), jailName);
+        TextComponent message = new TextComponent(prompt);
         message.setColor(ChatColor.GOLD);
 
-        TextComponent yes = new TextComponent(
-                translationManager.getMessage("djc_confirm_label")
-        );
+        TextComponent yes = new TextComponent(" [CONFIRM] ");
         yes.setColor(ChatColor.GREEN);
-        yes.setClickEvent(new ClickEvent(
-                ClickEvent.Action.RUN_COMMAND,
-                "/handledeljail yes"
-        ));
-        yes.setHoverEvent(new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder(
-                        translationManager.getMessage("djc_hover_confirm")
-                ).color(ChatColor.GREEN).create()
-        ));
+        yes.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/handledeljail yes"));
+        yes.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder(translationManager.getMessage("deljail_confirm_hover"))
+                        .color(ChatColor.GREEN).create()));
 
-        TextComponent no = new TextComponent(
-                translationManager.getMessage("djc_cancel_label")
-        );
+        TextComponent no = new TextComponent("[CANCEL] ");
         no.setColor(ChatColor.RED);
-        no.setClickEvent(new ClickEvent(
-                ClickEvent.Action.RUN_COMMAND,
-                "/handledeljail no"
-        ));
-        no.setHoverEvent(new HoverEvent(
-                HoverEvent.Action.SHOW_TEXT,
-                new ComponentBuilder(
-                        translationManager.getMessage("djc_hover_cancel")
-                ).color(ChatColor.RED).create()
-        ));
+        no.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/handledeljail no"));
+        no.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                new ComponentBuilder(translationManager.getMessage("deljail_cancel_hover"))
+                        .color(ChatColor.RED).create()));
 
         TextComponent spacing = new TextComponent("     ");
 
         player.spigot().sendMessage(new ComponentBuilder("")
-                .append(message)
-                .append("\n")
-                .append(spacing)
-                .append(yes)
-                .append("  ")
-                .append(no)
-                .create()
-        );
+                .append(message).append("\n")
+                .append(spacing).append(yes).append("  ").append(no)
+                .create());
 
         return true;
     }

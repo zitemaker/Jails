@@ -32,18 +32,18 @@ public class JailsCommand implements CommandExecutor, Listener {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jails_only_players"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jails_only_players"));
             return true;
         }
 
         if (!player.hasPermission(PERMISSION)) {
-            player.sendMessage(prefix + ChatColor.RED + translationManager.getMessage("jails_no_permission"));
+            player.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jails_no_permission"));
             return true;
         }
 
         Map<String, Location> jails = plugin.getJails();
         if (jails.isEmpty()) {
-            player.sendMessage(prefix + ChatColor.YELLOW + translationManager.getMessage("jails_no_jails"));
+            player.sendMessage(prefix + " " + ChatColor.YELLOW + translationManager.getMessage("jails_no_jails"));
             return true;
         }
 

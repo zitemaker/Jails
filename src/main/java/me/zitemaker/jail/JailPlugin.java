@@ -47,6 +47,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
+import org.bstats.bukkit.Metrics;
 
 public class JailPlugin extends JavaPlugin {
     private File jailedPlayersFile;
@@ -133,6 +134,9 @@ public class JailPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
+
+        // Bstats
+        new Metrics(this, 25128);
 
         // update checker
         UpdateChecker updateChecker = new UpdateChecker(this);

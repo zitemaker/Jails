@@ -61,8 +61,11 @@ messages:
   jail_notification: "Has sido encarcelado permanentemente por %s. Razón: %s"
 
   # JailDuration
-  jailduration_only_players: "¡Solo jugadores pueden usar este comando!"
-  jailduration_no_permission: "¡No tienes permiso para usar este comando!"
+  permanently_jailed: "{player} está encarcelado permanentemente."
+  temporarily_jailed: "A {player} le queda {time} en la cárcel."
+  jail_time_expired: "{player} ya no está en la cárcel."
+  invalid_player: "¡Jugador {player} no encontrado!"
+  not_jailed: "¡El jugador {player} no está encarcelado!"
 
   # Jailed List
   jailed_list_only_players: "¡Solo jugadores pueden usar este comando!"
@@ -116,12 +119,12 @@ messages:
   "unjail_operation_canceled": "Operación de liberación cancelada."
 
   # TempJail
-  tempjail_usage: "Uso: /tempjail <player> <jail name> <duración (ej: 2d, 3h)> [reason]"
-  tempjail_no_permission: "¡No tienes permiso para usar este comando!"
-  tempjail_player_not_found: "Jugador no encontrado."
-  tempjail_jail_not_found: "Cárcel no encontrada."
-  tempjail_invalid_duration: "Duración inválida."
-  tempjail_already_jailed: "¡%s ya está encarcelado!"
+  tempjail_invalid_duration: "¡Duración inválida!"
+  tempjail_success_jailer: "{player} ha sido encarcelado temporalmente por {duration}."
+  tempjail_success_target: "Has sido encarcelado por {duration} por {jailer}. Razón: {reason}!"
+  invalid_jail: "¡Cárcel {jail} no encontrada!"
+  already_jailed: "¡El jugador {player} ya está encarcelado!"
+  jail_broadcast_message: "{player} ha sido encarcelado por {duration}. Razón: {reason}!"
 
   # IpJail
   ipjail_no_permission: "No tienes permiso para usar este comando."

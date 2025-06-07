@@ -1,7 +1,6 @@
 package me.zitemaker.jail.commands;
 
 import me.zitemaker.jail.JailPlugin;
-import me.zitemaker.jail.listeners.TranslationManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -9,13 +8,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Arrays;
+
 public class TempJailCommand implements CommandExecutor {
     private final JailPlugin plugin;
-    private final TranslationManager translationManager;
 
     public TempJailCommand(JailPlugin plugin) {
         this.plugin = plugin;
-        this.translationManager = plugin.getTranslationManager();
     }
 
     @Override
@@ -23,41 +22,68 @@ public class TempJailCommand implements CommandExecutor {
         String prefix = plugin.getPrefix();
 
         if (args.length < 3) {
-            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_usage"));
-            return false;
-        }
-
-        if (!sender.hasPermission("jails.tempjail")) {
-            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_no_permission"));
+            sender.sendMessage(prefix + " " + ChatColor.RED + "Usage: /tempjail <player> <jail name> <duration (e.g., 2d, 3h)> [reason]");
             return false;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
+        String targetName = args[0];
         if (target == null) {
-            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_player_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED +
+                    plugin.getTranslationManager().getMessage("invalid_player").replace("{player}", targetName));
             return false;
         }
 
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
-            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_jail_not_found"));
+            sender.sendMessage(prefix + " " + ChatColor.RED +
+                    plugin.getTranslationManager().getMessage("invalid_jail").replace("{jail}", jailName));
             return false;
         }
 
         long duration = JailPlugin.parseDuration(args[2]);
         if (duration <= 0) {
-            sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("tempjail_invalid_duration"));
+            sender.sendMessage(prefix + " " + ChatColor.RED +
+                    plugin.getTranslationManager().getMessage("tempjail_invalid_duration"));
             return false;
         }
 
-        if (plugin.isPlayerJailed(target.getUniqueId())) {
-            String msg = String.format(translationManager.getMessage("tempjail_already_jailed"), target.getName());
-            sender.sendMessage(prefix + " " + ChatColor.RED + msg);
+        if(plugin.isPlayerJailed(target.getUniqueId())){
+            sender.sendMessage(prefix + " " + ChatColor.RED +
+                    plugin.getTranslationManager().getMessage("already_jailed").replace("{player}", target.getName()));
             return false;
         }
 
-        Player player = (Player) sender;
-        plugin.sendJailsPlusMessage(player);
+        String reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 3, args.length)) : "No reason provided";
+        long endTime = System.currentTimeMillis() + duration;
+        String formattedTime = plugin.formatTimeLeft(duration);
+
+        plugin.jailPlayer(target, jailName, endTime, reason, sender.getName());
+        plugin.scheduleUnjail(target, duration);
+
+        target.sendMessage(prefix + " " + ChatColor.YELLOW +
+                plugin.getTranslationManager().getMessage("tempjail_success_target")
+                        .replace("{duration}", formattedTime)
+                        .replace("{jailer}", sender.getName())
+                        .replace("{reason}", reason));
+
+        String messageTemplate = plugin.getTranslationManager().getMessage("jail_broadcast_message");
+        String broadcastMessage = messageTemplate
+                .replace("{prefix}", prefix)
+                .replace("{player}", target.getName())
+                .replace("{duration}", formattedTime)
+                .replace("{jailer}", sender.getName())
+                .replace("{reason}", reason);
+
+        if(plugin.getConfig().getBoolean("general.broadcast-on-jail")){
+            Bukkit.broadcastMessage(ChatColor.GREEN + " " + ChatColor.translateAlternateColorCodes('&', prefix + " " + broadcastMessage));
+        } else {
+            sender.sendMessage(prefix + " " + ChatColor.GREEN +
+                    plugin.getTranslationManager().getMessage("tempjail_success_jailer")
+                            .replace("{player}", target.getName())
+                            .replace("{duration}", formattedTime));
+        }
+
         return true;
     }
 }

@@ -71,7 +71,7 @@ public class JailCommand implements CommandExecutor {
                 .replace("{reason}", reason);
 
         if (plugin.getConfig().getBoolean("general.broadcast-on-jail")) {
-            Bukkit.broadcastMessage(" " + ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            Bukkit.broadcastMessage(ChatColor.GREEN + " " + ChatColor.translateAlternateColorCodes('&', broadcastMessage));
         }
 
         String notificationMsg = String.format(translationManager.getMessage("jail_notification"), sender.getName(), reason);

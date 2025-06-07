@@ -1,5 +1,5 @@
 name: Jails
-version: '1.2'
+version: '1.3'
 main: me.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker
@@ -58,21 +58,6 @@ commands:
     usage: /jailspawn <player> <world_spawn | original_location>
     permission: jails.spawn
 
-  jailsetflag:
-    description: Set a jail flag using WorldEdit positions.
-    usage: /jailsetflag
-    permission: jails.setflag
-
-  jaildelflag:
-    description: Delete a flag for a jail area.
-    usage: /jaildelflag <flagName>
-    permission: jails.delflag
-
-  jailflaglist:
-    description: Open a GUI to list all flags.
-    usage: /jailflaglist
-    permission: jails.flaglist
-
   handcuff:
     description: Handcuff a player to restrict their movement.
     usage: /handcuff <player>
@@ -102,9 +87,3 @@ commands:
     description: Check the current version of Jails plugin
     usage: /jailversion
     permission: jails.version
-
-  ip-jail:
-    description: Jail a player and all accounts with the same IP address
-    usage: /ip-jail <player> <jail name> [reason] [duration]
-    permission: jails.ipjail
-    default: op

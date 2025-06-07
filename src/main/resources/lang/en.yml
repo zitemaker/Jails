@@ -60,9 +60,12 @@ messages:
   jail_broadcast: "{prefix} &c{player} has been jailed for {duration} by {jailer}. Reason: {reason}!"
   jail_notification: "You have been jailed permanently by %s. Reason: %s"
 
-  # JailDuration
-  jailduration_only_players: "Only players can use this command!"
-  jailduration_no_permission: "You do not have permission to use this command!"
+  # Jail duration
+  permanently_jailed: "{player} is permanently jailed."
+  temporarily_jailed: "{player} has {time} remaining in jail."
+  jail_time_expired: "{player} is no longer in jail."
+  invalid_player: "Player {player} not found!"
+  not_jailed: "Player {player} is not jailed!"
 
   # Jailed List
   jailed_list_only_players: "Only players can use this command!"
@@ -115,36 +118,13 @@ messages:
   "unjail_broadcast": "{prefix} &c{player} has been unjailed."
   "unjail_operation_canceled": "Unjail operation canceled."
 
-  # TempJail
-  tempjail_usage: "Usage: /tempjail <player> <jail name> <duration (e.g., 2d, 3h)> [reason]"
-  tempjail_no_permission: "You do not have permission to use this command!"
-  tempjail_player_not_found: "Player not found."
-  tempjail_jail_not_found: "Jail not found."
-  tempjail_invalid_duration: "Invalid duration."
-  tempjail_already_jailed: "%s is already jailed!"
-
-  # IpJail
-  ipjail_no_permission: "You do not have permission to use this command."
-  ipjail_usage: "Usage: /ip-jail <player> <jail name> [reason] [duration]"
-  ipjail_player_not_found: "Player not found."
-  ipjail_already_jailed: "%s is already jailed!"
-  ipjail_jail_not_found: "Jail not found. Available jails:"
-  ipjail_ip_processing_failed: "Failed to process IP address."
-  ipjail_ip_processing_error: "Error processing IP address."
-  ipjail_success: "Player %s IP-jailed successfully. Any accounts sharing this IP will also be jailed."
-  ipjail_notification: "You have been IP-jailed %s by %s. Reason: %s"
-  ipjail_associated_reason: "Associated with %s: %s"
-  ipjail_associated_notification: "You have been jailed because your IP is associated with %s"
-  ipjail_default_reason: "No reason provided"
-  ipjail_permanent_duration: "permanently"
-  ipjail_seconds: "%s second(s)"
-  ipjail_minutes: "%s minute(s)"
-  ipjail_hours: "%s hour(s)"
-  ipjail_days: "%s day(s)"
-  ipjail_broadcast: "{prefix} &c{player} has been IP-jailed for {duration} by {jailer}. Reason: {reason}!"
-  ipjail_auto_jailed: "You have been automatically jailed because your IP address is associated with a jailed account."
-  ipjail_ip_association: "IP associated with jailed account. Original reason: "
-  ip_jail_autojail: "You've been auto-jailed due to a jailed IP address."
+  # Temporarily jailing
+  tempjail_invalid_duration: "Invalid duration!"
+  tempjail_success_jailer: "{player} has been jailed temporarily for {duration}."
+  tempjail_success_target: "You have been jailed for {duration} by {jailer}. Reason: {reason}!"
+  invalid_jail: "Jail {jail} not found!"
+  already_jailed: "Player {player} is already jailed!"
+  jail_broadcast_message: "{player} has been jailed for {duration}. Reason: {reason}!"
 
   # Version Command
   version_checking: "Checking for latest version..."

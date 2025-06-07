@@ -61,8 +61,11 @@ messages:
   jail_notification: "Вы были посажены в тюрьму навсегда администратором %s. Причина: %s"
 
   # JailDuration
-  jailduration_only_players: "Только игроки могут использовать эту команду!"
-  jailduration_no_permission: "У вас нет прав для использования этой команды!"
+  permanently_jailed: "{player} отбывает пожизненное заключение."
+  temporarily_jailed: "У {player} осталось {time} в тюрьме."
+  jail_time_expired: "{player} больше не находится в тюрьме."
+  invalid_player: "Игрок {player} не найден!"
+  not_jailed: "Игрок {player} не находится в тюрьме!"
 
   # Jailed List
   jailed_list_only_players: "Только игроки могут использовать эту команду!"
@@ -116,12 +119,12 @@ messages:
   "unjail_operation_canceled": "Освобождение отменено."
 
   # TempJail
-  tempjail_usage: "Использование: /tempjail <player> <jail name> <время (напр. 2d, 3h)> [reason]"
-  tempjail_no_permission: "У вас нет прав для использования этой команды!"
-  tempjail_player_not_found: "Игрок не найден."
-  tempjail_jail_not_found: "Тюрьма не найдена."
-  tempjail_invalid_duration: "Некорректная длительность."
-  tempjail_already_jailed: "%s уже в тюрьме!"
+  tempjail_invalid_duration: "Неверная длительность!"
+  tempjail_success_jailer: "{player} был временно заключён в тюрьму на {duration}."
+  tempjail_success_target: "Вы были заключены в тюрьму на {duration} по решению {jailer}. Причина: {reason}!"
+  invalid_jail: "Тюрьма {jail} не найдена!"
+  already_jailed: "Игрок {player} уже находится в тюрьме!"
+  jail_broadcast_message: "{player} был заключён в тюрьму на {duration}. Причина: {reason}!"
 
   # IpJail
   ipjail_no_permission: "У вас нет прав для использования этой команды."

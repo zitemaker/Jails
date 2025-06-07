@@ -61,8 +61,11 @@ messages:
   jail_notification: "Vous avez été emprisonné de façon permanente par %s. Raison : %s"
 
   # JailDuration
-  jailduration_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
-  jailduration_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
+  permanently_jailed: "{player} est emprisonné de manière permanente."
+  temporarily_jailed: "{player} a encore {time} de prison."
+  jail_time_expired: "{player} n'est plus en prison."
+  invalid_player: "Joueur {player} introuvable !"
+  not_jailed: "Le joueur {player} n'est pas en prison !"
 
   # Jailed List
   jailed_list_only_players: "Seuls les joueurs peuvent utiliser cette commande !"
@@ -116,12 +119,12 @@ messages:
   "unjail_operation_canceled": "Libération annulée."
 
   # TempJail
-  tempjail_usage: "Utilisation : /tempjail <player> <jail name> <durée (ex: 2d, 3h)> [reason]"
-  tempjail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande !"
-  tempjail_player_not_found: "Joueur introuvable."
-  tempjail_jail_not_found: "Prison introuvable."
-  tempjail_invalid_duration: "Durée invalide."
-  tempjail_already_jailed: "%s est déjà en prison !"
+  tempjail_invalid_duration: "Durée invalide !"
+  tempjail_success_jailer: "{player} a été emprisonné temporairement pendant {duration}."
+  tempjail_success_target: "Vous avez été emprisonné pendant {duration} par {jailer}. Raison : {reason} !"
+  invalid_jail: "Prison {jail} introuvable !"
+  already_jailed: "Le joueur {player} est déjà en prison !"
+  jail_broadcast_message: "{player} a été emprisonné pendant {duration}. Raison : {reason} !"
 
   # IpJail
   ipjail_no_permission: "Vous n'avez pas la permission d'utiliser cette commande."

@@ -56,26 +56,11 @@ public class UnjailCommand implements CommandExecutor {
             Player player = (Player) sender;
             UUID senderUUID = player.getUniqueId();
 
-            boolean isIpJailed = false;
-            Player targetPlayer = target.getPlayer();
-            if (targetPlayer != null && targetPlayer.isOnline()) {
-                String hashedIp = plugin.getPlayerHashedIp(targetPlayer);
-                isIpJailed = plugin.isIpJailed(hashedIp);
-            }
-
-            String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID, isIpJailed);
+            String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID);
 
             String prompt = String.format(translationManager.getMessage("unjail_confirmation_prompt"), target.getName());
             TextComponent message = new TextComponent(prompt);
             message.setColor(ChatColor.GOLD);
-
-            if (isIpJailed) {
-                String ipInfoText = translationManager.getMessage("unjail_ip_jailed_info");
-                TextComponent ipInfo = new TextComponent(ipInfoText);
-                ipInfo.setColor(ChatColor.LIGHT_PURPLE);
-                message.addExtra("\n");
-                message.addExtra(ipInfo);
-            }
 
             TextComponent yes = new TextComponent(" [CONFIRM] ");
             yes.setColor(ChatColor.GREEN);
@@ -97,20 +82,8 @@ public class UnjailCommand implements CommandExecutor {
                     .create());
         } else {
             plugin.unjailPlayer(targetUUID);
-
-            Player targetPlayer = target.getPlayer();
-            boolean wasIpJailed = false;
-            if (targetPlayer != null && targetPlayer.isOnline()) {
-                wasIpJailed = plugin.removePlayerIpJail(targetPlayer);
-            }
-
-            if (wasIpJailed) {
-                String msg = String.format(translationManager.getMessage("unjail_success_ip_removed"), target.getName());
-                sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
-            } else {
-                String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
-                sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
-            }
+            String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
+            sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
         }
 
         return true;

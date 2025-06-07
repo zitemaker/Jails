@@ -24,26 +24,20 @@ import me.zitemaker.jail.listeners.*;
 import me.zitemaker.jail.update.*;
 import me.zitemaker.jail.utils.*;
 import me.zitemaker.jail.confirmations.*;
-import me.zitemaker.jail.ipjail.*;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -53,30 +47,20 @@ public class JailPlugin extends JavaPlugin {
     private File jailedPlayersFile;
     private FileConfiguration jailedPlayersConfig;
 
-    private Map<String, JailedIpInfo> jailedIps = new HashMap<>();
-    private File ipJailFile;
-    private FileConfiguration ipJailConfig;
     private File jailLocationsFile;
     private FileConfiguration jailLocationsConfig;
     public List<String> blockedCommands;
-    private final Map<UUID, Long> alertCooldown = new HashMap<>();
     private File handcuffedPlayersFile;
     private FileConfiguration handcuffedPlayersConfig;
-    private static final long COOLDOWN_TIME = 5000;
 
-    private final Map<UUID, String> playerSpawnPreferences = new HashMap<>();
-    private final Set<UUID> alreadyAlerted = new HashSet<>();
-    private final Set<String> notifiedInsecureJails = new HashSet<>();
     public String prefix;
     public boolean alertMessages;
     public String targetSkin;
     public double handcuffSpeed;
     public String purchaseLink = "https://builtbybit.com/resources/jails.62499/";
     public UnjailConfirmation unjailConfirmation;
-    private Console console = new SpigotConsole();;
-    private PlatformLogger platformLogger;
+    private Console console = new SpigotConsole();
     private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
-    private final boolean loggerColor = true;
     private TranslationManager translationManager;
     private Handcuff handcuffInstance;
 
@@ -88,57 +72,66 @@ public class JailPlugin extends JavaPlugin {
         loadJails();
         loadJailedPlayers();
         loadHandcuffedPlayers();
-        setupIpJailFile();
-        loadJailedIps();
 
         translationManager = new TranslationManager(this);
-
         saveConfig();
 
         unjailConfirmation = new UnjailConfirmation(this);
-        getCommand("unjail").setExecutor(new UnjailCommand(this));
-        getCommand("confirmunjail").setExecutor(unjailConfirmation);
-        getCommand("cancelunjail").setExecutor(unjailConfirmation);
+
+        registerCommand("unjail", new UnjailCommand(this));
+        registerCommand("confirmunjail", unjailConfirmation);
+        registerCommand("cancelunjail", unjailConfirmation);
 
         DelJailCommand delJailCommand = new DelJailCommand(this);
-        getCommand("deljail").setExecutor(delJailCommand);
-        getCommand("handledeljail").setExecutor(new HandleDelJailCommand(this, delJailCommand));
+        registerCommand("deljail", delJailCommand);
+        registerCommand("handledeljail", new HandleDelJailCommand(this, delJailCommand));
 
         this.handcuffInstance = new Handcuff(this);
-        getCommand("handcuff").setExecutor(handcuffInstance);
-        getCommand("unhandcuff").setExecutor(new HandcuffRemove(this));
+        registerCommand("handcuff", handcuffInstance);
+        registerCommand("unhandcuff", new HandcuffRemove(this));
 
-        getCommand("setjail").setExecutor(new JailSetCommand(this));
-        getCommand("jail").setExecutor(new JailCommand(this));
-        getCommand("jail").setTabCompleter(new JailTabCompleter(this));
-        getCommand("deljail").setTabCompleter(new DelJailTabCompleter(this));
-        getCommand("jails").setExecutor(new JailsCommand(this));
-        getCommand("jailduration").setExecutor(new JailDurationCommand(this));
-        getCommand("jailspawn").setExecutor(new JailSpawnCommand(this));
-        getCommand("jailspawn").setTabCompleter(new JailSpawnTabCompleter());
-        getCommand("jailsreload").setExecutor(new ConfigReload(this));
-        getCommand("jailshelp").setExecutor(new JailsHelpCommand());
-        getCommand("tempjail").setExecutor(new TempJailCommand(this));
-        getCommand("jailsetflag").setExecutor(new SetFlag(this));
-        getCommand("jaildelflag").setExecutor(new DelFlag(this));
-        getCommand("jailflaglist").setExecutor(new FlagList(this));
-        getCommand("jailversion").setExecutor(new JailVersionCommand(this));
-        getCommand("ip-jail").setExecutor(new IPJailCommand(this));
-        getCommand("ip-jail").setTabCompleter(new IPJailTabCompleter(this));
+        registerCommand("setjail", new JailSetCommand(this));
 
-        JailListCommand jailListCommand = new JailListCommand(this);
-        getCommand("jailed").setExecutor(jailListCommand);
-        getCommand("jailed").setTabCompleter(jailListCommand);
+        PluginCommand jailCmd = getCommand("jail");
+        if (jailCmd != null) {
+            jailCmd.setExecutor(new JailCommand(this));
+            jailCmd.setTabCompleter(new JailTabCompleter(this));
+        } else {
+            getLogger().warning("Command 'jail' not found in plugin.yml");
+        }
+
+        PluginCommand delJailCmd = getCommand("deljail");
+        if (delJailCmd != null) {
+            delJailCmd.setTabCompleter(new DelJailTabCompleter(this));
+        }
+
+        registerCommand("jails", new JailsCommand(this));
+        registerCommand("jailduration", new JailDurationCommand(this));
+
+        PluginCommand jailSpawnCmd = getCommand("jailspawn");
+        if (jailSpawnCmd != null) {
+            jailSpawnCmd.setExecutor(new JailSpawnCommand(this));
+            jailSpawnCmd.setTabCompleter(new JailSpawnTabCompleter());
+        }
+
+        PluginCommand TempJailCmd = getCommand("tempjail");
+        if (TempJailCmd !=null) {
+            TempJailCmd.setExecutor(new TempJailCommand(this));
+            TempJailCmd.setTabCompleter(new TempJailTabCompleter(this));
+        }
+
+        registerCommand("jailsreload", new ConfigReload(this));
+        registerCommand("jailshelp", new JailsHelpCommand());
+        registerCommand("jailversion", new JailVersionCommand(this));
 
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
         getServer().getPluginManager().registerEvents(new JailListeners(this), this);
         getServer().getPluginManager().registerEvents(new CommandBlocker(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
 
         // Bstats
         new Metrics(this, 25128);
 
-        // update checker
+        // Update checker
         UpdateChecker updateChecker = new UpdateChecker(this);
         if (getConfig().getBoolean("check-updates", true)) {
             updateChecker.fetchRemoteVersion()
@@ -182,12 +175,20 @@ public class JailPlugin extends JavaPlugin {
         logger.info("");
     }
 
+    private void registerCommand(String name, CommandExecutor executor) {
+        PluginCommand cmd = getCommand(name);
+        if (cmd != null) {
+            cmd.setExecutor(executor);
+        } else {
+            getLogger().warning("Command not found in plugin.yml: " + name);
+        }
+    }
+
     @Override
     public void onDisable() {
         saveJailedPlayersConfig();
         saveJailLocationsConfig();
         saveHandcuffedPlayersConfig();
-        saveJailedIps();
         logger.info("Jails has been disabled!");
     }
 
@@ -254,10 +255,6 @@ public class JailPlugin extends JavaPlugin {
         }
     }
 
-    public FileConfiguration getJailLocationsConfig() {
-        return jailLocationsConfig;
-    }
-
     public void saveJailLocationsConfig() {
         if (jailLocationsConfig != null && jailLocationsFile != null) {
             try {
@@ -304,11 +301,6 @@ public class JailPlugin extends JavaPlugin {
         saveHandcuffedPlayersConfig();
 
         logger.info("Player with UUID " + playerUUID + " has been unhandcuffed.");
-    }
-
-
-    public FileConfiguration getHandcuffedPlayersConfig() {
-        return handcuffedPlayersConfig;
     }
 
     public void saveHandcuffedPlayersConfig() {
@@ -443,18 +435,10 @@ public class JailPlugin extends JavaPlugin {
         return jailedPlayersConfig.contains(playerUUID.toString());
     }
 
-    public String getPlayerJail(UUID playerUUID) {
-        return jailedPlayersConfig.getString(playerUUID.toString());
-    }
-
     public void loadJailedPlayers() {
         for (String key : jailedPlayersConfig.getKeys(false)) {
             logger.info("Loaded jailed player: " + key);
         }
-    }
-
-    public Map<String, JailedIpInfo> getJailedIps() {
-        return jailedIps;
     }
 
     public FileConfiguration getJailedPlayersConfig() {
@@ -467,212 +451,6 @@ public class JailPlugin extends JavaPlugin {
         } catch (IOException e) {
             logger.severe("Could not save jailed_players.yml!");
         }
-    }
-
-    // --- ip-jail ---
-
-    public class JailedIpInfo {
-        private final String jailName;
-        private final long releaseTime;
-        private final String reason;
-        private final String jailer;
-
-        public JailedIpInfo(String jailName, long releaseTime, String reason, String jailer) {
-            this.jailName = jailName;
-            this.releaseTime = releaseTime;
-            this.reason = reason;
-            this.jailer = jailer;
-        }
-
-        public String getJailName() {
-            return jailName;
-        }
-
-        public long getReleaseTime() {
-            return releaseTime;
-        }
-
-        public String getReason() {
-            return reason;
-        }
-
-        public String getJailer() {
-            return jailer;
-        }
-
-        public boolean isExpired() {
-            return releaseTime > 0 && System.currentTimeMillis() > releaseTime;
-        }
-    }
-
-    private void setupIpJailFile() {
-        ipJailFile = new File(getDataFolder(), "ip-jail-data.yml");
-
-        if (!ipJailFile.exists()) {
-            try {
-                ipJailFile.createNewFile();
-            } catch (IOException e) {
-                getLogger().severe("Could not create ip-jail-data.yml file: " + e.getMessage());
-            }
-        }
-
-        ipJailConfig = YamlConfiguration.loadConfiguration(ipJailFile);
-
-        if (!ipJailConfig.contains("security.ip-salt")) {
-            ipJailConfig.set("security.ip-salt", generateRandomSalt());
-            saveIpJailConfig();
-        }
-    }
-
-    private void saveIpJailConfig() {
-        try {
-            ipJailConfig.save(ipJailFile);
-        } catch (IOException e) {
-            getLogger().severe("Could not save ip-jail-data.yml file: " + e.getMessage());
-        }
-    }
-
-    public String hashIpAddress(String ip) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            String saltedIp = ip + ipJailConfig.getString("security.ip-salt", "default-salt");
-            byte[] hash = digest.digest(saltedIp.getBytes(StandardCharsets.UTF_8));
-
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString().toUpperCase();
-        } catch (NoSuchAlgorithmException e) {
-            getLogger().severe("Failed to hash IP address: " + e.getMessage());
-            return null;
-        }
-    }
-
-    public void addJailedIp(String hashedIp, String jailName, long duration, String reason, String jailer) {
-        long releaseTime = duration > 0 ? System.currentTimeMillis() + duration : -1;
-        jailedIps.put(hashedIp, new JailedIpInfo(jailName, releaseTime, reason, jailer));
-        saveJailedIps();
-    }
-
-    public void removeJailedIp(String hashedIp) {
-        jailedIps.remove(hashedIp);
-        saveJailedIps();
-    }
-
-    public boolean removePlayerIpJail(Player player) {
-        String playerIp = player.getAddress().getAddress().getHostAddress();
-        String hashedIp = hashIpAddress(playerIp);
-
-        if (isIpJailed(hashedIp)) {
-            removeJailedIp(hashedIp);
-            return true;
-        }
-        return false;
-    }
-
-    public String getPlayerHashedIp(Player player) {
-        String playerIp = player.getAddress().getAddress().getHostAddress();
-        return hashIpAddress(playerIp);
-    }
-
-    public boolean isIpJailed(String hashedIp) {
-        if (!jailedIps.containsKey(hashedIp)) {
-            return false;
-        }
-
-        JailedIpInfo info = jailedIps.get(hashedIp);
-        if (info.isExpired()) {
-            removeJailedIp(hashedIp);
-            return false;
-        }
-
-        return true;
-    }
-
-    public JailedIpInfo getJailedIpInfo(String hashedIp) {
-        if (!isIpJailed(hashedIp)) {
-            return null;
-        }
-        return jailedIps.get(hashedIp);
-    }
-
-    public void saveJailedIps() {
-        if (ipJailConfig == null) {
-            getLogger().warning("Cannot save jailed IPs: ipJailConfig is null.");
-            return;
-        }
-
-        jailedIps.entrySet().removeIf(entry -> entry.getValue().isExpired());
-
-        ipJailConfig.set("jailed-ips", null);
-
-        for (Map.Entry<String, JailedIpInfo> entry : jailedIps.entrySet()) {
-            String path = "jailed-ips." + entry.getKey();
-            JailedIpInfo info = entry.getValue();
-
-            ipJailConfig.set(path + ".jail-name", info.getJailName());
-            ipJailConfig.set(path + ".release-time", info.getReleaseTime());
-            ipJailConfig.set(path + ".reason", info.getReason());
-            ipJailConfig.set(path + ".jailer", info.getJailer());
-        }
-
-        saveIpJailConfig();
-    }
-
-    public void loadJailedIps() {
-        jailedIps.clear();
-
-        if (ipJailConfig.getConfigurationSection("jailed-ips") == null) {
-            return;
-        }
-
-        for (String hashedIp : ipJailConfig.getConfigurationSection("jailed-ips").getKeys(false)) {
-            String path = "jailed-ips." + hashedIp;
-
-            String jailName = ipJailConfig.getString(path + ".jail-name");
-            long releaseTime = ipJailConfig.getLong(path + ".release-time");
-            String reason = ipJailConfig.getString(path + ".reason");
-            String jailer = ipJailConfig.getString(path + ".jailer");
-
-            if (releaseTime > 0 && System.currentTimeMillis() > releaseTime) {
-                continue;
-            }
-
-            jailedIps.put(hashedIp, new JailedIpInfo(jailName, releaseTime, reason, jailer));
-        }
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        String playerIp = player.getAddress().getAddress().getHostAddress();
-        String hashedIp = hashIpAddress(playerIp);
-
-        if (isIpJailed(hashedIp) && !isPlayerJailed(player.getUniqueId())) {
-            JailedIpInfo info = getJailedIpInfo(hashedIp);
-            long remainingTime = info.getReleaseTime() > 0 ? info.getReleaseTime() - System.currentTimeMillis() : -1;
-
-            jailPlayer(player, info.getJailName(), remainingTime,
-                    "IP associated with a jailed account. Original reason: " + info.getReason(),
-                    "SYSTEM (IP-Jail)");
-
-            player.sendMessage(getPrefix() + " " + translationManager.getMessage("ipjail_auto_jailed"));
-        }
-    }
-
-    private String generateRandomSalt() {
-        StringBuilder sb = new StringBuilder();
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        for (int i = 0; i < 16; i++) {
-            int index = (int) (Math.random() * chars.length());
-            sb.append(chars.charAt(index));
-        }
-        return sb.toString();
     }
 
     // --- File Management ---

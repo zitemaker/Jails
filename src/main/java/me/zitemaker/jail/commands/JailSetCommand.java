@@ -33,7 +33,7 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
 
         if (!sender.hasPermission("jails.setjail")) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("setjail_no_permission"));
-            return false;
+            return true;
         }
 
         if (args.length != 1) {

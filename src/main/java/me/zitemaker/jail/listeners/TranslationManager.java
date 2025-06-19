@@ -17,6 +17,7 @@ public class TranslationManager {
     private final JailPlugin plugin;
     private final Map<String, String> messages;
     private String currentLanguage;
+    private final Map<String, String> defaultMessages = new HashMap<>();
     private final String[] supportedLanguages = {"en", "es", "fr", "ru", "de"};
 
     public TranslationManager(JailPlugin plugin) {
@@ -74,6 +75,7 @@ public class TranslationManager {
 
     public void loadLanguage(String languageCode) {
         messages.clear();
+        defaultMessages.clear();
         plugin.getLogger().info("Loading language: " + languageCode);
 
         File langFile = new File(plugin.getDataFolder(), "lang/" + languageCode + ".yml");
@@ -104,9 +106,10 @@ public class TranslationManager {
         try {
             loadMessagesRecursively(langConfig, "messages");
             currentLanguage = languageCode;
-            plugin.getLogger().info("Loaded " + messages.size() + " translations for " + languageCode);
+            plugin.getLogger().info("Loaded " + messages.size() + " translations for '" + languageCode + "'");
+            checkMissingTranslations();
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Error loading language " + languageCode, e);
+            plugin.getLogger().log(Level.SEVERE, "Error loading language '" + languageCode + "'", e);
             if (!languageCode.equals("en")) {
                 loadLanguage("en");
             }
@@ -177,6 +180,25 @@ public class TranslationManager {
             plugin.getLogger().warning("Invalid language in config: " + lang + ". Defaulting to English.");
         }
         loadLanguage(currentLanguage);
+    }
+
+    public void restoreLanguageFiles() {
+        for (String lang : supportedLanguages) {
+            File langFile = new File(plugin.getDataFolder(), "lang/" + lang + ".yml");
+
+            if (!langFile.exists() || langFile.length() == 0) {
+                plugin.getLogger().info("Restoring missing or empty language file: " + lang + ".yml");
+                plugin.saveResource("lang/" + lang + ".yml", true);
+            }
+        }
+    }
+
+    public void checkMissingTranslations() {
+        for (String key : defaultMessages.keySet()) {
+            if (!messages.containsKey(key)) {
+                plugin.getLogger().warning("Missing translation for '" + currentLanguage + "' key: " + key);
+            }
+        }
     }
 
     public boolean setLanguage(String languageCode) {

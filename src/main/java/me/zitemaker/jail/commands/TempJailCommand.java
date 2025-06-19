@@ -23,7 +23,7 @@ public class TempJailCommand implements CommandExecutor {
 
         if (args.length < 3) {
             sender.sendMessage(prefix + " " + ChatColor.RED + "Usage: /tempjail <player> <jail name> <duration (e.g., 2d, 3h)> [reason]");
-            return false;
+            return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
@@ -31,27 +31,27 @@ public class TempJailCommand implements CommandExecutor {
         if (target == null) {
             sender.sendMessage(prefix + " " + ChatColor.RED +
                     plugin.getTranslationManager().getMessage("invalid_player").replace("{player}", targetName));
-            return false;
+            return true;
         }
 
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
             sender.sendMessage(prefix + " " + ChatColor.RED +
                     plugin.getTranslationManager().getMessage("invalid_jail").replace("{jail}", jailName));
-            return false;
+            return true;
         }
 
         long duration = JailPlugin.parseDuration(args[2]);
         if (duration <= 0) {
             sender.sendMessage(prefix + " " + ChatColor.RED +
                     plugin.getTranslationManager().getMessage("tempjail_invalid_duration"));
-            return false;
+            return true;
         }
 
         if(plugin.isPlayerJailed(target.getUniqueId())){
             sender.sendMessage(prefix + " " + ChatColor.RED +
                     plugin.getTranslationManager().getMessage("already_jailed").replace("{player}", target.getName()));
-            return false;
+            return true;
         }
 
         String reason = args.length > 3 ? String.join(" ", Arrays.copyOfRange(args, 3, args.length)) : "No reason provided";

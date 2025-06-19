@@ -29,11 +29,11 @@ public class JailDurationCommand implements CommandExecutor {
             if (target == null) {
                 sender.sendMessage(prefix + " " + ChatColor.RED +
                         plugin.getTranslationManager().getMessage("invalid_player").replace("{player}", targetName));
-                return false;
+                return true;
             }
         } else {
             sender.sendMessage(prefix + " " + ChatColor.RED + "Usage: /jailduration [player]");
-            return false;
+            return true;
         }
 
         FileConfiguration config = plugin.getJailedPlayersConfig();

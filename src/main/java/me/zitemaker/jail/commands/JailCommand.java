@@ -33,19 +33,19 @@ public class JailCommand implements CommandExecutor {
 
         if (args.length < 2) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_usage"));
-            return false;
+            return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);
         if (target == null) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("jail_player_not_found"));
-            return false;
+            return true;
         }
 
         if (plugin.isPlayerJailed(target.getUniqueId())) {
             String msg = String.format(translationManager.getMessage("jail_already_jailed"), target.getName());
             sender.sendMessage(prefix + " " + ChatColor.RED + msg);
-            return false;
+            return true;
         }
 
         String jailName = args[1];
@@ -54,7 +54,7 @@ public class JailCommand implements CommandExecutor {
             plugin.getJails().forEach((name, location) ->
                     sender.sendMessage(prefix + " " + ChatColor.GOLD + "- " + name)
             );
-            return false;
+            return true;
         }
 
         String reason = args.length > 2 ? String.join(" ", Arrays.copyOfRange(args, 2, args.length)) : translationManager.getMessage("jail_default_reason");

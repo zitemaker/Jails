@@ -1,5 +1,5 @@
 messages:
-  #  Config reload
+  # Config reload
   config_reload_success: "Jails configuration reloaded!"
   cr_no_permission: "You do not have permission to use this command."
 
@@ -7,7 +7,7 @@ messages:
   df_player_check: "You must be a player to use this command!"
   df_no_permission: "You do not have permission to use this command!"
 
-  # DelJailCmd
+  # DelJail Command
   deljail_no_permission: "You don't have permission to delete jails."
   deljail_usage: "Usage: /deljail <jail_name>"
   deljail_jail_not_found: "Jail '%s' does not exist."
@@ -97,7 +97,7 @@ messages:
   set_flag_only_players: "You must be a player to use this command!"
   set_flag_no_permission: "You do not have permission to use this command!"
 
-  # Unjail Cmd
+  # Unjail Command
   unjail_no_permission: "You do not have permission to unjail players."
   unjail_usage: "Usage: /unjail <player>"
   unjail_player_not_found: "Player not found or has never joined the server."

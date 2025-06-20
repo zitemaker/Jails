@@ -1,5 +1,5 @@
 messages:
-  #  Config reload
+  # Config reload
   config_reload_success: "Gefängniskonfiguration neu geladen!"
   cr_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden."
 
@@ -7,7 +7,7 @@ messages:
   df_player_check: "Du musst ein Spieler sein, um diesen Befehl zu nutzen!"
   df_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
 
-  # DelJailCmd
+  # DelJail Command
   deljail_no_permission: "Du hast keine Berechtigung, Gefängnisse zu löschen."
   deljail_usage: "Verwendung: /deljail <jail_name>"
   deljail_jail_not_found: "Gefängnis '%s' existiert nicht."
@@ -98,7 +98,7 @@ messages:
   set_flag_only_players: "Du musst ein Spieler sein, um diesen Befehl zu nutzen!"
   set_flag_no_permission: "Du hast keine Berechtigung, diesen Befehl zu verwenden!"
 
-  # Unjail Cmd
+  # Unjail Command
   unjail_no_permission: "Du hast keine Berechtigung, Spieler zu entlassen."
   unjail_usage: "Verwendung: /unjail <player>"
   unjail_player_not_found: "Spieler nicht gefunden oder nie beigetreten."

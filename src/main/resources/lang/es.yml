@@ -1,5 +1,5 @@
 messages:
-  #  Config reload
+  # Config reload
   config_reload_success: "¡Configuración de cárceles recargada!"
   cr_no_permission: "No tienes permiso para usar este comando."
 
@@ -7,7 +7,7 @@ messages:
   df_player_check: "¡Debes ser un jugador para usar este comando!"
   df_no_permission: "No tienes permiso para usar este comando."
 
-  # DelJailCmd
+  # DelJail Command
   deljail_no_permission: "No tienes permiso para eliminar cárceles."
   deljail_usage: "Uso: /deljail <jail_name>"
   deljail_jail_not_found: "La cárcel '%s' no existe."
@@ -97,7 +97,7 @@ messages:
   set_flag_only_players: "¡Debes ser un jugador para usar este comando!"
   set_flag_no_permission: "¡No tienes permiso para usar este comando!"
 
-  # Unjail Cmd
+  # Unjail Command
   unjail_no_permission: "No tienes permiso para liberar jugadores."
   unjail_usage: "Uso: /unjail <player>"
   unjail_player_not_found: "Jugador no encontrado o nunca se ha conectado."

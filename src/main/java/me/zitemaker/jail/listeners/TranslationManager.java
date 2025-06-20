@@ -1,6 +1,7 @@
 package me.zitemaker.jail.listeners;
 
 import me.zitemaker.jail.JailPlugin;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
@@ -147,7 +148,7 @@ public class TranslationManager {
 
         if (message == null) {
             plugin.getLogger().warning("Missing translation key: " + fullKey);
-            return "Missing translation key: " + fullKey;
+            return ChatColor.RED + "Missing translation key: " + fullKey  + "\nDelete .yml and reload to restore defaults";
         }
         return message;
     }

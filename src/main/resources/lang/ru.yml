@@ -1,5 +1,5 @@
 messages:
-  #  Config reload
+  # Config reload
   config_reload_success: "Конфигурация тюрем перезагружена!"
   cr_no_permission: "У вас нет прав для использования этой команды."
 
@@ -7,7 +7,7 @@ messages:
   df_player_check: "Вы должны быть игроком, чтобы использовать эту команду!"
   df_no_permission: "У вас нет прав для использования этой команды!"
 
-  # DelJailCmd
+  # DelJail Command
   deljail_no_permission: "У вас нет прав на удаление тюрем."
   deljail_usage: "Использование: /deljail <jail_name>"
   deljail_jail_not_found: "Тюрьма '%s' не существует."
@@ -97,7 +97,7 @@ messages:
   set_flag_only_players: "Вы должны быть игроком, чтобы использовать эту команду!"
   set_flag_no_permission: "У вас нет прав для использования этой команды!"
 
-  # Unjail Cmd
+  # Unjail Command
   unjail_no_permission: "У вас нет прав освобождать игроков."
   unjail_usage: "Использование: /unjail <player>"
   unjail_player_not_found: "Игрок не найден или никогда не заходил на сервер."

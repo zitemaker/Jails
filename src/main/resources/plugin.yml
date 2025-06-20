@@ -1,6 +1,6 @@
 name: Jails
-version: '1.3'
-main: me.zitemaker.jail.JailPlugin
+version: ${project.version}
+main: com.zitemaker.jail.JailPlugin
 api-version: '1.21'
 author: zitemaker
 softdepend: [SkinsRestorer]

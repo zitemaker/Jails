@@ -12,6 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ public class UnjailCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!sender.hasPermission("jails.unjail")) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unjail_no_permission"));
             return true;
@@ -40,7 +41,7 @@ public class UnjailCommand implements CommandExecutor {
         }
 
         org.bukkit.OfflinePlayer target = Bukkit.getOfflinePlayer(args[0]);
-        if (target == null || !target.hasPlayedBefore()) {
+        if (!target.hasPlayedBefore()) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unjail_player_not_found"));
             return true;
         }
@@ -52,8 +53,7 @@ public class UnjailCommand implements CommandExecutor {
             return true;
         }
 
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             UUID senderUUID = player.getUniqueId();
 
             String token = plugin.unjailConfirmation.generateToken(senderUUID, targetUUID);

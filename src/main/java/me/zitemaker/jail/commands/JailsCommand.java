@@ -9,6 +9,7 @@ import org.bukkit.event.*;
 import org.bukkit.event.inventory.*;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ public class JailsCommand implements CommandExecutor, Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player player)) {
@@ -53,7 +54,7 @@ public class JailsCommand implements CommandExecutor, Listener {
             String name = entry.getKey();
             Location loc = entry.getValue();
 
-            Material icon = switch (loc.getWorld().getEnvironment()) {
+            Material icon = switch (Objects.requireNonNull(loc.getWorld()).getEnvironment()) {
                 case NETHER -> Material.NETHERRACK;
                 case THE_END -> Material.END_STONE;
                 default -> Material.GRASS_BLOCK;

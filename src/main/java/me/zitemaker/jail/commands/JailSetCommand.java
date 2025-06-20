@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +24,10 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         String prefix = plugin.getPrefix();
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("setjail_only_players"));
             return true;
         }
@@ -41,7 +42,6 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        Player player = (Player) sender;
         Location location = player.getLocation();
         String jailName = args[0].toLowerCase();
 
@@ -52,7 +52,7 @@ public class JailSetCommand implements CommandExecutor, TabCompleter {
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, @NotNull Command command, @NotNull String alias, String[] args) {
         if (!sender.hasPermission("jails.setjail")) {
             return new ArrayList<>();
         }

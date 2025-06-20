@@ -10,7 +10,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.attribute.Attribute;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class HandcuffRemove implements CommandExecutor {
@@ -21,23 +23,21 @@ public class HandcuffRemove implements CommandExecutor {
     public HandcuffRemove(JailPlugin plugin) {
         this.plugin = plugin;
         this.translationManager = plugin.getTranslationManager();
-        plugin.getCommand("unhandcuff").setExecutor(this);
+        Objects.requireNonNull(plugin.getCommand("unhandcuff")).setExecutor(this);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         String prefix = plugin.getPrefix();
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player remover)) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_only_players"));
             return true;
         }
 
-        Player remover = (Player) sender;
-
         if (!remover.hasPermission("jails.unhandcuff")) {
             remover.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("unhandcuff_no_permission"));
-            return false;
+            return true;
         }
 
         if (args.length < 1) {
@@ -60,7 +60,7 @@ public class HandcuffRemove implements CommandExecutor {
         }
 
         target.removePotionEffect(PotionEffectType.SLOW);
-        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+        Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.1);
 
         plugin.unHandcuffPlayer(targetUUID);
 

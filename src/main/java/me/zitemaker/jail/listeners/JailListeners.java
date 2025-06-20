@@ -16,7 +16,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
-import me.zitemaker.jail.listeners.TranslationManager;
 
 import java.util.UUID;
 
@@ -51,9 +50,8 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent event) {
-        if (!(event.getDamager() instanceof Player)) return;
+        if (!(event.getDamager() instanceof Player player)) return;
 
-        Player player = (Player) event.getDamager();
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.attack", false)) {
             event.setCancelled(true);
@@ -63,9 +61,8 @@ public class JailListeners implements Listener {
 
     @EventHandler
     public void onVehicleEnter(VehicleEnterEvent event) {
-        if (!(event.getEntered() instanceof Player)) return;
+        if (!(event.getEntered() instanceof Player player)) return;
 
-        Player player = (Player) event.getEntered();
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jail-restrictions.vehicle-ride", false)) {
             event.setCancelled(true);
@@ -77,7 +74,7 @@ public class JailListeners implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (plugin.isPlayerJailed(player.getUniqueId())) {
-            String jailName = plugin.getJailedPlayersConfig().getString(player.getUniqueId().toString() + ".jailName");
+            String jailName = plugin.getJailedPlayersConfig().getString(player.getUniqueId() + ".jailName");
             if (jailName != null) {
                 Location jailLoc = plugin.getJail(jailName);
                 if (jailLoc != null) {
@@ -94,7 +91,7 @@ public class JailListeners implements Listener {
 
         if (plugin.isPlayerJailed(playerUUID)) {
             FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
-            String jailName = jailedPlayersConfig.getString(playerUUID.toString() + ".jailName");
+            String jailName = jailedPlayersConfig.getString(playerUUID + ".jailName");
 
             if (jailName == null) {
                 player.sendMessage(ChatColor.RED + "Jail data missing! Contact an admin.");
@@ -107,13 +104,13 @@ public class JailListeners implements Listener {
                 return;
             }
 
-            long endTime = jailedPlayersConfig.getLong(playerUUID.toString() + ".endTime");
+            long endTime = jailedPlayersConfig.getLong(playerUUID + ".endTime");
             if (endTime == -1) {
                 player.teleport(jailLocation);
                 player.sendMessage(ChatColor.RED + translationManager.getMessage("perm_jail") +
-                        ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID.toString() + ".jailer") +
+                        ChatColor.GOLD + jailedPlayersConfig.getString(playerUUID + ".jailer") +
                         ChatColor.RED + ". Reason: " +
-                        ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID.toString() + ".reason"));
+                        ChatColor.YELLOW + jailedPlayersConfig.getString(playerUUID + ".reason"));
             } else if (System.currentTimeMillis() >= endTime) {
                 plugin.unjailPlayer(playerUUID);
                 player.sendMessage(ChatColor.GREEN + translationManager.getMessage("jail_end"));
@@ -145,7 +142,7 @@ public class JailListeners implements Listener {
         Player player = event.getPlayer();
         if(plugin.isPlayerJailed(player.getUniqueId())){
             FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
-            String jailName = jailedPlayersConfig.getString(player.getUniqueId().toString() + ".jailName");
+            String jailName = jailedPlayersConfig.getString(player.getUniqueId() + ".jailName");
             Location jailLocation = plugin.getJail(jailName);
             player.teleport(jailLocation);
 

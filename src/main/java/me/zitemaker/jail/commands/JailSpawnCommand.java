@@ -8,6 +8,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import me.zitemaker.jail.listeners.TranslationManager;
+import org.jetbrains.annotations.NotNull;
 
 public class JailSpawnCommand implements CommandExecutor {
     private final JailPlugin plugin;
@@ -19,7 +20,7 @@ public class JailSpawnCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!sender.hasPermission("jails.spawn")) {
             sender.sendMessage(ChatColor.RED + translationManager.getMessage("jail_spawn_no_permission"));
             return true;
@@ -27,7 +28,7 @@ public class JailSpawnCommand implements CommandExecutor {
 
         if (args.length != 2) {
             sender.sendMessage(ChatColor.RED + "Usage: /jailspawn <player> <world_spawn/original_location>");
-            return false;
+            return true;
         }
 
         Player target = Bukkit.getPlayer(args[0]);

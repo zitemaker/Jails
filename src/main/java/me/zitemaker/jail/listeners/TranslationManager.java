@@ -2,7 +2,6 @@ package me.zitemaker.jail.listeners;
 
 import me.zitemaker.jail.JailPlugin;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.InputStream;
@@ -10,6 +9,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.Arrays;
 
@@ -53,7 +53,7 @@ public class TranslationManager {
 
         File langDir = new File(plugin.getDataFolder(), "lang");
         if (!langDir.exists()) {
-            langDir.mkdirs();
+            boolean ignored = langDir.mkdirs();
         }
 
         saveDefaultLanguageFiles();
@@ -118,7 +118,7 @@ public class TranslationManager {
 
     private void loadMessagesRecursively(YamlConfiguration config, String path) {
         if (config.isConfigurationSection(path)) {
-            for (String key : config.getConfigurationSection(path).getKeys(false)) {
+            for (String key : Objects.requireNonNull(config.getConfigurationSection(path)).getKeys(false)) {
                 String newPath = path + "." + key;
                 if (config.isConfigurationSection(newPath)) {
                     loadMessagesRecursively(config, newPath);

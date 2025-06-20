@@ -59,8 +59,8 @@ public class JailPlugin extends JavaPlugin {
     public double handcuffSpeed;
     public String purchaseLink = "https://builtbybit.com/resources/jails.62499/";
     public UnjailConfirmation unjailConfirmation;
-    private Console console = new SpigotConsole();
-    private Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
+    private final Console console = new SpigotConsole();
+    private final Logger logger = new Logger(new JavaPlatformLogger(console, getLogger()), true);
     private TranslationManager translationManager;
     private Handcuff handcuffInstance;
 
@@ -209,7 +209,7 @@ public class JailPlugin extends JavaPlugin {
 
     // ------ Jail Locations ------
     public void addJail(String name, Location location) {
-        jailLocationsConfig.set(name + ".world", location.getWorld().getName());
+        jailLocationsConfig.set(name + ".world", Objects.requireNonNull(location.getWorld()).getName());
         jailLocationsConfig.set(name + ".x", location.getX());
         jailLocationsConfig.set(name + ".y", location.getY());
         jailLocationsConfig.set(name + ".z", location.getZ());
@@ -230,7 +230,7 @@ public class JailPlugin extends JavaPlugin {
         float yaw = (float) jailLocationsConfig.getDouble(name + ".yaw");
         float pitch = (float) jailLocationsConfig.getDouble(name + ".pitch");
 
-        return new Location(Bukkit.getWorld(worldName), x, y, z, yaw, pitch);
+        return new Location(Bukkit.getWorld(Objects.requireNonNull(worldName)), x, y, z, yaw, pitch);
     }
 
     public Map<String, Location> getJails() {
@@ -261,7 +261,9 @@ public class JailPlugin extends JavaPlugin {
                 jailLocationsConfig.save(jailLocationsFile);
             } catch (IOException e) {
                 getLogger().severe("Could not save jail_locations.yml!");
-                e.printStackTrace();
+                for (StackTraceElement element : e.getStackTrace()) {
+                    getLogger().warning(element.toString());
+                }
             }
         } else {
             getLogger().warning("Skipped saving jail_locations.yml because config or file is null.");
@@ -273,7 +275,7 @@ public class JailPlugin extends JavaPlugin {
         UUID playerUUID = player.getUniqueId();
         String basePath = playerUUID.toString();
         if(getConfig().getBoolean("handcuff-settings.slow-movement")){
-            player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(handcuffSpeed);
+            Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(handcuffSpeed);
         }
         if(getConfig().getBoolean("handcuff-settings.blindness")){
             player.addPotionEffect(new PotionEffect(PotionEffectType.DARKNESS, Integer.MAX_VALUE, 1, true, false));
@@ -294,8 +296,8 @@ public class JailPlugin extends JavaPlugin {
 
         Player target = Bukkit.getPlayer(playerUUID);
 
-        target.removePotionEffect(PotionEffectType.DARKNESS);
-        target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED).setBaseValue(0.1);
+        Objects.requireNonNull(target).removePotionEffect(PotionEffectType.DARKNESS);
+        Objects.requireNonNull(target.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)).setBaseValue(0.1);
 
         handcuffedPlayersConfig.set(playerUUID.toString(), null);
         saveHandcuffedPlayersConfig();
@@ -309,7 +311,9 @@ public class JailPlugin extends JavaPlugin {
                 handcuffedPlayersConfig.save(handcuffedPlayersFile);
             } catch (IOException e) {
                 getLogger().severe("Could not save handcuffed_players.yml");
-                e.printStackTrace();
+                for (StackTraceElement element : e.getStackTrace()) {
+                    getLogger().warning(element.toString());
+                }
             }
         } else {
             getLogger().warning("Skipped saving handcuffed_players.yml because config or file is null.");
@@ -336,7 +340,7 @@ public class JailPlugin extends JavaPlugin {
         String basePath = playerUUID.toString();
 
         Location originalLocation = player.getLocation();
-        jailedPlayersConfig.set(basePath + ".original.world", originalLocation.getWorld().getName());
+        jailedPlayersConfig.set(basePath + ".original.world", Objects.requireNonNull(originalLocation.getWorld()).getName());
         jailedPlayersConfig.set(basePath + ".original.x", originalLocation.getX());
         jailedPlayersConfig.set(basePath + ".original.y", originalLocation.getY());
         jailedPlayersConfig.set(basePath + ".original.z", originalLocation.getZ());
@@ -381,7 +385,7 @@ public class JailPlugin extends JavaPlugin {
         String spawnOption = getPlayerSpawnOption(playerUUID);
 
         if (player == null) {
-            jailedPlayersConfig.set(playerUUID.toString() + ".unjailed", true);
+            jailedPlayersConfig.set(playerUUID + ".unjailed", true);
             saveJailedPlayersConfig();
             logger.info("Offline player has been marked as unjailed.");
             return;
@@ -392,7 +396,7 @@ public class JailPlugin extends JavaPlugin {
             Location worldSpawn = player.getWorld().getSpawnLocation();
             player.teleport(worldSpawn);
         } else if ("original_location".equals(spawnOption)) {
-            teleportToOriginalLocation(player, playerUUID.toString() + ".original");
+            teleportToOriginalLocation(player, playerUUID + ".original");
         } else {
             Location worldSpawn = player.getWorld().getSpawnLocation();
             player.teleport(worldSpawn);
@@ -469,7 +473,7 @@ public class JailPlugin extends JavaPlugin {
         handcuffedPlayersFile = new File(getDataFolder(), "handcuffed_players.yml");
         if (!handcuffedPlayersFile.exists()) {
             try {
-                handcuffedPlayersFile.createNewFile();
+                boolean ignoreReturn = handcuffedPlayersFile.createNewFile();
             } catch (IOException e) {
                 logger.severe("Could not create handcuffed_players.yml!");
             }
@@ -541,30 +545,28 @@ public class JailPlugin extends JavaPlugin {
     public void sendJailsPlusMessage(Player sender) {
         String language = getConfig().getString("language", "en").toLowerCase();
         String accessMessage;
-        String purchaseMessage;
-        switch (language) {
-            case "de":
+        String purchaseMessage = switch (language) {
+            case "de" -> {
                 accessMessage = "Du versuchst, eine Funktion zu nutzen, die nur in Jails+ verfügbar ist.";
-                purchaseMessage = "Klicke hier, um Jails+ zu kaufen!";
-                break;
-            case "es":
+                yield "Klicke hier, um Jails+ zu kaufen!";
+            }
+            case "es" -> {
                 accessMessage = "Estás intentando usar una función que solo está disponible en Jails+.";
-                purchaseMessage = "¡Haz clic aquí para comprar Jails+!";
-                break;
-            case "fr":
+                yield "¡Haz clic aquí para comprar Jails+!";
+            }
+            case "fr" -> {
                 accessMessage = "Vous essayez d'utiliser une fonctionnalité disponible uniquement dans Jails+.";
-                purchaseMessage = "Cliquez ici pour acheter Jails+ !";
-                break;
-            case "ru":
+                yield "Cliquez ici pour acheter Jails+ !";
+            }
+            case "ru" -> {
                 accessMessage = "Вы пытаетесь использовать функцию, доступную только в Jails+.";
-                purchaseMessage = "Нажмите здесь, чтобы купить Jails+!";
-                break;
-            case "en":
-            default:
+                yield "Нажмите здесь, чтобы купить Jails+!";
+            }
+            default -> {
                 accessMessage = "You are trying to use a feature that is only available in Jails+.";
-                purchaseMessage = "Click here to purchase Jails+!";
-                break;
-        }
+                yield "Click here to purchase Jails+!";
+            }
+        };
         sender.sendMessage(ChatColor.GOLD + "" + ChatColor.BOLD + accessMessage);
         TextComponent message = new TextComponent(purchaseMessage);
         message.setColor(net.md_5.bungee.api.ChatColor.GREEN);

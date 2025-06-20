@@ -10,7 +10,9 @@ import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class Handcuff implements CommandExecutor, Listener {
@@ -27,7 +29,7 @@ public class Handcuff implements CommandExecutor, Listener {
         this.plugin = plugin;
         this.translationManager = plugin.getTranslationManager();
 
-        plugin.getCommand("handcuff").setExecutor(this);
+        Objects.requireNonNull(plugin.getCommand("handcuff")).setExecutor(this);
         Bukkit.getPluginManager().registerEvents(this, plugin);
 
         reloadSettings();
@@ -42,7 +44,7 @@ public class Handcuff implements CommandExecutor, Listener {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         String prefix = plugin.getPrefix();
 
         if (!(sender instanceof Player player)) {

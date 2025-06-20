@@ -20,13 +20,12 @@ public final class UpdateChecker {
     private static final String API_BASE_URL = "https://api.spigotmc.org/legacy/update.php?resource=";
     private static final int TIMEOUT_MS = 5000; // 5 seconds timeout
 
-    private final JavaPlugin plugin;
     private final URL apiUrl;
     private final Executor mainThreadExecutor;
     private final Logger logger;
 
     public UpdateChecker(JavaPlugin plugin) {
-        this.plugin = Objects.requireNonNull(plugin, "Plugin cannot be null");
+        JavaPlugin plugin1 = Objects.requireNonNull(plugin, "Plugin cannot be null");
         this.logger = plugin.getLogger();
         this.mainThreadExecutor = r -> plugin.getServer().getScheduler().runTask(plugin, r);
 

@@ -11,6 +11,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class DelJailCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (!sender.hasPermission("jails.deljail")) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("deljail_no_permission"));
             return true;
@@ -52,14 +53,13 @@ public class DelJailCommand implements CommandExecutor {
             return true;
         }
 
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             plugin.removeJail(jailName);
             String msg = String.format(translationManager.getMessage("deljail_success"), jailName);
             sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
             return true;
         }
 
-        Player player = (Player) sender;
         pendingDeletions.put(player.getUniqueId(), jailName);
 
         String prompt = String.format(translationManager.getMessage("deljail_confirmation_prompt"), jailName);

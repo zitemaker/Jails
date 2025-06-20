@@ -8,7 +8,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
@@ -33,8 +35,8 @@ public class UnjailConfirmation implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("confirmation_only_players"));
             return true;
         }
@@ -52,14 +54,13 @@ public class UnjailConfirmation implements CommandExecutor {
             return true;
         }
 
-        Player player = (Player) sender;
-        if (!player.getUniqueId().equals(request.getSenderUUID())) {
+        if (!player.getUniqueId().equals(request.senderUUID())) {
             sender.sendMessage(prefix + " " + ChatColor.RED + translationManager.getMessage("confirmation_not_authorized"));
             return true;
         }
 
         if (command.getName().equalsIgnoreCase("confirmunjail")) {
-            UUID targetUUID = request.getTargetUUID();
+            UUID targetUUID = request.targetUUID();
             if (!plugin.isPlayerJailed(targetUUID)) {
                 sender.sendMessage(prefix + " " + ChatColor.YELLOW + translationManager.getMessage("unjail_player_no_longer_jailed"));
             } else {
@@ -69,7 +70,7 @@ public class UnjailConfirmation implements CommandExecutor {
                 String broadcastTemplate = translationManager.getMessage("unjail_broadcast");
                 String broadcastMessage = broadcastTemplate
                         .replace("{prefix}", prefix)
-                        .replace("{player}", target.getName());
+                        .replace("{player}", Objects.requireNonNull(target.getName()));
 
                 if (plugin.getConfig().getBoolean("general.broadcast-on-unjail")) {
                     Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
@@ -86,21 +87,6 @@ public class UnjailConfirmation implements CommandExecutor {
         return true;
     }
 
-    private static class UnjailRequest {
-        private final UUID senderUUID;
-        private final UUID targetUUID;
-
-        public UnjailRequest(UUID senderUUID, UUID targetUUID) {
-            this.senderUUID = senderUUID;
-            this.targetUUID = targetUUID;
-        }
-
-        public UUID getSenderUUID() {
-            return senderUUID;
-        }
-
-        public UUID getTargetUUID() {
-            return targetUUID;
-        }
+    private record UnjailRequest(UUID senderUUID, UUID targetUUID) {
     }
 }

@@ -15,7 +15,7 @@ public class TranslationManager {
     private final Map<String, String> messages;
     private String currentLanguage;
     private final Map<String, String> defaultMessages = new HashMap<>();
-    private final String[] supportedLanguages = {"en", "es", "fr", "ru", "de"};
+    private final String[] supportedLanguages = {"en", "es", "fr", "ru", "de", "pt"};
 
     public TranslationManager(JailPlugin plugin) {
         this.plugin = plugin;
@@ -29,6 +29,7 @@ public class TranslationManager {
             case "french":  lang = "fr"; break;
             case "russian": lang = "ru"; break;
             case "german":  lang = "de"; break;
+            case "portuguese": lang = "pt"; break;
             default:
         }
         if (Arrays.asList(supportedLanguages).contains(lang)) {
@@ -116,6 +117,7 @@ public class TranslationManager {
             case "french":  lang = "fr"; break;
             case "russian": lang = "ru"; break;
             case "german":  lang = "de"; break;
+            case "portuguese": lang = "pt"; break;
             default:
         }
         if (Arrays.asList(supportedLanguages).contains(lang)) {

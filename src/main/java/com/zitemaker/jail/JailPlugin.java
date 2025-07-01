@@ -211,6 +211,7 @@ public class JailPlugin extends JavaPlugin {
     public void reloadPluginConfig(){
         reloadConfig();
         handcuffInstance.reloadSettings();
+        translationManager.reloadMessages();
         loadConfigValues();
     }
 

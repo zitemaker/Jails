@@ -1,0 +1,154 @@
+messages:
+  # Config reload
+  config_reload_success: "{prefix} &aConfiguração das prisões recarregada!"
+  cr_no_permission: "{prefix} &cVocê não tem permissão para usar este comando."
+
+  # DelFlag
+  df_player_check: "{prefix} &cVocê deve ser um jogador para usar este comando!"
+  df_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+
+  # DelJail Command
+  deljail_no_permission: "{prefix} &cVocê não tem permissão para deletar prisões."
+  deljail_usage: "{prefix} &eUso: /deljail <nome_da_prisão>"
+  deljail_jail_not_found: "{prefix} &cA prisão '%s' não existe."
+  deljail_success: "{prefix} &aA prisão '%s' foi deletada."
+  deljail_confirmation_prompt: "{prefix} &eTem certeza de que deseja deletar a prisão '%s'?"
+  deljail_confirm_hover: "{prefix} &aClique para confirmar a exclusão da prisão"
+  deljail_cancel_hover: "{prefix} &cClique para cancelar a exclusão da prisão"
+  handledeljail_only_players: "{prefix} &cEste comando só pode ser usado por jogadores."
+  handledeljail_usage: "{prefix} &eUso: /handledeljail <sim|não>"
+  handledeljail_no_pending: "{prefix} &cNenhuma exclusão de prisão pendente encontrada."
+  handledeljail_jail_not_found: "{prefix} &cA prisão '%s' não existe mais."
+  handledeljail_success: "{prefix} &aA prisão '%s' foi deletada com sucesso."
+  handledeljail_canceled: "{prefix} &eExclusão da prisão cancelada."
+
+  # FlagList
+  fl_player_check: "{prefix} &cVocê deve ser um jogador para usar este comando!"
+  fl_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+
+  # Handcuff
+  handcuff_only_players: "{prefix} &cSomente jogadores podem usar este comando!"
+  handcuff_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+  handcuff_usage: "{prefix} &eUso: /handcuff <jogador>"
+  handcuff_player_not_found: "{prefix} &cJogador não encontrado!"
+  handcuff_already_handcuffed: "{prefix} &e%s já está algemado!"
+  handcuff_success: "{prefix} &a%s foi algemado!"
+  handcuff_notification: "{prefix} &cVocê foi algemado por %s!"
+  handcuff_broadcast: "{prefix} &c{player} foi algemado por {handcuffer}!"
+  handcuff_no_break: "{prefix} &cVocê não pode quebrar blocos enquanto algemado!"
+  handcuff_no_place: "{prefix} &cVocê não pode colocar blocos enquanto algemado!"
+  handcuff_no_pvp: "{prefix} &cVocê não pode atacar outros enquanto algemado!"
+  handcuff_no_item_use: "{prefix} &cVocê não pode usar itens enquanto algemado!"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "{prefix} &cSomente jogadores podem usar este comando!"
+  unhandcuff_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+  unhandcuff_usage: "{prefix} &eUso: /unhandcuff <jogador>"
+  unhandcuff_player_not_found: "{prefix} &cJogador não encontrado!"
+  unhandcuff_not_handcuffed: "{prefix} &e%s não está algemado!"
+  unhandcuff_success: "{prefix} &a%s foi removido da lista de algemados."
+  unhandcuff_notification: "{prefix} &cVocê foi removido da lista de algemados."
+
+  # JailCommand
+  jail_no_permission: "{prefix} &cVocê não tem permissão para usar este comando."
+  jail_usage: "{prefix} &eUso: /jail <jogador> <nome_da_prisão> [razão]"
+  jail_player_not_found: "{prefix} &cJogador não encontrado."
+  jail_already_jailed: "{prefix} &e%s já está preso!"
+  jail_not_found: "{prefix} &cPrisão não encontrada. Prisões disponíveis:"
+  jail_default_reason: "{prefix} &eNenhuma razão fornecida"
+  jail_permanent_duration: "{prefix} &eUma duração permanente"
+  jail_broadcast: "{prefix} &c{player} foi preso por {duration} por {jailer}. Razão: {reason}!"
+  jail_notification: "{prefix} &cVocê foi preso permanentemente por %s. Razão: %s"
+
+  # Jail duration
+  permanently_jailed: "{prefix} &e{player} está permanentemente preso."
+  temporarily_jailed: "{prefix} &e{player} tem {time} restante na prisão."
+  jail_time_expired: "{prefix} &a{player} não está mais na prisão."
+  invalid_player: "{prefix} &cJogador {player} não encontrado!"
+  not_jailed: "{prefix} &cJogador {player} não está preso!"
+
+  # Jailed List
+  jailed_list_only_players: "{prefix} &cSomente jogadores podem usar este comando!"
+  jailed_list_no_permission: "{prefix} &cVocê não tem permissão para usar este comando."
+
+  # Jails
+  jails_only_players: "{prefix} &cSomente jogadores podem usar este comando."
+  jails_no_permission: "{prefix} &cVocê não tem permissão para usar este comando."
+  jails_no_jails: "{prefix} &cNenhuma localização de prisão foi definida."
+  jails_gui_name: "{prefix} &eNome: "
+  jails_gui_coords: "{prefix} &eCoordenadas:"
+  jails_gui_left_click: "{prefix} &aClique com o botão esquerdo para teletransportar"
+  jails_left_click_only: "{prefix} &cPor favor, clique com o botão esquerdo para teletransportar."
+  jails_teleported: "{prefix} &aTeletransportado para a prisão: %s"
+  jails_location_not_found: "{prefix} &cLocalização da prisão não encontrada!"
+
+  # SetJail
+  setjail_only_players: "{prefix} &cSomente jogadores podem definir prisões!"
+  setjail_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+  setjail_usage: "{prefix} &eUso: /setjail <nome_da_prisão>"
+  setjail_success: "{prefix} &aA prisão %s foi definida na sua localização atual!"
+
+  # JailSpawn
+  jail_spawn_no_permission: "{prefix} &cVocê não tem permissão para usar este comando."
+  jail_spawn_no_player_found: "{prefix} &cJogador não encontrado."
+  jail_spawn_invalid: "{prefix} &cOpção de spawn inválida. Use 'world_spawn' ou 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "{prefix} &cVocê deve ser um jogador para usar este comando!"
+  set_flag_no_permission: "{prefix} &cVocê não tem permissão para usar este comando!"
+
+  # Unjail Command
+  unjail_no_permission: "{prefix} &cVocê não tem permissão para desencarcerar jogadores."
+  unjail_usage: "{prefix} &eUso: /unjail <jogador>"
+  unjail_player_not_found: "{prefix} &cJogador não encontrado ou nunca entrou no servidor."
+  unjail_player_not_jailed: "{prefix} &e%s não está atualmente preso."
+  unjail_confirmation_prompt: "{prefix} &eTem certeza de que deseja desencarcerar %s?"
+  unjail_ip_jailed_info: "{prefix} &eEste jogador está preso por IP. Desencarcerar também removerá o IP da lista de prisão."
+  unjail_confirm_hover: "{prefix} &aClique para confirmar a libertação"
+  unjail_cancel_hover: "{prefix} &cClique para cancelar a libertação"
+  unjail_success: "{prefix} &aJogador %s foi libertado."
+  unjail_success_ip_removed: "{prefix} &aJogador %s foi libertado e seu IP foi removido da lista de prisão por IP."
+
+  # Unjail Confirmation
+  confirmation_only_players: "{prefix} &cEste comando só pode ser usado por jogadores."
+  confirmation_usage: "{prefix} &eUso: /%s <token>"
+  confirmation_invalid_token: "{prefix} &cToken inválido ou expirado."
+  confirmation_not_authorized: "{prefix} &cVocê não está autorizado a confirmar esta ação."
+  unjail_player_no_longer_jailed: "{prefix} &cJogador não está mais preso."
+  unjail_broadcast: "{prefix} &c{player} foi libertado."
+  unjail_operation_canceled: "{prefix} &eOperação de libertação cancelada."
+
+  # Temporarily jailing
+  tempjail_invalid_duration: "{prefix} &cDuração inválida!"
+  tempjail_success_jailer: "{prefix} &a{player} foi preso temporariamente por {duration}."
+  tempjail_success_target: "{prefix} &cVocê foi preso por {duration} por {jailer}. Razão: {reason}!"
+  invalid_jail: "{prefix} &cPrisão {jail} não encontrada!"
+  already_jailed: "{prefix} &eJogador {player} já está preso!"
+  jail_broadcast_message: "{prefix} {player} foi preso por {duration}. Razão: {reason}!"
+
+  # Version Command
+  version_checking: "{prefix} &eVerificando a versão mais recente..."
+  version_could_not_determine: "{prefix} &cNão foi possível determinar a versão mais recente."
+  version_latest: "{prefix} &aVocê está usando a versão mais recente: %s"
+  version_new_available: "{prefix} &eUma nova versão está disponível: %s"
+  version_current: "{prefix} &eVocê está usando: %s"
+  version_download: "{prefix} &eBaixe a versão mais recente: %s"
+  version_check_failed: "{prefix} &cFalha ao verificar atualizações."
+
+  # Chat
+  chat: "{prefix} &cVocê não pode conversar enquanto estiver preso!"
+
+  # Command
+  command_usage: "{prefix} &cVocê não pode usar este comando enquanto estiver preso."
+
+  # Jail Restrictions
+  block_break: "{prefix} &cVocê não pode quebrar blocos enquanto estiver preso!"
+  block_place: "{prefix} &cVocê não pode colocar blocos enquanto estiver preso!"
+  attack: "{prefix} &cVocê não pode atacar enquanto estiver preso!"
+  vehicles: "{prefix} &cVocê não pode entrar em veículos enquanto estiver preso!"
+  pearl: "{prefix} &cVocê não pode usar pérolas do fim enquanto estiver preso!"
+
+  # Client Sided jailed messages
+  perm_jail: "{prefix} &cVocê está permanentemente preso por: &e{jailer}. &cRazão: &e{reason}"
+  jail_end: "{prefix} &aSeu tempo de prisão terminou. Você está livre!"
+  temp_jail: "{prefix} &eVocê está temporariamente preso por {jailer} por {duration}. Razão: {reason}"

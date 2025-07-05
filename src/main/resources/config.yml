@@ -18,7 +18,14 @@
 ############################################################################
 
 prefix: "&7[&eJails&7]"
-language: en # available languages - en (english), es (spanish), fr (french), ru (russian) and de (german)
+language: en # (en/es/ru/fr/de/pt/pl)
+# en = English
+# es = Español/Spanish
+# ru = Russian
+# fr = French
+# de = Deutsch/German
+# pt = Português/Portuguese
+# pl = Polski/Polish
 
 # General settings
 general:

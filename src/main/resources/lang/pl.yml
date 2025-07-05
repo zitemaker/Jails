@@ -1,0 +1,154 @@
+messages:
+  # Config reload
+  config_reload_success: "{prefix} &aKonfiguracja więzień przeładowana!"
+  cr_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
+
+  # DelFlag
+  df_player_check: "{prefix} &cMusisz być graczem, aby użyć tej komendy!"
+  df_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+
+  # DelJail Command
+  deljail_no_permission: "{prefix} &cNie masz uprawnień do usuwania więzień."
+  deljail_usage: "{prefix} &eUżycie: /deljail <nazwa_więzienia>"
+  deljail_jail_not_found: "{prefix} &cWięzienie '%s' nie istnieje."
+  deljail_success: "{prefix} &aWięzienie '%s' zostało usunięte."
+  deljail_confirmation_prompt: "{prefix} &eCzy na pewno chcesz usunąć więzienie '%s'?"
+  deljail_confirm_hover: "{prefix} &aKliknij, aby potwierdzić usunięcie więzienia"
+  deljail_cancel_hover: "{prefix} &cKliknij, aby anulować usunięcie więzienia"
+  handledeljail_only_players: "{prefix} &cTa komenda może być używana tylko przez graczy."
+  handledeljail_usage: "{prefix} &eUżycie: /handledeljail <tak|nie>"
+  handledeljail_no_pending: "{prefix} &cNie znaleziono oczekującego usunięcia więzienia."
+  handledeljail_jail_not_found: "{prefix} &cWięzienie '%s' już nie istnieje."
+  handledeljail_success: "{prefix} &aWięzienie '%s' zostało pomyślnie usunięte."
+  handledeljail_canceled: "{prefix} &eUsunięcie więzienia anulowane."
+
+  # FlagList
+  fl_player_check: "{prefix} &cMusisz być graczem, aby użyć tej komendy!"
+  fl_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+
+  # Handcuff
+  handcuff_only_players: "{prefix} &cTylko gracze mogą używać tej komendy!"
+  handcuff_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+  handcuff_usage: "{prefix} &eUżycie: /handcuff <gracz>"
+  handcuff_player_not_found: "{prefix} &cGracz nie znaleziony!"
+  handcuff_already_handcuffed: "{prefix} &e%s jest już zakuty w kajdanki!"
+  handcuff_success: "{prefix} &a%s został zakuty w kajdanki!"
+  handcuff_notification: "{prefix} &cZostałeś zakuty w kajdanki przez %s!"
+  handcuff_broadcast: "{prefix} &c{player} został zakuty w kajdanki przez {handcuffer}!"
+  handcuff_no_break: "{prefix} &cNie możesz niszczyć bloków, będąc zakutym w kajdanki!"
+  handcuff_no_place: "{prefix} &cNie możesz stawiać bloków, będąc zakutym w kajdanki!"
+  handcuff_no_pvp: "{prefix} &cNie możesz atakować innych, będąc zakutym w kajdanki!"
+  handcuff_no_item_use: "{prefix} &cNie możesz używać przedmiotów, będąc zakutym w kajdanki!"
+
+  # HandcuffRemove
+  unhandcuff_only_players: "{prefix} &cTylko gracze mogą używać tej komendy!"
+  unhandcuff_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+  unhandcuff_usage: "{prefix} &eUżycie: /unhandcuff <gracz>"
+  unhandcuff_player_not_found: "{prefix} &cGracz nie znaleziony!"
+  unhandcuff_not_handcuffed: "{prefix} &e%s nie jest zakuty w kajdanki!"
+  unhandcuff_success: "{prefix} &a%s został usunięty z listy zakutych w kajdanki."
+  unhandcuff_notification: "{prefix} &aZostałeś usunięty z listy zakutych w kajdanki."
+
+  # JailCommand
+  jail_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
+  jail_usage: "{prefix} &eUżycie: /jail <gracz> <nazwa_więzienia> [powód]"
+  jail_player_not_found: "{prefix} &cGracz nie znaleziony."
+  jail_already_jailed: "{prefix} &e%s jest już uwięziony!"
+  jail_not_found: "{prefix} &cWięzienie nie znalezione. Dostępne więzienia:"
+  jail_default_reason: "{prefix} &eNie podano powodu"
+  jail_permanent_duration: "{prefix} &eStały czas trwania"
+  jail_broadcast: "{prefix} &c{player} został uwięziony na {duration} przez {jailer}. Powód: {reason}!"
+  jail_notification: "{prefix} &cZostałeś uwięziony na stałe przez %s. Powód: %s"
+
+  # Jail duration
+  permanently_jailed: "{prefix} &e{player} jest uwięziony na stałe."
+  temporarily_jailed: "{prefix} &e{player} ma {time} pozostałego czasu w więzieniu."
+  jail_time_expired: "{prefix} &a{player} nie jest już uwięziony."
+  invalid_player: "{prefix} &cGracz {player} nie znaleziony!"
+  not_jailed: "{prefix} &cGracz {player} nie jest uwięziony!"
+
+  # Jailed List
+  jailed_list_only_players: "{prefix} &cTylko gracze mogą używać tej komendy!"
+  jailed_list_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
+
+  # Jails
+  jails_only_players: "{prefix} &cTylko gracze mogą używać tej komendy."
+  jails_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
+  jails_no_jails: "{prefix} &cNie ustawiono żadnych lokalizacji więzień."
+  jails_gui_name: "{prefix} &eNazwa: "
+  jails_gui_coords: "{prefix} &eWspółrzędne:"
+  jails_gui_left_click: "{prefix} &aKliknij lewym przyciskiem, aby się teleportować"
+  jails_left_click_only: "{prefix} &cProszę kliknąć lewym przyciskiem, aby się teleportować."
+  jails_teleported: "{prefix} &aTeleportowano do więzienia: %s"
+  jails_location_not_found: "{prefix} &cLokalizacja więzienia nie znaleziona!"
+
+  # SetJail
+  setjail_only_players: "{prefix} &cTylko gracze mogą ustawiać więzienia!"
+  setjail_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+  setjail_usage: "{prefix} &eUżycie: /setjail <nazwa_więzienia>"
+  setjail_success: "{prefix} &aWięzienie %s zostało ustawione w twojej obecnej lokalizacji!"
+
+  # JailSpawn
+  jail_spawn_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
+  jail_spawn_no_player_found: "{prefix} &cGracz nie znaleziony."
+  jail_spawn_invalid: "{prefix} &cNieprawidłowa opcja spawnu. Użyj 'world_spawn' lub 'original_location'."
+
+  # SetFlag
+  set_flag_only_players: "{prefix} &cMusisz być graczem, aby użyć tej komendy!"
+  set_flag_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy!"
+
+  # Unjail Command
+  unjail_no_permission: "{prefix} &cNie masz uprawnień do zwalniania graczy."
+  unjail_usage: "{prefix} &eUżycie: /unjail <gracz>"
+  unjail_player_not_found: "{prefix} &cGracz nie znaleziony lub nigdy nie dołączył do serwera."
+  unjail_player_not_jailed: "{prefix} &e%s nie jest obecnie uwięziony."
+  unjail_confirmation_prompt: "{prefix} &eCzy na pewno chcesz zwolnić %s?"
+  unjail_ip_jailed_info: "{prefix} &eTen gracz jest uwięziony przez IP. Zwolnienie go usunie również jego IP z listy więzień."
+  unjail_confirm_hover: "{prefix} &aKliknij, aby potwierdzić zwolnienie"
+  unjail_cancel_hover: "{prefix} &cKliknij, aby anulować zwolnienie"
+  unjail_success: "{prefix} &aGracz %s został zwolniony."
+  unjail_success_ip_removed: "{prefix} &aGracz %s został zwolniony, a jego IP został usunięty z listy IP uwięzionych."
+
+  # Unjail Confirmation
+  confirmation_only_players: "{prefix} &cTa komenda może być używana tylko przez graczy."
+  confirmation_usage: "{prefix} &eUżycie: /%s <token>"
+  confirmation_invalid_token: "{prefix} &cNieprawidłowy lub wygasły token."
+  confirmation_not_authorized: "{prefix} &cNie masz uprawnień do potwierdzenia tej akcji."
+  unjail_player_no_longer_jailed: "{prefix} &cGracz nie jest już uwięziony."
+  unjail_broadcast: "{prefix} &c{player} został zwolniony."
+  unjail_operation_canceled: "{prefix} &eOperacja zwolnienia anulowana."
+
+  # Temporarily jailing
+  tempjail_invalid_duration: "{prefix} &cNieprawidłowy czas trwania!"
+  tempjail_success_jailer: "{prefix} &a{player} został tymczasowo uwięziony na {duration}."
+  tempjail_success_target: "{prefix} &cZostałeś uwięziony na {duration} przez {jailer}. Powód: {reason}!"
+  invalid_jail: "{prefix} &cWięzienie {jail} nie znalezione!"
+  already_jailed: "{prefix} &eGracz {player} jest już uwięziony!"
+  jail_broadcast_message: "{prefix} {player} został uwięziony na {duration}. Powód: {reason}!"
+
+  # Version Command
+  version_checking: "{prefix} &eSprawdzanie najnowszej wersji..."
+  version_could_not_determine: "{prefix} &cNie można określić najnowszej wersji."
+  version_latest: "{prefix} &aUżywasz najnowszej wersji: %s"
+  version_new_available: "{prefix} &eDostępna jest nowa wersja: %s"
+  version_current: "{prefix} &eUżywasz: %s"
+  version_download: "{prefix} &ePobierz najnowszą wersję: %s"
+  version_check_failed: "{prefix} &cNie udało się sprawdzić aktualizacji."
+
+  # Chat
+  chat: "{prefix} &cNie możesz rozmawiać, będąc uwięzionym!"
+
+  # Command
+  command_usage: "{prefix} &cNie możesz używać tej komendy, będąc uwięzionym."
+
+  # Jail Restrictions
+  block_break: "{prefix} &cNie możesz niszczyć bloków, będąc w więzieniu!"
+  block_place: "{prefix} &cNie możesz stawiać bloków, będąc w więzieniu!"
+  attack: "{prefix} &cNie możesz atakować, będąc w więzieniu!"
+  vehicles: "{prefix} &cNie możesz wchodzić do pojazdów, będąc w więzieniu!"
+  pearl: "{prefix} &cNie możesz używać pereł endu, będąc w więzieniu!"
+
+  # Client Sided jailed messages
+  perm_jail: "{prefix} &cJesteś uwięziony na stałe przez: &e{jailer}. &cPowód: &e{reason}"
+  jail_end: "{prefix} &aTwój czas więzienia się zakończył. Jesteś teraz wolny!"
+  temp_jail: "{prefix} &eJesteś tymczasowo uwięziony przez {jailer} na {duration}. Powód: {reason}"

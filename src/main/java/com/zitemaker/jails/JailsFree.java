@@ -98,7 +98,6 @@ public class JailsFree extends JavaPlugin {
     private void registerCommandsAndListeners() {
         RootCommand rootCommand = new RootCommand(this);
         registerCommand("jails", rootCommand, new TabCompleter(rootCommand, this));
-        registerCommand("jailsreload", new ReloadCommand(this), null);
 
         unjailCF = new UnjailCF(this);
         registerCommand("confirmunjail", unjailCF);
@@ -486,6 +485,7 @@ public class JailsFree extends JavaPlugin {
                     names.add(offlinePlayer.getName());
                 }
             } catch (IllegalArgumentException e) {
+                throw new RuntimeException(e);
             }
         }
         return names;
@@ -501,6 +501,7 @@ public class JailsFree extends JavaPlugin {
                     names.add(offlinePlayer.getName());
                 }
             } catch (IllegalArgumentException e) {
+                throw new RuntimeException(e);
             }
         }
         return names;

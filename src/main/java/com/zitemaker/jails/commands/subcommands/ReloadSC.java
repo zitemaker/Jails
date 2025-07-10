@@ -1,20 +1,19 @@
-package com.zitemaker.jails.commands;
+package com.zitemaker.jails.commands.subcommands;
 
 import com.zitemaker.jails.JailsFree;
+import com.zitemaker.jails.interfaces.SubCommandExecutor;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
-public class ReloadCommand implements CommandExecutor {
+public class ReloadSC implements SubCommandExecutor {
     private final JailsFree plugin;
 
-    public ReloadCommand(JailsFree plugin) {
+    public ReloadSC(JailsFree plugin) {
         this.plugin = plugin;
     }
 
-    public boolean onCommand(CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+    public void onSubCommand(@NotNull CommandSender sender, String[] args) {
         if (sender.hasPermission("jails.reload")) {
             try {
                 plugin.reloadPluginConfig();
@@ -36,7 +35,6 @@ public class ReloadCommand implements CommandExecutor {
         } else {
             sender.sendMessage(plugin.getTranslationManager().getMessage("no_permission"));
         }
-        return true;
 
     }
 }

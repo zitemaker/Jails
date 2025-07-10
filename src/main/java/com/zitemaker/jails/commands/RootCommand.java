@@ -34,6 +34,7 @@ public class RootCommand implements CommandExecutor {
         subCommands.put("tempjail", new TempJailSC(plugin));
         subCommands.put("jail", new JailSC(plugin));
         subCommands.put("jailslist", new JailsSC(plugin));
+        subCommands.put("reload", new ReloadSC(plugin));
     }
 
     @Override

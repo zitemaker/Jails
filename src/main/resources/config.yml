@@ -32,8 +32,6 @@ general:
   # Notify all server players when a player is jailed
   broadcast-on-jail: true
   # Notify all server players when a player is jailed
-  broadcast-on-ip-jail: true
-  # Notify all server players when a player is unjailed
   broadcast-on-unjail: true
 
 jail-settings:
@@ -68,7 +66,7 @@ blocked-commands:
 
 command-blocked-message: "&cYou cannot use this command while jailed!"
 
-# Define restrictions for players who are in jail
+# Define restrictions for players who are in jails
 # Set to 'false' if you want to restrict certain actions from the list below
 jail-restrictions:
   block-break: false    # If false, players cannot break blocks while jailed.

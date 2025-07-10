@@ -2,29 +2,22 @@ messages:
   # Config reload
   config_reload_success: "{prefix} &aJails configuration reloaded!"
   cr_no_permission: "{prefix} &cYou do not have permission to use this command."
-
-  # DelFlag
-  df_player_check: "{prefix} &cYou must be a player to use this command!"
-  df_no_permission: "{prefix} &cYou do not have permission to use this command!"
+  messages_reload_success: "{prefix} &aSuccessfully reloaded all language files!"
 
   # DelJail Command
   deljail_no_permission: "{prefix} &cYou don't have permission to delete jails."
   deljail_usage: "{prefix} &eUsage: /deljail <jail_name>"
   deljail_jail_not_found: "{prefix} &cJail '%s' does not exist."
   deljail_success: "{prefix} &aJail '%s' has been deleted."
-  deljail_confirmation_prompt: "{prefix} &eAre you sure you want to delete the jail '%s'?"
-  deljail_confirm_hover: "{prefix} &aClick to confirm jail deletion"
-  deljail_cancel_hover: "{prefix} &cClick to cancel jail deletion"
+  deljail_confirmation_prompt: "{prefix} &eAre you sure you want to delete the jails '%s'?"
+  deljail_confirm_hover: "{prefix} &aClick to confirm jails deletion"
+  deljail_cancel_hover: "{prefix} &cClick to cancel jails deletion"
   handledeljail_only_players: "{prefix} &cThis command can only be used by players."
   handledeljail_usage: "{prefix} &eUsage: /handledeljail <yes|no>"
-  handledeljail_no_pending: "{prefix} &cNo pending jail deletion found."
+  handledeljail_no_pending: "{prefix} &cNo pending jails deletion found."
   handledeljail_jail_not_found: "{prefix} &cJail '%s' no longer exists."
   handledeljail_success: "{prefix} &aJail '%s' has been successfully deleted."
   handledeljail_canceled: "{prefix} &eJail deletion canceled."
-
-  # FlagList
-  fl_player_check: "{prefix} &cYou must be a player to use this command!"
-  fl_no_permission: "{prefix} &cYou do not have permission to use this command!"
 
   # Handcuff
   handcuff_only_players: "{prefix} &cOnly players can use this command!"
@@ -46,24 +39,24 @@ messages:
   unhandcuff_usage: "{prefix} &eUsage: /unhandcuff <player>"
   unhandcuff_player_not_found: "{prefix} &cPlayer not found!"
   unhandcuff_not_handcuffed: "{prefix} &e%s is not handcuffed!"
-  unhandcuff_success: "{prefix} &a%s has been removed from the handcuffed list."
-  unhandcuff_notification: "{prefix} &aYou have been removed from the handcuffed list."
+  unhandcuff_success: "{prefix} &a%s has been un-handcuffed."
+  unhandcuff_notification: "{prefix} &aYou have been un-handcuffed"
 
   # JailCommand
   jail_no_permission: "{prefix} &cYou do not have permission to use this command."
-  jail_usage: "{prefix} &eUsage: /jail <player> <jail name> [reason]"
+  jail_usage: "{prefix} &eUsage: /jails <player> <jails name> [reason]"
   jail_player_not_found: "{prefix} &cPlayer not found."
   jail_already_jailed: "{prefix} &e%s is already jailed!"
   jail_not_found: "{prefix} &cJail not found. Available jails:"
-  jail_default_reason: "{prefix} &eNo reason provided"
+  jail_default_reason: "No reason provided"
   jail_permanent_duration: "{prefix} &eA permanent duration"
   jail_broadcast: "{prefix} &c{player} has been jailed for {duration} by {jailer}. Reason: {reason}!"
   jail_notification: "{prefix} &cYou have been jailed permanently by %s. Reason: %s"
 
   # Jail duration
   permanently_jailed: "{prefix} &e{player} is permanently jailed."
-  temporarily_jailed: "{prefix} &e{player} has {time} remaining in jail."
-  jail_time_expired: "{prefix} &a{player} is no longer in jail."
+  temporarily_jailed: "{prefix} &e{player} has {time} remaining in jails."
+  jail_time_expired: "{prefix} &a{player} is no longer in jails."
   invalid_player: "{prefix} &cPlayer {player} not found!"
   not_jailed: "{prefix} &cPlayer {player} is not jailed!"
 
@@ -74,28 +67,19 @@ messages:
   # Jails
   jails_only_players: "{prefix} &cOnly players can use this command."
   jails_no_permission: "{prefix} &cYou do not have permission to use this command."
-  jails_no_jails: "{prefix} &cNo jail locations have been set."
+  jails_no_jails: "{prefix} &cNo jails locations have been set."
   jails_gui_name: "{prefix} &eName: "
   jails_gui_coords: "{prefix} &eCoords:"
   jails_gui_left_click: "{prefix} &aLeft-click to teleport"
   jails_left_click_only: "{prefix} &cPlease left-click to teleport."
-  jails_teleported: "{prefix} &aTeleported to jail: %s"
+  jails_teleported: "{prefix} &aTeleported to jails: %s"
   jails_location_not_found: "{prefix} &cJail location not found!"
 
   # SetJail
   setjail_only_players: "{prefix} &cOnly players can set jails!"
   setjail_no_permission: "{prefix} &cYou do not have permission to use this command!"
-  setjail_usage: "{prefix} &eUsage: /setjail <jail name>"
+  setjail_usage: "{prefix} &eUsage: /setjail <jails name>"
   setjail_success: "{prefix} &aJail %s has been set at your current location!"
-
-  # JailSpawn
-  jail_spawn_no_permission: "{prefix} &cYou do not have permission to use this command."
-  jail_spawn_no_player_found: "{prefix} &cPlayer not found."
-  jail_spawn_invalid: "{prefix} &cInvalid spawn option. Use 'world_spawn' or 'original_location'."
-
-  # SetFlag
-  set_flag_only_players: "{prefix} &cYou must be a player to use this command!"
-  set_flag_no_permission: "{prefix} &cYou do not have permission to use this command!"
 
   # Unjail Command
   unjail_no_permission: "{prefix} &cYou do not have permission to unjail players."
@@ -103,11 +87,11 @@ messages:
   unjail_player_not_found: "{prefix} &cPlayer not found or has never joined the server."
   unjail_player_not_jailed: "{prefix} &e%s is not currently jailed."
   unjail_confirmation_prompt: "{prefix} &eAre you sure you want to unjail %s?"
-  unjail_ip_jailed_info: "{prefix} &eThis player is IP-jailed. Unjailing will also remove their IP from the jail list."
+  unjail_ip_jailed_info: "{prefix} &eThis player is IP-jailed. Unjailing will also remove their IP from the jails list."
   unjail_confirm_hover: "{prefix} &aClick to confirm unjailing"
   unjail_cancel_hover: "{prefix} &cClick to cancel unjailing"
   unjail_success: "{prefix} &aPlayer %s has been unjailed."
-  unjail_success_ip_removed: "{prefix} &aPlayer %s has been unjailed and their IP has been removed from the IP jail list."
+  unjail_success_ip_removed: "{prefix} &aPlayer %s has been unjailed and their IP has been removed from the IP jails list."
 
   # Unjail Confirmation
   confirmation_only_players: "{prefix} &cThis command can only be used by players."
@@ -122,7 +106,7 @@ messages:
   tempjail_invalid_duration: "{prefix} &cInvalid duration!"
   tempjail_success_jailer: "{prefix} &a{player} has been jailed temporarily for {duration}."
   tempjail_success_target: "{prefix} &cYou have been jailed for {duration} by {jailer}. Reason: {reason}!"
-  invalid_jail: "{prefix} &cJail {jail} not found!"
+  invalid_jail: "{prefix} &cJail {jails} not found!"
   already_jailed: "{prefix} &ePlayer {player} is already jailed!"
   jail_broadcast_message: "{prefix} {player} has been jailed for {duration}. Reason: {reason}!"
 
@@ -142,13 +126,13 @@ messages:
   command_usage: "{prefix} &cYou cannot use this command while jailed."
 
   # Jail Restrictions
-  block_break: "{prefix} &cYou cannot break blocks while in jail!"
-  block_place: "{prefix} &cYou cannot place blocks while in jail!"
-  attack: "{prefix} &cYou cannot attack while in jail!"
-  vehicles: "{prefix} &cYou cannot enter vehicles while in jail!"
-  pearl: "{prefix} &cYou cannot use ender pearls while in jail!"
+  block_break: "{prefix} &cYou cannot break blocks while in jails!"
+  block_place: "{prefix} &cYou cannot place blocks while in jails!"
+  attack: "{prefix} &cYou cannot attack while in jails!"
+  vehicles: "{prefix} &cYou cannot enter vehicles while in jails!"
+  pearl: "{prefix} &cYou cannot use ender pearls while in jails!"
 
   # Client Sided jailed messages
   perm_jail: "{prefix} &cYou are permanently jailed by: &e{jailer}. &cReason: &e{reason}"
-  jail_end: "{prefix} &aYour jail time has ended. You are now free!"
+  jail_end: "{prefix} &aYour jails time has ended. You are now free!"
   temp_jail: "{prefix} &eYou are temporarily jailed by {jailer} for {duration}. Reason: {reason}"

@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.zitemaker</groupId>
+    <groupId>com.zitemaker</groupId>
     <artifactId>Jails</artifactId>
-    <version>1.4.1</version>
+    <version>1.5</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -18,10 +18,6 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>worldedit-repo</id>
-            <url>https://maven.enginehub.org/repo/</url>
         </repository>
         <repository>
             <id>codemc</id>
@@ -80,7 +76,7 @@
                             <goal>jar</goal>
                         </goals>
                         <configuration>
-                            <finalName>Jails-${version}</finalName>
+                            <finalName>Jails-${project.version}</finalName>
                             <classifier>release</classifier>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>

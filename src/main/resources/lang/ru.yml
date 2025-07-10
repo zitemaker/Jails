@@ -51,7 +51,7 @@ messages:
 
   # JailCommand
   jail_no_permission: "{prefix} &cУ вас нет прав для использования этой команды."
-  jail_usage: "{prefix} &eИспользование: /jail <player> <jail name> [reason]"
+  jail_usage: "{prefix} &eИспользование: /jails <player> <jails name> [reason]"
   jail_player_not_found: "{prefix} &cИгрок не найден."
   jail_already_jailed: "{prefix} &e%s уже в тюрьме!"
   jail_not_found: "{prefix} &cТюрьма не найдена. Доступные тюрьмы:"
@@ -85,7 +85,7 @@ messages:
   # SetJail
   setjail_only_players: "{prefix} &cТолько игроки могут создавать тюрьмы!"
   setjail_no_permission: "{prefix} &cУ вас нет прав для использования этой команды!"
-  setjail_usage: "{prefix} &eИспользование: /setjail <jail name>"
+  setjail_usage: "{prefix} &eИспользование: /setjail <jails name>"
   setjail_success: "{prefix} &aТюрьма %s создана на вашей текущей позиции!"
 
   # JailSpawn
@@ -122,13 +122,13 @@ messages:
   tempjail_invalid_duration: "{prefix} &cНеверная длительность!"
   tempjail_success_jailer: "{prefix} &a{player} был временно заключён в тюрьму на {duration}."
   tempjail_success_target: "{prefix} &cВы были заключены в тюрьму на {duration} по решению {jailer}. Причина: {reason}!"
-  invalid_jail: "{prefix} &cТюрьма {jail} не найдена!"
+  invalid_jail: "{prefix} &cТюрьма {jails} не найдена!"
   already_jailed: "{prefix} &eИгрок {player} уже находится в тюрьме!"
   jail_broadcast_message: "{prefix} {player} был заключён в тюрьму на {duration}. Причина: {reason}!"
 
   # IpJail
   ipjail_no_permission: "{prefix} &cУ вас нет прав для использования этой команды."
-  ipjail_usage: "{prefix} &eИспользование: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_usage: "{prefix} &eИспользование: /ip-jails <player> <jails name> [reason] [duration]"
   ipjail_player_not_found: "{prefix} &cИгрок не найден."
   ipjail_already_jailed: "{prefix} &e%s уже в тюрьме!"
   ipjail_jail_not_found: "{prefix} &cТюрьма не найдена. Доступные тюрьмы:"

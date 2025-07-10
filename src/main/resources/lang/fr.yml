@@ -51,7 +51,7 @@ messages:
 
   # JailCommand
   jail_no_permission: "{prefix} &cVous n'avez pas la permission d'utiliser cette commande."
-  jail_usage: "{prefix} &eUtilisation : /jail <player> <jail name> [reason]"
+  jail_usage: "{prefix} &eUtilisation : /jails <player> <jails name> [reason]"
   jail_player_not_found: "{prefix} &cJoueur introuvable."
   jail_already_jailed: "{prefix} &e%s est déjà en prison !"
   jail_not_found: "{prefix} &cPrison introuvable. Prisons disponibles :"
@@ -85,7 +85,7 @@ messages:
   # SetJail
   setjail_only_players: "{prefix} &cSeuls les joueurs peuvent configurer des prisons !"
   setjail_no_permission: "{prefix} &cVous n'avez pas la permission d'utiliser cette commande !"
-  setjail_usage: "{prefix} &eUtilisation : /setjail <jail name>"
+  setjail_usage: "{prefix} &eUtilisation : /setjail <jails name>"
   setjail_success: "{prefix} &aLa prison %s a été configurée à votre emplacement actuel !"
 
   # JailSpawn
@@ -122,13 +122,13 @@ messages:
   tempjail_invalid_duration: "{prefix} &cDurée invalide !"
   tempjail_success_jailer: "{prefix} &a{player} a été emprisonné temporairement pendant {duration}."
   tempjail_success_target: "{prefix} &cVous avez été emprisonné pendant {duration} par {jailer}. Raison : {reason} !"
-  invalid_jail: "{prefix} &cPrison {jail} introuvable !"
+  invalid_jail: "{prefix} &cPrison {jails} introuvable !"
   already_jailed: "{prefix} &eLe joueur {player} est déjà en prison !"
   jail_broadcast_message: "{prefix} {player} a été emprisonné pendant {duration}. Raison : {reason} !"
 
   # IpJail
   ipjail_no_permission: "{prefix} &cVous n'avez pas la permission d'utiliser cette commande."
-  ipjail_usage: "{prefix} &eUtilisation : /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_usage: "{prefix} &eUtilisation : /ip-jails <player> <jails name> [reason] [duration]"
   ipjail_player_not_found: "{prefix} &cJoueur introuvable."
   ipjail_already_jailed: "{prefix} &e%s est déjà en prison !"
   ipjail_jail_not_found: "{prefix} &cPrison introuvable. Prisons disponibles :"

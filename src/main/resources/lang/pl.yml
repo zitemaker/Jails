@@ -51,7 +51,7 @@ messages:
 
   # JailCommand
   jail_no_permission: "{prefix} &cNie masz uprawnień do użycia tej komendy."
-  jail_usage: "{prefix} &eUżycie: /jail <gracz> <nazwa_więzienia> [powód]"
+  jail_usage: "{prefix} &eUżycie: /jails <gracz> <nazwa_więzienia> [powód]"
   jail_player_not_found: "{prefix} &cGracz nie znaleziony."
   jail_already_jailed: "{prefix} &e%s jest już uwięziony!"
   jail_not_found: "{prefix} &cWięzienie nie znalezione. Dostępne więzienia:"
@@ -122,7 +122,7 @@ messages:
   tempjail_invalid_duration: "{prefix} &cNieprawidłowy czas trwania!"
   tempjail_success_jailer: "{prefix} &a{player} został tymczasowo uwięziony na {duration}."
   tempjail_success_target: "{prefix} &cZostałeś uwięziony na {duration} przez {jailer}. Powód: {reason}!"
-  invalid_jail: "{prefix} &cWięzienie {jail} nie znalezione!"
+  invalid_jail: "{prefix} &cWięzienie {jails} nie znalezione!"
   already_jailed: "{prefix} &eGracz {player} jest już uwięziony!"
   jail_broadcast_message: "{prefix} {player} został uwięziony na {duration}. Powód: {reason}!"
 

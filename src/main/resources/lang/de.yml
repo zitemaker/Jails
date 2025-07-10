@@ -51,7 +51,7 @@ messages:
 
   # JailCommand
   jail_no_permission: "{prefix} &cDu hast keine Berechtigung, diesen Befehl zu verwenden."
-  jail_usage: "{prefix} &eVerwendung: /jail <player> <jail name> [reason]"
+  jail_usage: "{prefix} &eVerwendung: /jails <player> <jails name> [reason]"
   jail_player_not_found: "{prefix} &cSpieler nicht gefunden."
   jail_already_jailed: "{prefix} &e%s ist bereits im Gefängnis!"
   jail_not_found: "{prefix} &cGefängnis nicht gefunden. Verfügbare Gefängnisse:"
@@ -85,7 +85,7 @@ messages:
   # SetJail
   setjail_only_players: "{prefix} &cNur Spieler können Gefängnisse setzen!"
   setjail_no_permission: "{prefix} &cDu hast keine Berechtigung, diesen Befehl zu verwenden!"
-  setjail_usage: "{prefix} &eVerwendung: /setjail <jail name>"
+  setjail_usage: "{prefix} &eVerwendung: /setjail <jails name>"
   setjail_success: "{prefix} &aGefängnis %s wurde an deinem aktuellen Standort gesetzt!"
 
   # JailSpawn
@@ -122,13 +122,13 @@ messages:
   tempjail_invalid_duration: "{prefix} &cUngültige Dauer!"
   tempjail_success_jailer: "{prefix} &a{player} wurde vorübergehend für {duration} eingesperrt."
   tempjail_success_target: "{prefix} &cDu wurdest von {jailer} für {duration} eingesperrt. Grund: {reason}!"
-  invalid_jail: "{prefix} &cGefängnis {jail} nicht gefunden!"
+  invalid_jail: "{prefix} &cGefängnis {jails} nicht gefunden!"
   already_jailed: "{prefix} &eSpieler {player} ist bereits eingesperrt!"
   jail_broadcast_message: "{prefix} {player} wurde für {duration} eingesperrt. Grund: {reason}!"
 
   # IpJail
   ipjail_no_permission: "{prefix} &cDu hast keine Berechtigung, diesen Befehl zu verwenden."
-  ipjail_usage: "{prefix} &eVerwendung: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_usage: "{prefix} &eVerwendung: /ip-jails <player> <jails name> [reason] [duration]"
   ipjail_player_not_found: "{prefix} &cSpieler nicht gefunden."
   ipjail_already_jailed: "{prefix} &e%s ist bereits eingesperrt!"
   ipjail_jail_not_found: "{prefix} &cGefängnis nicht gefunden. Verfügbare Gefängnisse:"

@@ -1,89 +1,90 @@
 name: Jails
 version: ${project.version}
-main: com.zitemaker.jail.JailPlugin
+main: com.zitemaker.jails.JailsFree
 api-version: '1.21'
-author: zitemaker
+author: Zitemaker Studios
 softdepend: [SkinsRestorer]
 
-
 commands:
-  setjail:
-    description: Set a jail location.
-    usage: /setjail <name>
-    permission: jails.setjail
-
-  jail:
-    description: Jail a player.
-    usage: /jail <player> <jail name> <reason>
-    permission: jails.jail
-
   jails:
-    description: List all jail locations.
-    usage: /jails
-    permission: jails.jails
-
-  unjail:
-    description: Unjail a player.
-    usage: /unjail <player>
-    permission: jails.unjail
-
-  confirmunjail:
-    description: Confirm unjail action
-
-  cancelunjail:
-    description: Cancel unjail action
-
-  jailduration:
-    description: View your or a player's jail duration
-    usage: /jailduration <player>
-
-  tempjail:
-    description: Temporarily jail a player.
-    usage: /tempjail <player> <jail name> <duration> <reason>
-    permission: jails.tempjail
-
-  deljail:
-    description: Deletes a jail
-    usage: /deljail <jail name>
-    permission: jailplugin.deljail
-
-  jailed:
-    description: Manage jailed players.
-    usage: /jailed list
-    permission: jails.list
-    permission-message: You do not have permission to use this command.
-
-  jailspawn:
-    description: Select whether a jailed player will get sent to spawn or their original location after getting unjailed
-    usage: /jailspawn <player> <world_spawn | original_location>
-    permission: jails.spawn
-
-  handcuff:
-    description: Handcuff a player to restrict their movement.
-    usage: /handcuff <player>
-    permission: jails.handcuff
-
-  unhandcuff:
-    description: Remove handcuffs from a player.
-    usage: /unhandcuff <player>
-    permission: jails.unhandcuff
+    description: Main command for jail management
+    usage: /jails <subcommand>
+    aliases: [j]
 
   jailsreload:
-    description: Reloads the Jails config file
+    description: Reloads the plugin configuration
     usage: /jailsreload
-    permission: jails.reload
+    aliases: [jreload, jr]
 
-  jailshelp:
-    description: Displays the help pages for the jail plugin
-    usage: /jailshelp
-    permission: jails.help
+  confirmunjail:
+    description: Confirm unjail action (backend command)
 
-  handledeljail:
-    description: Handle jail deletion confirmation
+  cancelunjail:
+    description: Cancel unjail action (backend command)
+
+  deljailcf:
+    description: Confirm deletion of a jail (backend command)
     usage: /handledeljail <yes|no>
     permission: jails.handledel
 
-  jailversion:
-    description: Check the current version of Jails plugin
+permissions:
+
+  jails.setjail:
+    description: Allows setting jail locations.
+    usage: /setjail <name>
+    default: op
+
+  jails.jail:
+    description: Allows jailing players.
+    usage: /jail <player> <jail name> <reason>
+    default: op
+
+  jails.list:
+    description: Allows listing all jail locations.
+    usage: /jails
+    default: true
+
+  jails.unjail:
+    description: Allows unjailing players.
+    usage: /unjail <player>
+    default: op
+
+  jails.duration:
+    description: Allows viewing jail durations.
+    usage: /jailduration <player>
+    default: true
+
+  jails.tempjail:
+    description: Allows temporarily jailing players.
+    usage: /tempjail <player> <jail name> <duration> <reason>
+    default: op
+
+  jails.deljail:
+    description: Allows deleting jail locations.
+    usage: /deljail <jail name>
+    default: op
+
+  jails.handcuff:
+    description: Allows handcuffing players.
+    usage: /handcuff <player>
+    default: op
+
+  jails.unhandcuff:
+    description: Allows removing handcuffs.
+    usage: /unhandcuff <player>
+    default: op
+
+  jails.reload:
+    description: Allows reloading the Jails config file.
+    usage: /jailsreload
+    default: op
+
+  jails.help:
+    description: Allows accessing help pages for the Jails plugin.
+    usage: /jailshelp
+    default: true
+
+  jails.version:
+    description: Allows checking the current version of the Jails plugin.
     usage: /jailversion
-    permission: jails.version
+    default: true

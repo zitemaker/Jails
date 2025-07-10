@@ -51,7 +51,7 @@ messages:
 
   # JailCommand
   jail_no_permission: "{prefix} &cNo tienes permiso para usar este comando."
-  jail_usage: "{prefix} &eUso: /jail <player> <jail name> [reason]"
+  jail_usage: "{prefix} &eUso: /jails <player> <jails name> [reason]"
   jail_player_not_found: "{prefix} &cJugador no encontrado."
   jail_already_jailed: "{prefix} &e¡%s ya está en la cárcel!"
   jail_not_found: "{prefix} &cCárcel no encontrada. Cárceles disponibles:"
@@ -85,7 +85,7 @@ messages:
   # SetJail
   setjail_only_players: "{prefix} &c¡Solo jugadores pueden configurar cárceles!"
   setjail_no_permission: "{prefix} &c¡No tienes permiso para usar este comando!"
-  setjail_usage: "{prefix} &eUso: /setjail <jail name>"
+  setjail_usage: "{prefix} &eUso: /setjail <jails name>"
   setjail_success: "{prefix} &a¡La cárcel %s ha sido configurada en tu ubicación actual!"
 
   # JailSpawn
@@ -122,13 +122,13 @@ messages:
   tempjail_invalid_duration: "{prefix} &c¡Duración inválida!"
   tempjail_success_jailer: "{prefix} &a{player} ha sido encarcelado temporalmente por {duration}."
   tempjail_success_target: "{prefix} &cHas sido encarcelado por {duration} por {jailer}. Razón: {reason}!"
-  invalid_jail: "{prefix} &c¡Cárcel {jail} no encontrada!"
+  invalid_jail: "{prefix} &c¡Cárcel {jails} no encontrada!"
   already_jailed: "{prefix} &e¡El jugador {player} ya está encarcelado!"
   jail_broadcast_message: "{prefix} {player} ha sido encarcelado por {duration}. Razón: {reason}!"
 
   # IpJail
   ipjail_no_permission: "{prefix} &cNo tienes permiso para usar este comando."
-  ipjail_usage: "{prefix} &eUso: /ip-jail <player> <jail name> [reason] [duration]"
+  ipjail_usage: "{prefix} &eUso: /ip-jails <player> <jails name> [reason] [duration]"
   ipjail_player_not_found: "{prefix} &cJugador no encontrado."
   ipjail_already_jailed: "{prefix} &e¡%s ya está encarcelado!"
   ipjail_jail_not_found: "{prefix} &cCárcel no encontrada. Cárceles disponibles:"

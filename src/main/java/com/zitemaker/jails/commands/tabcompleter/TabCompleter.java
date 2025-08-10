@@ -36,6 +36,10 @@ public class TabCompleter implements org.bukkit.command.TabCompleter {
                 return getPlayerSuggestions(args[1]);
             } else if (args.length == 3) {
                 return getJailSuggestions(args[2]);
+            } else if (args.length == 4) {
+                List<String> suggestions = new ArrayList<>();
+                suggestions.add("[reason]");
+                return suggestions;
             }
             return Collections.emptyList();
         }

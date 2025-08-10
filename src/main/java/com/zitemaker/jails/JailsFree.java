@@ -57,6 +57,7 @@ public class JailsFree extends JavaPlugin {
     private FileConfiguration jailLocationsConfig;
     private File handcuffedPlayersFile;
     private FileConfiguration handcuffedPlayersConfig;
+    private JailListeners jailListeners;
 
     @Getter private String prefix;
     private double handcuffSpeed;
@@ -107,7 +108,8 @@ public class JailsFree extends JavaPlugin {
         registerCommand("deljailcf", new DelJailCF(this, deleteJailSC));
 
         registerEvent(new ChatListener(this));
-        registerEvent(new JailListeners(this));
+        jailListeners = new JailListeners(this);
+        registerEvent(jailListeners);
         registerEvent(new CommandBlocker(this));
 
         new Metrics(this, BSTATS_ID);
@@ -194,6 +196,12 @@ public class JailsFree extends JavaPlugin {
         handcuffSCInstance.reloadSettings();
         translationManager.reloadMessages();
         loadConfigValues();
+    }
+
+    public void cleanupPlayerData(UUID playerUUID) {
+        if (jailListeners != null) {
+            jailListeners.cleanupPlayerCooldowns(playerUUID);
+        }
     }
 
     // ============== Jails Location Management ================
@@ -324,6 +332,7 @@ public class JailsFree extends JavaPlugin {
             jailedPlayersConfig.set(playerUUID + ".unjailed", true);
             saveConfigFile(jailedPlayersConfig, jailedPlayersFile);
             logger.info("Marked offline player as unjailed: " + playerUUID);
+            cleanupPlayerData(playerUUID);
             return;
         }
 
@@ -338,6 +347,9 @@ public class JailsFree extends JavaPlugin {
 
         jailedPlayersConfig.set(playerUUID.toString(), null);
         saveConfigFile(jailedPlayersConfig, jailedPlayersFile);
+
+        cleanupPlayerData(playerUUID);
+
         logger.info("Unjailed player: " + player.getName());
     }
 
@@ -505,5 +517,9 @@ public class JailsFree extends JavaPlugin {
             }
         }
         return names;
+    }
+
+    public JailListeners getJailListeners() {
+        return jailListeners;
     }
 }

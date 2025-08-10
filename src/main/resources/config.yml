@@ -78,3 +78,5 @@ jail-restrictions:
   ender-pearl: false    # If false, players cannot use ender pearls while jailed.
   allow-movement: true # If false, players cannot move while jailed.
   chat: false           # If false, players cannot send chat messages while jailed.
+  # This prevents spam when jailed players rapidly attempt restricted actions
+  message-cooldown: 3000 # Message cooldown in milliseconds (3000 = 3 seconds)

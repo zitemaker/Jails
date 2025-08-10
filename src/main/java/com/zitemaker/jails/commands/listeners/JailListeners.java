@@ -15,9 +15,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -25,9 +28,61 @@ public class JailListeners implements Listener {
     private final JailsFree plugin;
     private final TranslationManager translationManager;
 
+    private final Map<UUID, Map<String, Long>> playerCooldowns;
+    private final long cooldownDuration;
+
+    private static final String ACTION_BLOCK_BREAK = "block_break";
+    private static final String ACTION_BLOCK_PLACE = "block_place";
+    private static final String ACTION_ATTACK = "attack";
+    private static final String ACTION_VEHICLE = "vehicle";
+    private static final String ACTION_ENDER_PEARL = "ender_pearl";
+
     public JailListeners(JailsFree plugin) {
         this.plugin = plugin;
         this.translationManager = plugin.getTranslationManager();
+        this.playerCooldowns = new HashMap<>();
+        this.cooldownDuration = plugin.getConfig().getLong("jails-restrictions.message-cooldown", 3000);
+    }
+
+    /**
+     * Checks if a player can receive a message for a specific action (not on cooldown)
+     * @param playerUUID The player's UUID
+     * @param actionType The type of action being performed
+     * @return true if message can be sent, false if on cooldown
+     */
+    private boolean canSendMessage(UUID playerUUID, String actionType) {
+        long currentTime = System.currentTimeMillis();
+
+        Map<String, Long> playerActions = playerCooldowns.computeIfAbsent(playerUUID, k -> new HashMap<>());
+        Long lastMessageTime = playerActions.get(actionType);
+
+        if (lastMessageTime == null || currentTime - lastMessageTime >= cooldownDuration) {
+            playerActions.put(actionType, currentTime);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Sends a restricted action message to the player if not on cooldown
+     * @param player The player to send the message to
+     * @param actionType The type of action
+     * @param messageKey The translation key for the message
+     */
+    private void sendRestrictedMessage(Player player, String actionType, String messageKey) {
+        if (canSendMessage(player.getUniqueId(), actionType)) {
+            player.sendMessage(ChatColor.RED + translationManager.getMessage(messageKey)
+                    .replace("{prefix}", plugin.getPrefix()));
+        }
+    }
+
+    /**
+     * Clean up cooldown data for a player (call when player leaves or is unjailed)
+     * @param playerUUID The player's UUID
+     */
+    public void cleanupPlayerCooldowns(UUID playerUUID) {
+        playerCooldowns.remove(playerUUID);
     }
 
     @EventHandler
@@ -36,7 +91,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jails-restrictions.block-break", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + translationManager.getMessage("block_break").replace("{prefix}", plugin.getPrefix()));
+            sendRestrictedMessage(player, ACTION_BLOCK_BREAK, "block_break");
         }
     }
 
@@ -46,7 +101,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jails-restrictions.block-place", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + translationManager.getMessage("block_place").replace("{prefix}", plugin.getPrefix()));
+            sendRestrictedMessage(player, ACTION_BLOCK_PLACE, "block_place");
         }
     }
 
@@ -57,7 +112,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jails-restrictions.attack", false)) {
             event.setCancelled(true);
-            player.sendMessage(translationManager.getMessage("attack").replace("{prefix}", plugin.getPrefix()));
+            sendRestrictedMessage(player, ACTION_ATTACK, "attack");
         }
     }
 
@@ -68,7 +123,7 @@ public class JailListeners implements Listener {
         if (plugin.isPlayerJailed(player.getUniqueId()) &&
                 !plugin.getConfig().getBoolean("jails-restrictions.vehicle-ride", false)) {
             event.setCancelled(true);
-            player.sendMessage(translationManager.getMessage("vehicles").replace("{prefix}", plugin.getPrefix()));
+            sendRestrictedMessage(player, ACTION_VEHICLE, "vehicles");
         }
     }
 
@@ -139,21 +194,12 @@ public class JailListeners implements Listener {
                 item.getType() == Material.ENDER_PEARL &&
                 !plugin.getConfig().getBoolean("jails-restrictions.ender-pearl", false)) {
             event.setCancelled(true);
-            player.sendMessage(ChatColor.RED + translationManager.getMessage("pearl").replace("{prefix}", plugin.getPrefix()));
+            sendRestrictedMessage(player, ACTION_ENDER_PEARL, "pearl");
         }
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent event){
-        Player player = event.getPlayer();
-        if(plugin.isPlayerJailed(player.getUniqueId())){
-            FileConfiguration jailedPlayersConfig = plugin.getJailedPlayersConfig();
-            String jailName = jailedPlayersConfig.getString(player.getUniqueId() + ".jailName");
-            Location jailLocation = plugin.getJail(jailName);
-            player.teleport(jailLocation);
-
-        }
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        cleanupPlayerCooldowns(event.getPlayer().getUniqueId());
     }
-
-
 }

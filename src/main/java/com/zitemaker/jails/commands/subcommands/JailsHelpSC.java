@@ -112,7 +112,7 @@ public class JailsHelpSC implements SubCommandExecutor {
             prevButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new ComponentBuilder("§7Click to view previous help page").create()));
             prevButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                    "/jailshelp " + (page - 1)));
+                    "/jails help " + (page - 1)));
             navButtons.addExtra(prevButton);
         }
 
@@ -122,7 +122,7 @@ public class JailsHelpSC implements SubCommandExecutor {
             nextButton.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                     new ComponentBuilder("§7Click to view next help page").create()));
             nextButton.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND,
-                    "/jailshelp " + (page + 1)));
+                    "/jails help " + (page + 1)));
             navButtons.addExtra(nextButton);
         }
 

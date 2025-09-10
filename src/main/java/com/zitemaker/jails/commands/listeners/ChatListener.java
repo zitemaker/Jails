@@ -22,7 +22,7 @@ public class ChatListener implements Listener {
         Player player = event.getPlayer();
 
         if (plugin.isPlayerJailed(player.getUniqueId())) {
-            if (!plugin.getConfig().getBoolean("jails-restrictions.chat", false)) {
+            if (!plugin.getConfig().getBoolean("jail-restrictions.chat", false)) {
                 String prefix = plugin.getPrefix();
                 player.sendMessage(translationManager.getMessage("chat").replace("{prefix}", prefix));
                 event.setCancelled(true);

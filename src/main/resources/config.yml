@@ -33,6 +33,8 @@ general:
   broadcast-on-jail: true
   # Notify all server players when a player is jailed
   broadcast-on-unjail: true
+  # Require confirmation prompt when unjailing a player
+  unjail-confirmation: true
 
 jail-settings:
   enable-jailed-role: true # whether players should have a "Jailed" text next to their name when they send anything in chat

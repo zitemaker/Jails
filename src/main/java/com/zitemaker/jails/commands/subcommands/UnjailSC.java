@@ -52,7 +52,9 @@ public class UnjailSC implements SubCommandExecutor {
             return;
         }
 
-        if (sender instanceof Player player) {
+        boolean requireConfirmation = plugin.getConfig().getBoolean("general.unjail-confirmation", true);
+
+        if (sender instanceof Player player && requireConfirmation) {
             UUID senderUUID = player.getUniqueId();
 
             String token = plugin.getUnjailCF().generateToken(senderUUID, targetUUID);
@@ -81,8 +83,18 @@ public class UnjailSC implements SubCommandExecutor {
                     .create());
         } else {
             plugin.unjailPlayer(targetUUID);
-            String msg = String.format(translationManager.getMessage("unjail_success"), target.getName());
-            sender.sendMessage(prefix + " " + ChatColor.GREEN + msg);
+            
+            String broadcastTemplate = translationManager.getMessage("unjail_broadcast");
+            String broadcastMessage = broadcastTemplate
+                    .replace("{prefix}", prefix)
+                    .replace("{player}", target.getName());
+
+            if (plugin.getConfig().getBoolean("general.broadcast-on-unjail")) {
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', broadcastMessage));
+            } else {
+                String msg = String.format(translationManager.getMessage("unjail_success").replace("{prefix}", prefix), target.getName());
+                sender.sendMessage(msg);
+            }
         }
 
     }

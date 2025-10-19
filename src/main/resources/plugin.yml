@@ -3,7 +3,7 @@ version: ${project.version}
 main: com.zitemaker.jails.JailsFree
 api-version: '1.21'
 author: Zitemaker Studios
-softdepend: [SkinsRestorer]
+softdepend: [SkinsRestorer, PlaceholderAPI]
 
 commands:
   jails:

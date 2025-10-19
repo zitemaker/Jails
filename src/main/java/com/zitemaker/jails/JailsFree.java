@@ -23,6 +23,7 @@ import com.zitemaker.jails.commands.subcommands.*;
 import com.zitemaker.jails.commands.tabcompleter.*;
 import com.zitemaker.jails.commands.confirmations.*;
 import com.zitemaker.jails.commands.listeners.*;
+import com.zitemaker.jails.integration.JailsPlaceholderExpansion;
 import com.zitemaker.jails.translation.*;
 import com.zitemaker.jails.update.*;
 import com.zitemaker.jails.utils.*;
@@ -113,6 +114,17 @@ public class JailsFree extends JavaPlugin {
         registerEvent(new CommandBlocker(this));
 
         new Metrics(this, BSTATS_ID);
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            boolean registered = new JailsPlaceholderExpansion(this).register();
+            if (registered) {
+                logger.info("PlaceholderAPI expansion registered successfully!");
+            } else {
+                logger.warning("Failed to register PlaceholderAPI expansion!");
+            }
+        } else {
+            logger.info("PlaceholderAPI not found - placeholder support disabled");
+        }
     }
 
     private void registerCommand(String name, CommandExecutor executor) {
@@ -308,6 +320,7 @@ public class JailsFree extends JavaPlugin {
 
         jailedPlayersConfig.set(basePath + ".jailName", jailName);
         jailedPlayersConfig.set(basePath + ".endTime", endTime);
+        jailedPlayersConfig.set(basePath + ".startTime", System.currentTimeMillis());
         jailedPlayersConfig.set(basePath + ".reason", reason);
         jailedPlayersConfig.set(basePath + ".jailer", jailer);
 

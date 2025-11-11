@@ -49,6 +49,13 @@ public class JailSC implements SubCommandExecutor {
         String jailName = args[1];
         if (!plugin.getJails().containsKey(jailName)) {
             sender.sendMessage(translationManager.getMessage("jail_not_found").replace("{prefix}", plugin.getPrefix()));
+
+            String suggestion = com.zitemaker.jails.utils.Helpers.findClosestMatch(jailName, plugin.getJails().keySet(), 3);
+            if (suggestion != null) {
+                sender.sendMessage(ChatColor.YELLOW + "Did you mean '" + ChatColor.GOLD + suggestion + ChatColor.YELLOW + "'?");
+            }
+
+            sender.sendMessage(ChatColor.YELLOW + "Available jails:");
             plugin.getJails().forEach((name, location) ->
                     sender.sendMessage(ChatColor.GOLD + "- " + name)
             );

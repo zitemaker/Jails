@@ -43,6 +43,16 @@ public class TempJailSC implements SubCommandExecutor {
         if (!plugin.getJails().containsKey(jailName)) {
             sender.sendMessage(prefix + " " + ChatColor.RED +
                     plugin.getTranslationManager().getMessage("invalid_jail").replace("{jails}", jailName));
+
+            String suggestion = com.zitemaker.jails.utils.Helpers.findClosestMatch(jailName, plugin.getJails().keySet(), 3);
+            if (suggestion != null) {
+                sender.sendMessage(ChatColor.YELLOW + "Did you mean '" + ChatColor.GOLD + suggestion + ChatColor.YELLOW + "'?");
+            }
+
+            sender.sendMessage(ChatColor.YELLOW + "Available jails:");
+            plugin.getJails().forEach((name, location) ->
+                    sender.sendMessage(ChatColor.GOLD + "- " + name)
+            );
             return;
         }
 
